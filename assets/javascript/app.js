@@ -1,3 +1,5 @@
+ var messThingsUp = true
+
 //Make a giant mess here.
  josh_branch
 
@@ -16,3 +18,9 @@ function thisDoesNothing(){
 	}
 }
  master
+
+ if (messThingsUp){
+ 	console.log('oh no')
+ }
+
+
