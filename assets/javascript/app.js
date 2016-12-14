@@ -1,23 +1,25 @@
  var messThingsUp = true
 
-//Make a giant mess here.
- josh_branch
 
-//first test of a push to the josh branch
-=======
-
-
-=======
-f;lasd jfpaosdnfa;sldfnkasdf a;sldfkjas;d fasdlfkjasdf 
- ec4123fbc1b9c948f78921f0fd65776b94bc6641
-
-//My test function -Mills
 function thisDoesNothing(){
 	if(nothing){
 		console.log('nothing')
 	}
 }
- master
+//Make a giant mess here.
+ josh_branch
+
+//first test of a push to the josh branch
+
+f;lasd jfpaosdnfa;sldfnkasdf a;sldfkjas;d fasdlfkjasdf 
+ ec4123fbc1b9c948f78921f0fd65776b94bc6641
+
+var aTerribleList = ['stuff', 'thing', 15]
+
+//My test function -Mills
+
+
+console.log (aTerribleList)
 
  if (messThingsUp){
  	console.log('oh no')
