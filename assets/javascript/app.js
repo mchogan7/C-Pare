@@ -1,7 +1,9 @@
 //Make mess below:
 
 
-
+//https://www.cryptonator.com/api
+//https://www.cryptocompare.com/api/#-api-data-coinlist-
+//https://coinmarketcap.com/api/
 
 
 
