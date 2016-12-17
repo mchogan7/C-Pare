@@ -6,6 +6,12 @@
 
 //Collect global variables here:
 var tickerSymbol
+var chartViewerArray = [];
+var chartLabels = [];
+
+for (var i = 0; i < 492; i++) {
+	chartLabels.push(i)
+}
 
 
 
@@ -14,16 +20,17 @@ var tickerSymbol
 function stockAJAX() {
     var queryURL = "https://www.quandl.com/api/v3/datasets/WIKI/" + tickerSymbol + ".json?column_index=4&start_date=2015-01-01&end_date=2016-12-14&collapse=daily&api_key=EDWEb1oyzs8FrfoFyG1u";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
-
+    	console.log(response)
         var stocksChartData = []
-
+		//resetChartLabels
         for (var i = 0; i < response.dataset.data.length; i++) {
             stocksChartData.push(response.dataset.data[i][1])
+            
         }
-        console.log(stocksChartData)
+        console.log(chartLabels)
 
         var stockDataObject = {
-            label: "I will remove this",
+            label: response.dataset.dataset_code,
             fill: false,
             lineTension: 0.1,
             backgroundColor: "rgba(75,192,192,0.4)",
@@ -45,6 +52,8 @@ function stockAJAX() {
             spanGaps: false,
         }
 
+        	chartViewerArray.push(stockDataObject)
+        	mainChart.update();
 
     })
 }
@@ -84,37 +93,15 @@ function tickerConverter(userSearch) {
 //Points to chart in the DOM
 var ctx = $("#mainChart");
 
-//Place holder data
-var data = {
 
-    datasets: [{
-        label: "I will remove this",
-        fill: false,
-        lineTension: 0.1,
-        backgroundColor: "rgba(75,192,192,0.4)",
-        borderColor: "rgba(75,192,192,1)",
-        borderCapStyle: 'butt',
-        borderDash: [],
-        borderDashOffset: 0.0,
-        borderJoinStyle: 'miter',
-        pointBorderColor: "rgba(75,192,192,1)",
-        pointBackgroundColor: "#fff",
-        pointBorderWidth: 1,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: "rgba(75,192,192,1)",
-        pointHoverBorderColor: "rgba(220,220,220,1)",
-        pointHoverBorderWidth: 2,
-        pointRadius: 1,
-        pointHitRadius: 10,
-        data: [65, 59, 80, 81, 56, 55, 40, 90],
-        spanGaps: false,
-    }]
-};
 
 //Global Chart settings
 var mainChart = new Chart(ctx, {
     type: 'line',
-    data: data,
+    data: {
+        labels: chartLabels,
+        datasets: chartViewerArray
+    },
     options: {
         scales: {
             yAxes: [{
