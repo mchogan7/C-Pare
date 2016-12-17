@@ -1,1 +1,18 @@
  /* Get angry at stuff here. */
+ li {
+ 	display: inline;
+ }
+
+ .chartContainer {
+ 	width: 500px;
+ 	height: 500px;
+ 	margin: 0px;
+ }
+
+ #mainchart {
+ 	width: 500px;
+ 	height: 500px;
+ }
+
+
+ 
