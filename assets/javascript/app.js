@@ -86,7 +86,7 @@ var ctx = $("#mainChart");
 
 //Place holder data
 var data = {
-    labels: ["January", "February", "March", "April", "May", "June", "July", "August"],
+
     datasets: [{
         label: "I will remove this",
         fill: false,
