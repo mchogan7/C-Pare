@@ -30,7 +30,8 @@ for (var i = 0; i < 492; i++) {
 function stockAJAX() {
     var correctedSearch = lookUp(userInput, stockLookUp);
     //Checks user search against the yahoo ticker converter and our stockLookup table.
-    if (!correctedSearch && (exchange !== 'NASDAQ' || exchange !== 'NYSE')) {
+
+    if (!correctedSearch && (exchange !== 'NASDAQ' && exchange !== 'NYSE')) {
 
         console.log('Search not found on NASDAQ or NYSE') //This will be reaplced with an error display function
 
