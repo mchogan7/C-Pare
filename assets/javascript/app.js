@@ -84,6 +84,7 @@ function stockAJAX() {
         //Pushes dataObject to the viewer array, then updates the chart in the browers.
         chartViewerArray.push(stockDataObject)
         mainChart.update();
+        zoomChart.update();
     })
 }
 //End of Quandle AJAX Call
@@ -113,9 +114,27 @@ function tickerConverter(userSearch) {
 
 //Points to chart in the DOM
 var ctx = $("#mainChart");
+var zcht = $("#zoomChart");
 
 //Global Chart settings
 var mainChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: chartLabels,
+        datasets: chartViewerArray
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+
+var zoomChart = new Chart(zcht, {
     type: 'line',
     data: {
         labels: chartLabels,
