@@ -19,89 +19,6 @@ var stockLookUp = [{
     queryWord: ["facebook", "face book"]
 }]
 
-var commodityLookUp = [{
-    targetWord: "WLD_SILVER",
-    queryWord: ["silver", "si", "sliver", "slver"]
-}, {
-    targetWord: "PALUM_USD",
-    queryWord: ["aluminum", "alluminum", "aluminium", "alumminum"]
-}, {
-    targetWord: "WLD_GOLD",
-    queryWord: ["gold", "goled", "golld", "goldd"]
-}, {
-    targetWord: "PBEEF_USD",
-    queryWord: ["beef", "beaf"]
-}, {
-    targetWord: "BUTTER",
-    queryWord: ["butter", "buter", "butt", "buttr", "btter"]
-}, {
-    targetWord: "CHEESE_BLK",
-    queryWord: ["cheese", "chease", "chees"]
-}, {
-    targetWord: "PPOULT_USD",
-    queryWord: ["chicken", "chikken", "chiken", "chicen", "chickn"]
-}, {
-    targetWord: "PCOALAU_USD",
-    queryWord: ["coal", "cole", "coll", "cool"]
-}, {
-    targetWord: "PCOCO_USD",
-    queryWord: ["cocoa", "coco", "coko", "cocoe", "cokeco"]
-}, {
-    targetWord: "PCOFFOTM_USD",
-    queryWord: ["coffee", "cafe", "cofee", "cofffe", "cofe", "coofee"]
-}, {
-    targetWord: "PMAIZMT_USD",
-    queryWord: ["corn", "korn", "corrn"]
-}, {
-    targetWord: "PCOTTIND_USD",
-    queryWord: ["cotton", "coton", "cotten", "coten", "cottan", "cotan"]
-}, {
-    targetWord: "WLD_IRON_ORE",
-    queryWord: ["iron", "irron"]
-}, {
-    targetWord: "GAS_CR",
-    queryWord: ["gas", "gasoline", "gassoline", "gass", "gassoleen", "gassolene", "gasolene", "gasolean", "gassolean"]
-}, {
-    targetWord: "MILK",
-    queryWord: ["milk", "millk", "miilk"]
-}, {
-    targetWord: "OATS",
-    queryWord: ["oats", "oets", "oots", "otts"]
-}, {
-    targetWord: "PCOPP_USD",
-    queryWord: ["copper", "coper", "cooper"]
-}, {
-    targetWord: "PFISH_USD",
-    queryWord: ["fish", "fiish"]
-}, {
-    targetWord: "PGNUTS_USD",
-    queryWord: ["peanuts", "peenuts", "penuts"]
-}, {
-    targetWord: "EGGS",
-    queryWord: ["eggs", "egs", "egss"]
-}, {
-    targetWord: "EGGS",
-    queryWord: ["eggs", "egs", "egss"]
-}, {
-    targetWord: "EGGS",
-    queryWord: ["eggs", "egs", "egss"]
-}, {
-    targetWord: "EGGS",
-    queryWord: ["eggs", "egs", "egss"]
-}, {
-    targetWord: "EGGS",
-    queryWord: ["eggs", "egs", "egss"]
-}, {
-    targetWord: "EGGS",
-    queryWord: ["eggs", "egs", "egss"]
-}, {
-    targetWord: "EGGS",
-    queryWord: ["eggs", "egs", "egss"]
-}, {
-    targetWord: "EGGS",
-    queryWord: ["eggs", "egs", "egss"]
-}]
-
 
 //Generates place holder labels for the chart so it will display the full dataset.
 //Will be replaced with a real solution.
@@ -109,14 +26,14 @@ for (var i = 0; i < 492; i++) {
     chartLabels.push(i)
 }
 
-//Quandle stocks AJAX Call
+//Quandle AJAX Call
 function stockAJAX() {
     var correctedSearch = lookUp(userInput, stockLookUp);
     //Checks user search against the yahoo ticker converter and our stockLookup table.
 
     if (!correctedSearch && (exchange !== 'NASDAQ' && exchange !== 'NYSE')) {
 
-        console.log('Search not found on NASDAQ or NYSE') //This will be replaced with an error display function
+        console.log('Search not found on NASDAQ or NYSE') //This will be reaplced with an error display function
 
         //If not found in stockLookUp table, use the yahoo ticker converter output.
     } else if (!correctedSearch) {
@@ -126,7 +43,7 @@ function stockAJAX() {
         tickerSymbol = correctedSearch
     }
 
-    //get current date in the query's desired format
+    //get cuurent date in the query's desired format
     var today = moment().format('YYYY-MM-DD')
 
     var queryURL = "https://www.quandl.com/api/v3/datasets/WIKI/" + tickerSymbol + ".json?column_index=4&start_date=2015-01-01&end_date=" + today + "&collapse=daily&api_key=EDWEb1oyzs8FrfoFyG1u";
@@ -167,82 +84,9 @@ function stockAJAX() {
         //Pushes dataObject to the viewer array, then updates the chart in the browers.
         chartViewerArray.push(stockDataObject)
         mainChart.update();
-        zoomChart.update();
     })
 }
-//End of Quandle stocks AJAX Call
-
-
-
-
-
-//Quandle commodity AJAX Call
-function commodityAJAX() {
-    var correctedSearch = lookUp(userInput, commodityLookUp);
-    //Checks user search against the yahoo ticker converter and our stockLookup table.
-
-    // if (!correctedSearch && (exchange !== 'NASDAQ' && exchange !== 'NYSE')) {
-
-    //     console.log('Search not found on NASDAQ or NYSE') //This will be reaplced with an error display function
-
-    //     //If not found in stockLookUp table, use the yahoo ticker converter output.
-    // } else if (!correctedSearch) {
-    //     tickerSymbol = tickerSymbol
-    //         //If found in stockLookUp table, change the ticker symbol to be searched.
-    // } else {
-    //     tickerSymbol = correctedSearch
-    // }
-
-    //get cuurent date in the query's desired format
-    var today = moment().format('YYYY-MM-DD')
-
-    var queryURL = "https://www.quandl.com/api/v3/datasets/COM/"ADD VARIABLE HERE".json?&start_date=2015-01-01&end_date=" + today + "&collapse=daily";
-    $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
-
-        // //Initializes and clears the price data to be sent to the stockDataObject
-        // var commodityChartData = []
-
-        // //Loops through the response and pushes price data to the stocksChartData array
-        // for (var i = 0; i < response.dataset.data.length; i++) {
-        //     commodityChartData.push(response.dataset.data[i][1])
-        // }
-
-        // //This is the object format to be sent to the chart.
-        // var commodityDataObject = {
-        //     label: response.dataset.dataset_code,
-        //     fill: false,
-        //     lineTension: 0.1,
-        //     backgroundColor: "rgba(75,192,192,0.4)",
-        //     borderColor: "rgba(75,192,192,1)",
-        //     borderCapStyle: 'butt',
-        //     borderDash: [],
-        //     borderDashOffset: 0.0,
-        //     borderJoinStyle: 'miter',
-        //     pointBorderColor: "rgba(75,192,192,1)",
-        //     pointBackgroundColor: "#fff",
-        //     pointBorderWidth: 1,
-        //     pointHoverRadius: 5,
-        //     pointHoverBackgroundColor: "rgba(75,192,192,1)",
-        //     pointHoverBorderColor: "rgba(220,220,220,1)",
-        //     pointHoverBorderWidth: 2,
-        //     pointRadius: 1,
-        //     pointHitRadius: 10,
-        //     data: stocksChartData,
-        //     spanGaps: false,
-        // }
-
-        // //Pushes dataObject to the viewer array, then updates the chart in the browers.
-        // chartViewerArray.push(commodityDataObject)
-        // mainChart.update();
-        console.log(response);
-    })
-}
-//End of Quandle commodity AJAX Call
-
-commodityAJAX();
-
-
-
+//End of Quandle AJAX Call
 
 
 //Ticker Converter Function - This is specific to the stockAJAX call.
@@ -269,29 +113,9 @@ function tickerConverter(userSearch) {
 
 //Points to chart in the DOM
 var ctx = $("#mainChart");
-var zcht = $("#zoomChart");
 
 //Global Chart settings
 var mainChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: chartLabels,
-        datasets: chartViewerArray
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
-            }]
-        }
-    }
-});
-
-//small zoom chart eventually to have a slider superimposed on it.
-//can't get slider to work at the moment
-var zoomChart = new Chart(zcht, {
     type: 'line',
     data: {
         labels: chartLabels,
