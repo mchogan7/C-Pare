@@ -134,6 +134,8 @@ var mainChart = new Chart(ctx, {
     }
 });
 
+//small zoom chart eventually to have a slider superimposed on it.
+//can't get slider to work at the moment
 var zoomChart = new Chart(zcht, {
     type: 'line',
     data: {
