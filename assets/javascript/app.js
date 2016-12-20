@@ -26,7 +26,7 @@ for (var i = 0; i < 492; i++) {
     chartLabels.push(i)
 }
 
-//Quandle AJAX Call
+//Stock AJAX Call
 function stockAJAX() {
     var correctedSearch = lookUp(userInput, stockLookUp);
     //Checks user search against the yahoo ticker converter and our stockLookup table.
@@ -86,8 +86,7 @@ function stockAJAX() {
         mainChart.update();
     })
 }
-//End of Quandle AJAX Call
-
+//End of Stock AJAX Call
 
 //Ticker Converter Function - This is specific to the stockAJAX call.
 function tickerConverter(userSearch) {
@@ -95,7 +94,7 @@ function tickerConverter(userSearch) {
         success: function(response) {
             exchange = response.ResultSet.Result[0].exchDisp
             tickerSymbol = response.ResultSet.Result[0].symbol
-            //the stockAJAX function has to be called here to avoid async issues.
+                //the stockAJAX function has to be called here to avoid async issues.
             stockAJAX();
         },
         type: "GET",
@@ -136,25 +135,54 @@ var mainChart = new Chart(ctx, {
 
 //UI AND DOM SECTION:
 
-$('#compare').on('click', function(e) {
-    e.preventDefault();
-    userInput = $('#query-input').val().trim();
-    tickerConverter(userInput)
+//On click and key press functions for the submit button.
+$('#compare').on('click', function() {
+  			AJAXselector()
+				})
+//Enter key runs the AJAXselector
+$(document).on('keypress', function(e){
+	if (e.which === 13){
+		AJAXselector();
+	}
 })
 
-//END OF UI AND DOM SECTION
+//Clears input box of initial text.
+$('#query-input').on('click', function(){
+	if($(this).val() === "What would you like to compare?"){
+		$(this).val("")
+	}
+})
 
-//REUSABLE FUNCTIONS:
 
-//lookUp table function.
-//Feed it a search query and and lookUptable object. It will return the result.
-function lookUp(query, lookUptable) {
-    for (var i = 0; i < lookUptable.length; i++) {
-        //if the query word is found, return the target word it was found under:
-        if (lookUptable[i].queryWord.indexOf(query) !== -1) {
-            return lookUptable[i].targetWord
+//This will eventually be used to determine which AJAX calls are made, based on what buttons were selected.
+function AJAXselector(){
+		userInput = $('#query-input').val().trim();
+		$('#query-input').html("")
+        tickerConverter(userInput)
+	}
+
+        //END OF UI AND DOM SECTION
+
+        //REUSABLE FUNCTIONS:
+
+        //lookUp table function.
+        //Feed it a search query and and lookUptable object. It will return the result.
+        function lookUp(query, lookUptable) {
+            for (var i = 0; i < lookUptable.length; i++) {
+                //if the query word is found, return the target word it was found under:
+                if (lookUptable[i].queryWord.indexOf(query) !== -1) {
+                    return lookUptable[i].targetWord
+                }
+            }
         }
-    }
-}
 
-//END OF REUSABLE FUNCTIONS
+        // function buttonErrorDisplay(){
+        // 	$('#compare').removeClass('active-state')
+        // 	$('#compare').addClass('hidden-state')
+        // 	$('#errorDisplay').removeClass('hidden-state')
+        // 	$('#errorDisplay').addClass('active-state')
+        // }
+
+        // buttonErrorDisplay();
+
+        //END OF REUSABLE FUNCTIONS

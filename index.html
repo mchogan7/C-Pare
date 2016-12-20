@@ -6,7 +6,10 @@
     <!-- Allows our site to be responsive. -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Link to CSS. -->
+    <link rel="stylesheet" type="text/css" href="assets/css/reset.css">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <!-- Link to fonts. -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
     <!-- Link to jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <!-- Link to Firebase -->
@@ -15,57 +18,54 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.js"></script>
     <!-- Link to Moment.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.js"></script>
-	
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
 </head>
 
 <body>
-
-   <!-- Logo Div -->
-   <div class="logo">
-		<img src="assets/images/logo.PNG" alt="C-Pare_logo">
-   </div>
-
-    <div class="navbar">
-		<ul>
-		  <li><button type="submit" value="Company">Company</button></li>
-		  <li><button type="submit" value="Commodity">Commodity</button></li>
-		  <li><button type="submit" value="Currency">Currency</button></li>
-		</ul>
+    <!-- Logo Div -->
+    <div class="logo">
+        <img src="assets/images/logo.PNG" alt="C-Pare_logo">
     </div>
-
+    <div class="navbar">
+        <ul>
+            <li>
+                <button type="submit" value="Company">Company</button>
+            </li>
+            <li>
+                <button type="submit" value="Commodity">Commodity</button>
+            </li>
+            <li>
+                <button type="submit" value="Currency">Currency</button>
+            </li>
+        </ul>
+    </div>
     <div id="search">
-		<form id="query-form">
-			<label id="add-comparison" for="query-input">What would you like to compare?</label>
-			<input type="text" id="query-input"><br>
-			<!-- Button triggers new query to be added -->
-			<input id="compare" type="submit" value="Compare">
-		</form>
-	</div>
-
-	<!-- Chart holder div. We can move this wherever. -->
+        <input type="text" id="query-input" value="What would you like to compare?">
+        <br>
+        <!-- Button triggers new query to be added -->
+        <div class="buttonContainer">
+            <div id="compare" class="active-state" type="submit">CLICK TO C-PARE</div>
+            <div id="errorDisplay" class="hidden-state">Test</div>
+        </div>
+    </div>
+    <!-- Chart holder div. We can move this wherever. -->
     <div class="chartContainer">
         <canvas id="mainChart" width="500" height="500"></canvas>
     </div>
-
-	<div class="panel-body">
+    <div class="panel-body">
         <table class="table">
-          <thead>
-             <tr>
-                <th>Stuff</th>
-                <th>Some more stuff</th>
-                <th>Buncha other stuff</th>
-                <th>A few more stuffs</th>
-                <th>Last of the stuffs</th>
-             </tr>
-          </thead>
-          <tbody class="trainInfo">
-            
-          </tbody>
+            <thead>
+                <tr>
+                    <th>Stuff</th>
+                    <th>Some more stuff</th>
+                    <th>Buncha other stuff</th>
+                    <th>A few more stuffs</th>
+                    <th>Last of the stuffs</th>
+                </tr>
+            </thead>
+            <tbody class="trainInfo">
+            </tbody>
         </table>
     </div>
-
     <!-- Loading our JS file at the bottom -->
     <script type="text/javascript" src="assets/javascript/app.js"></script>
 </body>
