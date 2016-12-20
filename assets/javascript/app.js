@@ -20,11 +20,86 @@ var stockLookUp = [{
 }]
 
 var commodityLookUp = [{
-    targetWord: "COM/AG_USD",
+    targetWord: "WLD_SILVER",
     queryWord: ["silver", "si", "sliver", "slver"]
 }, {
-    targetWord: "COM/BUTTER",
+    targetWord: "PALUM_USD",
+    queryWord: ["aluminum", "alluminum", "aluminium", "alumminum"]
+}, {
+    targetWord: "WLD_GOLD",
+    queryWord: ["gold", "goled", "golld", "goldd"]
+}, {
+    targetWord: "PBEEF_USD",
+    queryWord: ["beef", "beaf"]
+}, {
+    targetWord: "BUTTER",
     queryWord: ["butter", "buter", "butt", "buttr", "btter"]
+}, {
+    targetWord: "CHEESE_BLK",
+    queryWord: ["cheese", "chease", "chees"]
+}, {
+    targetWord: "PPOULT_USD",
+    queryWord: ["chicken", "chikken", "chiken", "chicen", "chickn"]
+}, {
+    targetWord: "PCOALAU_USD",
+    queryWord: ["coal", "cole", "coll", "cool"]
+}, {
+    targetWord: "PCOCO_USD",
+    queryWord: ["cocoa", "coco", "coko", "cocoe", "cokeco"]
+}, {
+    targetWord: "PCOFFOTM_USD",
+    queryWord: ["coffee", "cafe", "cofee", "cofffe", "cofe", "coofee"]
+}, {
+    targetWord: "PMAIZMT_USD",
+    queryWord: ["corn", "korn", "corrn"]
+}, {
+    targetWord: "PCOTTIND_USD",
+    queryWord: ["cotton", "coton", "cotten", "coten", "cottan", "cotan"]
+}, {
+    targetWord: "WLD_IRON_ORE",
+    queryWord: ["iron", "irron"]
+}, {
+    targetWord: "GAS_CR",
+    queryWord: ["gas", "gasoline", "gassoline", "gass", "gassoleen", "gassolene", "gasolene", "gasolean", "gassolean"]
+}, {
+    targetWord: "MILK",
+    queryWord: ["milk", "millk", "miilk"]
+}, {
+    targetWord: "OATS",
+    queryWord: ["oats", "oets", "oots", "otts"]
+}, {
+    targetWord: "PCOPP_USD",
+    queryWord: ["copper", "coper", "cooper"]
+}, {
+    targetWord: "PFISH_USD",
+    queryWord: ["fish", "fiish"]
+}, {
+    targetWord: "PGNUTS_USD",
+    queryWord: ["peanuts", "peenuts", "penuts"]
+}, {
+    targetWord: "EGGS",
+    queryWord: ["eggs", "egs", "egss"]
+}, {
+    targetWord: "EGGS",
+    queryWord: ["eggs", "egs", "egss"]
+}, {
+    targetWord: "EGGS",
+    queryWord: ["eggs", "egs", "egss"]
+}, {
+    targetWord: "EGGS",
+    queryWord: ["eggs", "egs", "egss"]
+}, {
+    targetWord: "EGGS",
+    queryWord: ["eggs", "egs", "egss"]
+}, {
+    targetWord: "EGGS",
+    queryWord: ["eggs", "egs", "egss"]
+}, {
+    targetWord: "EGGS",
+    queryWord: ["eggs", "egs", "egss"]
+}, {
+    targetWord: "EGGS",
+    queryWord: ["eggs", "egs", "egss"]
 }]
 
 
@@ -120,7 +195,7 @@ function commodityAJAX() {
     //get cuurent date in the query's desired format
     var today = moment().format('YYYY-MM-DD')
 
-    var queryURL = "https://www.quandl.com/api/v3/datasets/COM/AG_USD.json?&start_date=2015-01-01&end_date=" + today + "&collapse=daily";
+    var queryURL = "https://www.quandl.com/api/v3/datasets/COM/"ADD VARIABLE HERE".json?&start_date=2015-01-01&end_date=" + today + "&collapse=daily";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
 
         // //Initializes and clears the price data to be sent to the stockDataObject
