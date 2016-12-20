@@ -167,6 +167,7 @@ function stockAJAX() {
         //Pushes dataObject to the viewer array, then updates the chart in the browers.
         chartViewerArray.push(stockDataObject)
         mainChart.update();
+        zoomChart.update();
     })
 }
 //End of Quandle stocks AJAX Call
@@ -268,9 +269,29 @@ function tickerConverter(userSearch) {
 
 //Points to chart in the DOM
 var ctx = $("#mainChart");
+var zcht = $("#zoomChart");
 
 //Global Chart settings
 var mainChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: chartLabels,
+        datasets: chartViewerArray
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+
+//small zoom chart eventually to have a slider superimposed on it.
+//can't get slider to work at the moment
+var zoomChart = new Chart(zcht, {
     type: 'line',
     data: {
         labels: chartLabels,
