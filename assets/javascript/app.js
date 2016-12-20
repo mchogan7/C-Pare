@@ -10,6 +10,13 @@ var exchange
 var chartViewerArray = [];
 var chartLabels = [];
 var userInput;
+var stocksRed = 49; //starting values for rgb of stocks color
+var stocksGreen = 141;
+var stocksBlue = 141;
+var stocksRedBorder = 75; //starting values for rgb stocks border color
+var stocksGreenBorder = 192;
+var stocksBlueBorder = 192;
+
 
 var stockLookUp = [{
     targetWord: "GOOG",
@@ -187,19 +194,34 @@ function stockAJAX() {
 
         //Initializes and clears the price data to be sent to the stockDataObject
         var stocksChartData = []
+        
+        //initial framework to change the shade of the color every time a new search for a stock happens
+        //these values are not set in stone and can be adjusted
+        var bgroundColor = "rgba(" + stocksRed + "," + stocksGreen + "," + stocksBlue + ",0.4)"
+        var bordColor = "rgba(" + stocksRedBorder + "," + stocksGreenBorder + "," + stocksBlueBorder + ",1)"
+        //the line color is changed here
+        stocksRed = stocksRed + 28;
+        stocksGreen = stocksGreen + 40;
+        stocksBlue = stocksBlue + 40;
+        //the border color is changed here
+        stocksRedBorder = stocksRedBorder + 28;
+        stocksGreenBorder = stocksGreenBorder + 40;
+        stocksBlueBorder = stocksBlueBorder + 40;
 
         //Loops through the response and pushes price data to the stocksChartData array
         for (var i = 0; i < response.dataset.data.length; i++) {
             stocksChartData.push(response.dataset.data[i][1])
         }
 
+
+
         //This is the object format to be sent to the chart.
         var stockDataObject = {
             label: response.dataset.dataset_code,
             fill: false,
             lineTension: 0.1,
-            backgroundColor: "rgba(75,192,192,0.4)",
-            borderColor: "rgba(75,192,192,1)",
+            backgroundColor: bgroundColor,
+            borderColor: bordColor,
             borderCapStyle: 'butt',
             borderDash: [],
             borderDashOffset: 0.0,
