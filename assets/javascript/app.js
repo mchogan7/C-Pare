@@ -159,14 +159,17 @@ for (var i = 0; i < 492; i++) {
     chartLabels.push(i)
 }
 
-//Quandle stockAJAX Call
+
+//Stock AJAX Call
+
+
 function stockAJAX() {
     var correctedSearch = lookUp(userInput, stockLookUp);
     //Checks user search against the yahoo ticker converter and our stockLookup table.
 
     if (!correctedSearch && (exchange !== 'NASDAQ' && exchange !== 'NYSE')) {
 
-        console.log('Search not found on NASDAQ or NYSE') //This will be reaplced with an error display function
+        buttonErrorDisplay('Stock not found on NYSE or NASDAQ')
 
         //If not found in stockLookUp table, use the yahoo ticker converter output.
     } else if (!correctedSearch) {
@@ -219,11 +222,8 @@ function stockAJAX() {
         mainChart.update();
     })
 }
-//End of Quandle stockAJAX Call
 
-
-
-
+//End of Stock AJAX Call
 
 //Quandle commodity AJAX Call
  function commodityAJAX() {
@@ -292,16 +292,13 @@ function stockAJAX() {
 
 
 
-
-
-
 //Ticker Converter Function - This is specific to the stockAJAX call.
 function tickerConverter(userSearch) {
     $.ajax({
         success: function(response) {
             exchange = response.ResultSet.Result[0].exchDisp
             tickerSymbol = response.ResultSet.Result[0].symbol
-            //the stockAJAX function has to be called here to avoid async issues.
+                //the stockAJAX function has to be called here to avoid async issues.
             stockAJAX();
         },
         type: "GET",
@@ -342,11 +339,33 @@ var mainChart = new Chart(ctx, {
 
 //UI AND DOM SECTION:
 
-$('#compare').on('click', function(e) {
-    e.preventDefault();
-    userInput = $('#query-input').val().trim();
-    tickerConverter(userInput)
+//On click and key press functions for the submit button.
+$('#compare').on('click', function() {
+        AJAXselector()
+    })
+    //Enter key runs the AJAXselector
+$(document).on('keypress', function(e) {
+    if (e.which === 13) {
+        AJAXselector();
+    }
 })
+
+//Clears input box of initial text.
+$('#query-input').on('click', function() {
+    if ($(this).val() === "What would you like to compare?") {
+        $(this).val("")
+    }
+})
+
+
+//This will eventually be used to determine which AJAX calls are made, based on what buttons were selected.
+function AJAXselector() {
+    userInput = $('#query-input').val().trim();
+
+    //Clears the search Box
+    $('#query-input').val("")
+    tickerConverter(userInput)
+}
 
 //END OF UI AND DOM SECTION
 
@@ -362,5 +381,22 @@ function lookUp(query, lookUptable) {
         }
     }
 }
+
+//Feed this function a text string error message.
+//Will display on the button.
+function buttonErrorDisplay(errorMessage) {
+	$('#errorDisplay').text(errorMessage)
+    $('#compare').css('transform', 'rotateX(90deg)')
+    $('#errorDisplay').css('transform', 'rotateX(0deg)')
+    setTimeout(function() {
+        $('#compare').css({
+            'transform': 'perspective(1000px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)'
+        });
+        $('#errorDisplay').css({
+            'transform': 'perspective(1000px) rotateX(-90deg) rotateY(0deg) rotateZ(0deg)'
+        });
+    }, 1500);
+}
+
 
 //END OF REUSABLE FUNCTIONS

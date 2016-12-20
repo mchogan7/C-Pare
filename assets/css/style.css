@@ -1,18 +1,100 @@
  /* Get angry at stuff here. */
+
+/*Green 36,200,183
+Yellow 255,207,0
+Red 234,46,77
+Blue 0,105,160
+Gray - 166,166,166
+*/
+
  li {
  	display: inline;
  }
 
  .chartContainer {
  	width: 500px;
+<<<<<<< HEAD
+ 	height: 500px;
+ 	margin: auto;
+=======
  	height: 600px;
  	margin: 0px;
+>>>>>>> a38773fd9b9f55b58694e7c385f03167f84a995c
  }
 
  #mainchart {
  	width: 500px;
  	height: 500px;
  }
+
+ #compare{
+ 	margin: auto;
+ 	margin-top: 15px;
+ 	margin-bottom: 15px;
+ 	text-align: center;
+ 	line-height: 50px;
+ 	font-family: 'Montserrat', sans-serif;
+ 	font-weight: 700;
+	background-color: rgba(36,200,183,1);
+	color: white;
+	width: 400px;
+	cursor: pointer;
+	z-index: 9999;
+ }
+
+#errorDisplay {
+ 	margin: auto;
+ 	margin-top: 15px;
+ 	margin-bottom: 15px;
+ 	text-align: center;
+ 	line-height: 50px;
+ 	font-family: 'Montserrat', sans-serif;
+ 	font-weight: 700;
+	background-color: rgba(234,46,77,1);
+	color: white;
+	width: 400px;
+	cursor: pointer;
+ }
+
+ #query-input{
+ 	width: 400px;
+ }
+
+ #search{
+ 	margin: auto;
+ 	text-align: center;
+ }
+
+
+.buttonContainer{
+	margin: 30px auto;
+	position: relative;
+	width: 300px;
+	height: 100px;
+	text-align:center;
+}
+
+ .active-state, .hidden-state{
+	height: 50px;
+	position: absolute;
+	left: 0;
+	top: 0;
+	transition: transform 0.3s ease;
+	transform-origin: center center -25px;
+	-webkit-transform-origin: center center -25px;
+	width: 100%;
+	
+ }
+
+ .active-state {
+		transform: perspective(1000px) rotateX(0deg) rotateY(0deg) rotateZ(0deg);;
+}
+
+.hidden-state {
+	background-color: black;
+	transform: perspective(1000px) rotateX(-90deg) rotateY(0deg) rotateZ(0deg);
+}
+
 
 
  
