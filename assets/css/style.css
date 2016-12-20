@@ -13,8 +13,13 @@ Gray - 166,166,166
 
  .chartContainer {
  	width: 500px;
+<<<<<<< HEAD
  	height: 500px;
  	margin: auto;
+=======
+ 	height: 600px;
+ 	margin: 0px;
+>>>>>>> a38773fd9b9f55b58694e7c385f03167f84a995c
  }
 
  #mainchart {
@@ -89,14 +94,6 @@ Gray - 166,166,166
 	background-color: black;
 	transform: perspective(1000px) rotateX(-90deg) rotateY(0deg) rotateZ(0deg);
 }
-
-/*.buttonContainer:hover .active-state {
-	transform: perspective(1000px) rotateX(90deg) rotateY(0deg) rotateZ(0deg);
-}
-.buttonContainer:hover .hidden-state {
-	z-index: 99999;
-	transform: perspective(1000px) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
-}*/
 
 
 
