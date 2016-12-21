@@ -18,6 +18,7 @@ var stocksGreenBorder = 192;
 var stocksBlueBorder = 192;
 
 var stockSearch = []; //keeps track of all the stock searches
+var dataRange = "week";
 
 
 var stockLookUp = [{
@@ -199,13 +200,13 @@ function stockAJAX(rangeOfTime) {
 
     var queryURL = "https://www.quandl.com/api/v3/datasets/WIKI/" + tickerSymbol + ".json?column_index=4&start_date=2015-01-01&end_date=" + today + "&collapse=daily&api_key=EDWEb1oyzs8FrfoFyG1u";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
-        console.log(response)
+        console.log(dataRange)
         //Initializes and clears the price data to be sent to the stockDataObject
         var stocksChartData = []
         var stocksChartDataWeek = []
-        var stocksChartSixMonths = []
-        var stocksChartOneYear = []
-        var stocksChartTwoYear = []
+        var stocksChartDataSixMonths = []
+        var stocksChartDataOneYear = []
+        var stocksChartDataTwoYear = []
         //initial framework to change the shade of the color every time a new search for a stock happens
         //these values are not set in stone and can be adjusted
         var bgroundColor = "rgba(" + stocksRed + "," + stocksGreen + "," + stocksBlue + ",0.4)"
@@ -229,7 +230,22 @@ function stockAJAX(rangeOfTime) {
             stocksChartDataWeek.push(response.dataset.data[i][1])
         }
 
-        chartLabels = rangeOfTime;
+        //Loops through the response and pushes price data to the stocksChartData array
+        for (var i = 0; i <= 132; i++) {
+            stocksChartDataSixMonths.push(response.dataset.data[i][1])
+            dataRange = "six months";
+        }
+
+        if (dataRange === "week"){
+            var data = stocksChartDataWeek;
+            console.log(data)
+        }
+        else if (dataRange === "six months") {
+            var data = stocksChartDataSixMonths;
+            console.log(data)
+        }
+
+        
 
         //This is the object format to be sent to the chart.
         var stockDataObject = {
@@ -251,7 +267,7 @@ function stockAJAX(rangeOfTime) {
             pointHoverBorderWidth: 2,
             pointRadius: 1,
             pointHitRadius: 10,
-            data: stocksChartDataWeek,
+            data: data,
             spanGaps: false,
         }
 
@@ -444,15 +460,24 @@ function displaySixMonth() {
 
 var rangeOfTime = 132;
 
+chartLabels = [];
+for (var i = 0; i <= rangeOfTime; i++) {
+    chartLabels.push(i)
+}
+
+dataRange = "six months"
+
+//clears original chart to make way for the new
 mainChart.destroy();
-buildChart(rangeOfTime);
-stockAJAX(rangeOfTime);
+//builds new chart
+buildChart();
+stockAJAX(rangeOfTime, dataRange);
 
 };
 
 //Builds chart. Required everytime when view is so changed otherwise display duplicate values
-function buildChart(chartLabels) {
-
+function buildChart() {
+    
      mainChart = new Chart(ctx, {
         type: 'line',
         data: {
