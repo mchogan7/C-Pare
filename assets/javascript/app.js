@@ -17,7 +17,7 @@ var stocksRedBorder = 75; //starting values for rgb stocks border color
 var stocksGreenBorder = 192;
 var stocksBlueBorder = 192;
 
-var stockSearch = []; //keeps track of all the stock searches
+var stockSearch = []; //keeps track of all the stock searches. may not be necessary
 var dataRange = "week";
 
 
@@ -174,7 +174,8 @@ for (var i = 0; i <= 5; i++) {
 //Stock AJAX Call
 
 
-function stockAJAX(rangeOfTime) {
+function stockAJAX() {
+    
     var correctedSearch = lookUp(userInput, stockLookUp);
     //Checks user search against the yahoo ticker converter and our stockLookup table.
 
@@ -200,7 +201,7 @@ function stockAJAX(rangeOfTime) {
 
     var queryURL = "https://www.quandl.com/api/v3/datasets/WIKI/" + tickerSymbol + ".json?column_index=4&start_date=2015-01-01&end_date=" + today + "&collapse=daily&api_key=EDWEb1oyzs8FrfoFyG1u";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
-        console.log(dataRange)
+        
         //Initializes and clears the price data to be sent to the stockDataObject
         var stocksChartData = []
         var stocksChartDataWeek = []
@@ -233,19 +234,19 @@ function stockAJAX(rangeOfTime) {
         //Loops through the response and pushes price data to the stocksChartData array
         for (var i = 0; i <= 132; i++) {
             stocksChartDataSixMonths.push(response.dataset.data[i][1])
-            dataRange = "six months";
+            
         }
 
         if (dataRange === "week"){
             var data = stocksChartDataWeek;
-            console.log(data)
+        
         }
         else if (dataRange === "six months") {
             var data = stocksChartDataSixMonths;
-            console.log(data)
+            
         }
 
-        
+        console.log(data)
 
         //This is the object format to be sent to the chart.
         var stockDataObject = {
@@ -466,12 +467,32 @@ for (var i = 0; i <= rangeOfTime; i++) {
 }
 
 dataRange = "six months"
-
+userInput = "";
 //clears original chart to make way for the new
 mainChart.destroy();
 //builds new chart
 buildChart();
-stockAJAX(rangeOfTime, dataRange);
+stockAJAX();
+
+};
+
+//displays one week of data in chart
+function displayWeek() {
+
+var rangeOfTime = 5;
+
+chartLabels = [];
+for (var i = 0; i <= rangeOfTime; i++) {
+    chartLabels.push(i)
+}
+
+dataRange = "week";
+userInput = "";
+//clears original chart to make way for the new
+mainChart.destroy();
+//builds new chart
+buildChart();
+stockAJAX();
 
 };
 
@@ -502,8 +523,9 @@ function buildChart() {
 
 //On click functions to change view. How we navigate the views can be done anway y'all want.
 //just using these buttons for a quick way to test my functions
+$(document).on("click", "#week", displayWeek);
+$(document).on("click", "#sixMonths", displaySixMonth);
 
 //Initial call to build the chart
 buildChart(chartLabels);
 
-$(document).on("click", "#sixMonths", displaySixMonth);
