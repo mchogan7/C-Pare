@@ -17,6 +17,9 @@ var stocksRedBorder = 75; //starting values for rgb stocks border color
 var stocksGreenBorder = 192;
 var stocksBlueBorder = 192;
 
+var stockSearch = []; //keeps track of all the stock searches. may not be necessary
+var dataRange = "week";
+
 
 var stockLookUp = [{
     targetWord: "GOOG",
@@ -162,7 +165,8 @@ var commodityLookUp = [{
 
 //Generates place holder labels for the chart so it will display the full dataset.
 //Will be replaced with a real solution.
-for (var i = 0; i < 492; i++) {
+//Changed to 5 to display just a week initially
+for (var i = 0; i <= 5; i++) {
     chartLabels.push(i)
 }
 
@@ -171,6 +175,7 @@ for (var i = 0; i < 492; i++) {
 
 
 function stockAJAX() {
+    
     var correctedSearch = lookUp(userInput, stockLookUp);
     //Checks user search against the yahoo ticker converter and our stockLookup table.
 
@@ -181,20 +186,28 @@ function stockAJAX() {
         //If not found in stockLookUp table, use the yahoo ticker converter output.
     } else if (!correctedSearch) {
         tickerSymbol = tickerSymbol
+        stockSearch.push(tickerSymbol); //pushes to stockSearch to use later when switch views
             //If found in stockLookUp table, change the ticker symbol to be searched.
     } else {
         tickerSymbol = correctedSearch
+        stockSearch.push(tickerSymbol); //pushes to stockSearch to use later when switch views
     }
+
+
+
 
     //get cuurent date in the query's desired format
     var today = moment().format('YYYY-MM-DD')
 
     var queryURL = "https://www.quandl.com/api/v3/datasets/WIKI/" + tickerSymbol + ".json?column_index=4&start_date=2015-01-01&end_date=" + today + "&collapse=daily&api_key=EDWEb1oyzs8FrfoFyG1u";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
-
+        
         //Initializes and clears the price data to be sent to the stockDataObject
         var stocksChartData = []
-        
+        var stocksChartDataWeek = []
+        var stocksChartDataSixMonths = []
+        var stocksChartDataOneYear = []
+        var stocksChartDataTwoYear = []
         //initial framework to change the shade of the color every time a new search for a stock happens
         //these values are not set in stone and can be adjusted
         var bgroundColor = "rgba(" + stocksRed + "," + stocksGreen + "," + stocksBlue + ",0.4)"
@@ -213,7 +226,27 @@ function stockAJAX() {
             stocksChartData.push(response.dataset.data[i][1])
         }
 
+        //Loops through the response and pushes price data to the stocksChartData array
+        for (var i = 0; i <= 5; i++) {
+            stocksChartDataWeek.push(response.dataset.data[i][1])
+        }
 
+        //Loops through the response and pushes price data to the stocksChartData array
+        for (var i = 0; i <= 132; i++) {
+            stocksChartDataSixMonths.push(response.dataset.data[i][1])
+            
+        }
+
+        if (dataRange === "week"){
+            var data = stocksChartDataWeek;
+        
+        }
+        else if (dataRange === "six months") {
+            var data = stocksChartDataSixMonths;
+            
+        }
+
+        console.log(data)
 
         //This is the object format to be sent to the chart.
         var stockDataObject = {
@@ -235,7 +268,7 @@ function stockAJAX() {
             pointHoverBorderWidth: 2,
             pointRadius: 1,
             pointHitRadius: 10,
-            data: stocksChartData,
+            data: data,
             spanGaps: false,
         }
 
@@ -339,23 +372,26 @@ function tickerConverter(userSearch) {
 //Points to chart in the DOM
 var ctx = $("#mainChart");
 
-//Global Chart settings
+//Initializes Chart
+
 var mainChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: chartLabels,
-        datasets: chartViewerArray
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
-            }]
+        type: 'line',
+        data: {
+            labels: chartLabels,
+            datasets: chartViewerArray
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
         }
-    }
-});
+    });
+
+
 
 //END OF CHART GLOBAL SETTINGS
 
@@ -441,5 +477,76 @@ function buttonErrorDisplay(errorMessage) {
     }, 1500);
 }
 
+//Will display chart data for a month
+function displaySixMonth() {
+
+var rangeOfTime = 132;
+
+chartLabels = [];
+for (var i = 0; i <= rangeOfTime; i++) {
+    chartLabels.push(i)
+}
+
+dataRange = "six months"
+userInput = "";
+//clears original chart to make way for the new
+mainChart.destroy();
+//builds new chart
+buildChart();
+stockAJAX();
+
+};
+
+//displays one week of data in chart
+function displayWeek() {
+
+var rangeOfTime = 5;
+
+chartLabels = [];
+for (var i = 0; i <= rangeOfTime; i++) {
+    chartLabels.push(i)
+}
+
+dataRange = "week";
+userInput = "";
+//clears original chart to make way for the new
+mainChart.destroy();
+//builds new chart
+buildChart();
+stockAJAX();
+
+};
+
+//Builds chart. Required everytime when view is so changed otherwise display duplicate values
+function buildChart() {
+    
+     mainChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: chartLabels,
+            datasets: chartViewerArray
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+};
+
 
 //END OF REUSABLE FUNCTIONS
+
+//On click functions to change view. How we navigate the views can be done anway y'all want.
+//just using these buttons for a quick way to test my functions
+$(document).on("click", "#week", displayWeek);
+$(document).on("click", "#sixMonths", displaySixMonth);
+
+//Initial call to build the chart
+buildChart(chartLabels);
+
