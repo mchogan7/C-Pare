@@ -364,6 +364,9 @@ function AJAXselector() {
 
     //Clears the search Box
     $('#query-input').val("")
+    if($('#company').val() ==='active'){
+    	console.log('company active')
+    }
     tickerConverter(userInput)
 }
 
