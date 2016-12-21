@@ -310,7 +310,7 @@ function stockAJAX() {
  }
  //End of Quandle commodityAJAX Call
  
- commodityAJAX();
+
 
 
 
@@ -379,6 +379,14 @@ $('#query-input').on('click', function() {
     }
 })
 
+$('.selectButton').on('click',function(){
+	$('.selectButton').removeClass('selectActive')
+	$(this).addClass('selectActive')
+	$('.selectButton').attr('value', 'inactive')
+	$(this).attr('value', 'active')
+
+})
+
 
 //This will eventually be used to determine which AJAX calls are made, based on what buttons were selected.
 function AJAXselector() {
@@ -386,10 +394,20 @@ function AJAXselector() {
 
     //Clears the search Box
     $('#query-input').val("")
-    if($('#company').val() ==='active'){
-    	console.log('company active')
+
+    //Checks which button is active and runs the appropriate function.
+    if($('#company').attr('value') ==='active'){
+    	tickerConverter(userInput)
     }
-    tickerConverter(userInput)
+	if($('#commodity').attr('value') ==='active'){
+    	 commodityAJAX();
+    }
+    if($('#currency').attr('value') ==='active'){
+    	 console.log('Running currencyAJAX')
+    }
+    if($('.selectButton').attr('value') ==='inactive'){
+    	buttonErrorDisplay('Select a catagory.')
+    }
 }
 
 //END OF UI AND DOM SECTION

@@ -25,22 +25,13 @@
     <div class="logo">
         <img src="assets/images/logo.PNG" alt="C-Pare_logo">
     </div>
-    <div class="navbar">
-        <ul>
-            <li>
-                <button type="submit" id="company" value="inactive">Company</button>
-            </li>
-            <li>
-                <button type="submit" id="commodity" value="inactive">Commodity</button>
-            </li>
-            <li>
-                <button type="submit" id="currency" value="inactive">Currency</button>
-            </li>
-        </ul>
-    </div>
     <div id="search">
         <input type="text" id="query-input" value="What would you like to compare?">
-        <br>
+        <div class="selectContainer">
+        <div type="submit" id="company" value="inactive" class="selectButton">COMPANY</div>
+        <div type="submit" id="commodity" value="inactive" class="selectButton">COMMODITY</div>
+        <div type="submit" id="currency" value="inactive" class="selectButton">CURRENCY</div>
+    </div>
         <!-- Button triggers new query to be added -->
         <div class="buttonContainer">
             <div id="compare" class="active-state" type="submit">CLICK TO C-PARE</div>
