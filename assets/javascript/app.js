@@ -6,6 +6,48 @@
 
 //Collect global variables here:
 var tickerSymbol
+var cryptocurrencyList = [];
+
+
+//object constructor for each cryptocurrency (to easily reference the name and 3-letter symbol)
+function coinObject(name, symbol) {
+  this.name = name,
+  this.symbol = symbol
+}
+
+//function to modify cryptocurrencyList array with ojbect for each cryptocurrency
+function ccListMaker() {
+    var coinListURL = "https://api.coinmarketcap.com/v1/ticker/";
+      
+    $.ajax({ url: coinListURL, method: "GET" }).done(function(response) {
+        for (i=0; i<response.length; i++) {
+            var name = response[i].name;
+            var symbol = response[i].symbol;
+            var coinOBJ = new coinObject(name, symbol);
+
+        cryptocurrencyList.push(coinOBJ);
+      }
+      console.log(cryptocurrencyList)
+    });
+}
+//demonstrating that the cryptocurrencyListMaker function performs properly:
+ccListMaker();
+
+//function to retrieve historical prices starting from 01/01/2015
+function histPrices(coin) {
+    var coinSymbol = coin;
+    var currencyPriceHistory = [];
+    var priceURL = "https://www.cryptocompare.com/api/data/histoday/?e=CCCAGG&fsym=" + coinSymbol + "&limit=1000&tsym=USD&toTs=1420092000"
+    $.ajax({ url: priceURL, method: "GET" }).done(function(response) {
+        for (p=0;p<response.Data.length; p++) { 
+            var price = response.Data[p].close;
+            currencyPriceHistory.push(price);
+        }
+    console.log(currencyPriceHistory);
+    })
+}
+//demonstrating that the histPrices function works properly
+histPrices("BTC")
 
 
 
