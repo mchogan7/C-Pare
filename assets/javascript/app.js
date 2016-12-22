@@ -16,6 +16,8 @@ var stocksBlue = 141;
 var stocksRedBorder = 75; //starting values for rgb stocks border color
 var stocksGreenBorder = 192;
 var stocksBlueBorder = 192;
+var cryptocurrencyList = [];
+var currencyPriceHistory = [];
 
 var stockSearch = []; //keeps track of all the stock searches. may not be necessary
 var dataRange = "week";
@@ -343,9 +345,49 @@ function stockAJAX() {
  }
  //End of Quandle commodityAJAX Call
  
+ //creating cryptocurrency coin object for name/symbol key/value pairs
+ function coinObject(name, symbol) {
+  this.name = name,
+  this.symbol = symbol
+}
 
+//side note: this function will only allow coin objects to be accessible after the 
+//ajax call has been made. Running the function and calling the cryptocurrency
+//list array will only call an empty array until I find a way to prevent the call until 
+//after the ajax call has been made and the array has been filled
+function coinListCreator() {
+    var coinListURL = "https://api.coinmarketcap.com/v1/ticker/";
+  
+    $.ajax({ url: coinListURL, method: "GET" }).done(function(response) {
+    
+        //iterating through to set coin name and symbol to info at index i 
+        for (i=0; i<response.length; i++) {
+            var name = response[i].name;
+            var symbol = response[i].symbol;
+            var coinOBJ = new coinObject(name, symbol);
+            //pushing new coin object to cryptocurrency list array
+            cryptocurrencyList.push(coinOBJ);
+        }
+        console.log(cryptocurrencyList);
+    });
+}
 
-
+//function requires 3-letter string of coin's symbol. 
+//Default date is set to 1/1/2015, will need to modify function if user can input different date
+//
+function histPrices(coin) {
+    var coinSymbol = coin;
+    var priceURL = "https://www.cryptocompare.com/api/data/histoday/?e=CCCAGG&fsym=" + coinSymbol + "&limit=1000&tsym=USD&toTs=1420092000"
+    $.ajax({ url: priceURL, method: "GET" }).done(function(response) {
+        for (p=0;p<response.Data.length; p++) { 
+            var price = response.Data[p].close;
+            currencyPriceHistory.push(price);
+        }
+        console.log(currencyPriceHistory);
+    })
+}
+//
+histPrices("BTC")//logs closing value of bitcoin for every day since 1/1/2015
 
 //Ticker Converter Function - This is specific to the stockAJAX call.
 function tickerConverter(userSearch) {
