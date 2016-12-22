@@ -20,6 +20,13 @@ var stocksBlueBorder = 192;
 var stockSearch = []; //keeps track of all the stock searches. may not be necessary
 var dataRange = "week";
 
+var stocksChartData = [] //arrays to store the data object for stocks
+var stocksChartDataWeek = []
+var stocksChartDataSixMonths = []
+var stocksChartDataOneYear = []
+var stocksChartDataTwoYear = []
+
+var stockDataObject = {};
 
 var stockLookUp = [{
     targetWord: "GOOG",
@@ -199,43 +206,49 @@ function stockAJAX() {
     //get cuurent date in the query's desired format
     var today = moment().format('YYYY-MM-DD')
 
+    var dObject = {};
+
     var queryURL = "https://www.quandl.com/api/v3/datasets/WIKI/" + tickerSymbol + ".json?column_index=4&start_date=2015-01-01&end_date=" + today + "&collapse=daily&api_key=EDWEb1oyzs8FrfoFyG1u";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
+        console.log(response)
         
-        //Initializes and clears the price data to be sent to the stockDataObject
-        var stocksChartData = []
-        var stocksChartDataWeek = []
-        var stocksChartDataSixMonths = []
-        var stocksChartDataOneYear = []
-        var stocksChartDataTwoYear = []
-        //initial framework to change the shade of the color every time a new search for a stock happens
-        //these values are not set in stone and can be adjusted
-        var bgroundColor = "rgba(" + stocksRed + "," + stocksGreen + "," + stocksBlue + ",0.4)"
-        var bordColor = "rgba(" + stocksRedBorder + "," + stocksGreenBorder + "," + stocksBlueBorder + ",1)"
-        //the line color is changed here
-        stocksRed = stocksRed + 28;
-        stocksGreen = stocksGreen + 40;
-        stocksBlue = stocksBlue + 40;
-        //the border color is changed here
-        stocksRedBorder = stocksRedBorder + 28;
-        stocksGreenBorder = stocksGreenBorder + 40;
-        stocksBlueBorder = stocksBlueBorder + 40;
-
+             
         //Loops through the response and pushes price data to the stocksChartData array
+        //then puts the array into a temp object to finally push to the stocksChartData array for later reference
+        var tempArray1 = [];
         for (var i = 0; i < response.dataset.data.length; i++) {
-            stocksChartData.push(response.dataset.data[i][1])
-        }
-
-        //Loops through the response and pushes price data to the stocksChartData array
-        for (var i = 0; i <= 5; i++) {
-            stocksChartDataWeek.push(response.dataset.data[i][1])
-        }
-
-        //Loops through the response and pushes price data to the stocksChartData array
-        for (var i = 0; i <= 132; i++) {
-            stocksChartDataSixMonths.push(response.dataset.data[i][1])
+            tempArray1.push(response.dataset.data[i][1]);
             
         }
+        var dObject1 = {tickerSymbol: tickerSymbol, closingValue: tempArray1}
+        stocksChartData.push(dObject1)
+        
+        console.log(stocksChartData)
+
+        //Loops through the response and pushes price data to the stocksChartData array
+        //then puts the array into a temp object to finally push to the stocksChartData array for later reference
+        var tempArray2 = [];
+        for (var i = 0; i < 5; i++) {
+            tempArray2.push(response.dataset.data[i][1]);
+            
+        }
+        var dObject2 = {tickerSymbol: tickerSymbol, closingValue: tempArray2}
+        stocksChartDataWeek.push(dObject2)
+        
+        console.log(stocksChartDataWeek)
+
+        //Loops through the response and pushes price data to the stocksChartData temp array
+        //then puts the array into a temp object to finally push to the stocksChartData array for later reference
+        var tempArray3 = [];
+        for (var i = 0; i < 132; i++) {
+            tempArray3.push(response.dataset.data[i][1]);
+            
+        }
+        var dObject3 = {tickerSymbol: tickerSymbol, closingValue: tempArray3}
+        stocksChartDataSixMonths.push(dObject3)
+        
+        console.log(stocksChartDataSixMonths)
+
 
         if (dataRange === "week"){
             var data = stocksChartDataWeek;
@@ -248,33 +261,35 @@ function stockAJAX() {
 
         console.log(data)
 
-        //This is the object format to be sent to the chart.
-        var stockDataObject = {
-            label: response.dataset.dataset_code,
-            fill: false,
-            lineTension: 0.1,
-            backgroundColor: bgroundColor,
-            borderColor: bordColor,
-            borderCapStyle: 'butt',
-            borderDash: [],
-            borderDashOffset: 0.0,
-            borderJoinStyle: 'miter',
-            pointBorderColor: bordColor,
-            pointBackgroundColor: "#fff",
-            pointBorderWidth: 1,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: "rgba(75,192,192,1)",
-            pointHoverBorderColor: "rgba(220,220,220,1)",
-            pointHoverBorderWidth: 2,
-            pointRadius: 1,
-            pointHitRadius: 10,
-            data: data,
-            spanGaps: false,
-        }
+        buildChart(data);
 
-        //Pushes dataObject to the viewer array, then updates the chart in the browers.
-        chartViewerArray.push(stockDataObject)
-        mainChart.update();
+        // //This is the object format to be sent to the chart.
+        //  stockDataObject = {
+        //     label: response.dataset.dataset_code,
+        //     fill: false,
+        //     lineTension: 0.1,
+        //     backgroundColor: bgroundColor,
+        //     borderColor: bordColor,
+        //     borderCapStyle: 'butt',
+        //     borderDash: [],
+        //     borderDashOffset: 0.0,
+        //     borderJoinStyle: 'miter',
+        //     pointBorderColor: bordColor,
+        //     pointBackgroundColor: "#fff",
+        //     pointBorderWidth: 1,
+        //     pointHoverRadius: 5,
+        //     pointHoverBackgroundColor: "rgba(75,192,192,1)",
+        //     pointHoverBorderColor: "rgba(220,220,220,1)",
+        //     pointHoverBorderWidth: 2,
+        //     pointRadius: 1,
+        //     pointHitRadius: 10,
+        //     data: data,
+        //     spanGaps: false,
+        // }
+
+        // //Pushes dataObject to the viewer array, then updates the chart in the browers.
+        // chartViewerArray.push(stockDataObject)
+        // mainChart.update();
     })
 }
 
@@ -489,11 +504,10 @@ for (var i = 0; i <= rangeOfTime; i++) {
 
 dataRange = "six months"
 userInput = "";
-//clears original chart to make way for the new
-mainChart.destroy();
+
 //builds new chart
 buildChart();
-stockAJAX();
+
 
 };
 
@@ -510,16 +524,95 @@ for (var i = 0; i <= rangeOfTime; i++) {
 dataRange = "week";
 userInput = "";
 //clears original chart to make way for the new
+stockDataObject = {};
+mainChart.update();
 mainChart.destroy();
 //builds new chart
 buildChart();
-stockAJAX();
+
 
 };
 
 //Builds chart. Required everytime when view is so changed otherwise display duplicate values
-function buildChart() {
+function buildChart(data) {
+    console.log(data)
+    mainChart.destroy();
+    //resets the chartViewerArray so it can redraw from scratch
+    chartViewerArray = [];
+
+        //initial framework to change the shade of the color every time a new search for a stock happens
+        //these values are not set in stone and can be adjusted
+        var bgroundColor = "rgba(" + stocksRed + "," + stocksGreen + "," + stocksBlue + ",0.4)"
+        var bordColor = "rgba(" + stocksRedBorder + "," + stocksGreenBorder + "," + stocksBlueBorder + ",1)"
+        
+        //the line color is changed here
+        stocksRed = stocksRed + 28;
+        stocksGreen = stocksGreen + 40;
+        stocksBlue = stocksBlue + 40;
+        //the border color is changed here
+        stocksRedBorder = stocksRedBorder + 28;
+        stocksGreenBorder = stocksGreenBorder + 40;
+        stocksBlueBorder = stocksBlueBorder + 40;
+
+        
     
+    //re-initializes the chart after it has been destroyed.
+    mainChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: chartLabels,
+            datasets: chartViewerArray
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+    console.log(stocksChartData)
+
+    for(i=0; i < stocksChartData.length; i++) {
+      stockDataObject = {
+            label: stocksChartData[i].tickerSymbol,
+            fill: false,
+            lineTension: 0.1,
+            backgroundColor: bgroundColor,
+            borderColor: bordColor,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: bordColor,
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(75,192,192,1)",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: data[i].closingValue,
+            spanGaps: false,
+        }
+
+
+
+        //Pushes dataObject to the viewer array, then updates the chart in the browers.
+        chartViewerArray.push(stockDataObject)
+        mainChart.update();
+
+        
+    }//end of for loop
+    
+};
+
+//Builds chart. Required everytime when view is so changed otherwise display duplicate values
+function initialBuildChart() {
+   
      mainChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -548,5 +641,5 @@ $(document).on("click", "#week", displayWeek);
 $(document).on("click", "#sixMonths", displaySixMonth);
 
 //Initial call to build the chart
-buildChart(chartLabels);
+initialBuildChart();
 
