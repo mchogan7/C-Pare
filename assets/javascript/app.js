@@ -57,6 +57,9 @@ function stockDataObject(label, backgroundColor, borderColor, data){
     this.spanGaps = false;
 }
 
+var cryptocurrencyList = [];
+var currencyPriceHistory = [];
+
 console.log(new stockDataObject('test'))
 
 
@@ -271,6 +274,7 @@ function stockAJAX() {
 //Quandle commodity AJAX Call
 function commodityAJAX() {
     var correctedSearch = lookUp(userInput, commodityLookUp);
+
     //Checks user search against the yahoo ticker converter and our stockLookup table.
 
     // if (!correctedSearch && (exchange !== 'NASDAQ' && exchange !== 'NYSE')) {
@@ -331,11 +335,111 @@ function commodityAJAX() {
 }
 //End of Quandle commodityAJAX Call
 
-// var a = moment();
-// var b = moment([2007, 0, 28]);
-// console.log(a.diff(b, 'weeks')) 
+
+     //Checks user search against the yahoo ticker converter and our stockLookup table.
+ 
+     // if (!correctedSearch && (exchange !== 'NASDAQ' && exchange !== 'NYSE')) {
+ 
+     //     console.log('Search not found on NASDAQ or NYSE') //This will be reaplced with an error display function
+ 
+     //     //If not found in stockLookUp table, use the yahoo ticker converter output.
+     // } else if (!correctedSearch) {
+     //     tickerSymbol = tickerSymbol
+     //         //If found in stockLookUp table, change the ticker symbol to be searched.
+     // } else {
+     //     tickerSymbol = correctedSearch
+     // }
+ 
+     //get cuurent date in the query's desired format
+     var today = moment().format('YYYY-MM-DD')
+ 
+     var queryURL = "https://www.quandl.com/api/v3/datasets/COM/WLD_SILVER.json?&start_date=2015-01-01&end_date=" + today + "&collapse=daily";
+     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
+ 
+         // //Initializes and clears the price data to be sent to the stockDataObject
+         // var commodityChartData = []
+ 
+         // //Loops through the response and pushes price data to the stocksChartData array
+         // for (var i = 0; i < response.dataset.data.length; i++) {
+         //     commodityChartData.push(response.dataset.data[i][1])
+         // }
+ 
+         // //This is the object format to be sent to the chart.
+         // var commodityDataObject = {
+         //     label: response.dataset.dataset_code,
+         //     fill: false,
+         //     lineTension: 0.1,
+         //     backgroundColor: "rgba(75,192,192,0.4)",
+         //     borderColor: "rgba(75,192,192,1)",
+         //     borderCapStyle: 'butt',
+         //     borderDash: [],
+         //     borderDashOffset: 0.0,
+         //     borderJoinStyle: 'miter',
+         //     pointBorderColor: "rgba(75,192,192,1)",
+         //     pointBackgroundColor: "#fff",
+         //     pointBorderWidth: 1,
+         //     pointHoverRadius: 5,
+         //     pointHoverBackgroundColor: "rgba(75,192,192,1)",
+         //     pointHoverBorderColor: "rgba(220,220,220,1)",
+         //     pointHoverBorderWidth: 2,
+         //     pointRadius: 1,
+         //     pointHitRadius: 10,
+         //     data: stocksChartData,
+         //     spanGaps: false,
+         // }
+ 
+         // //Pushes dataObject to the viewer array, then updates the chart in the browers.
+         // chartViewerArray.push(commodityDataObject)
+         // mainChart.update();
+         console.log(response);
+     })
+ }
+ //End of Quandle commodityAJAX Call
+ 
+ //creating cryptocurrency coin object for name/symbol key/value pairs
+ function coinObject(name, symbol) {
+  this.name = name,
+  this.symbol = symbol
+}
+
+//side note: this function will only allow coin objects to be accessible after the 
+//ajax call has been made. Running the function and calling the cryptocurrency
+//list array will only call an empty array until I find a way to prevent the call until 
+//after the ajax call has been made and the array has been filled
+function coinListCreator() {
+    var coinListURL = "https://api.coinmarketcap.com/v1/ticker/";
+  
+    $.ajax({ url: coinListURL, method: "GET" }).done(function(response) {
+    
+        //iterating through to set coin name and symbol to info at index i 
+        for (i=0; i<response.length; i++) {
+            var name = response[i].name;
+            var symbol = response[i].symbol;
+            var coinOBJ = new coinObject(name, symbol);
+            //pushing new coin object to cryptocurrency list array
+            cryptocurrencyList.push(coinOBJ);
+        }
+        console.log(cryptocurrencyList);
+    });
+}
 
 
+//function requires 3-letter string of coin's symbol. 
+//Default date is set to 1/1/2015, will need to modify function if user can input different date
+//
+function histPrices(coin) {
+    var coinSymbol = coin;
+    var priceURL = "https://www.cryptocompare.com/api/data/histoday/?e=CCCAGG&fsym=" + coinSymbol + "&limit=1000&tsym=USD&toTs=1420092000"
+    $.ajax({ url: priceURL, method: "GET" }).done(function(response) {
+        for (p=0;p<response.Data.length; p++) { 
+            var price = response.Data[p].close;
+            currencyPriceHistory.push(price);
+        }
+        console.log(currencyPriceHistory);
+    })
+}
+//
+histPrices("BTC")//logs closing value of bitcoin for every day since 1/1/2015
 
 //Ticker Converter Function - This is specific to the stockAJAX call.
 function tickerConverter(userSearch) {
