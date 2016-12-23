@@ -4,11 +4,25 @@
 //https://www.cryptocompare.com/api/#-api-data-coinlist-
 //https://coinmarketcap.com/api/
 
+//Initialize Firebase
+var config = {
+    apiKey: "AIzaSyBqELfq7q1WGSap8mqzFd-8WWnSxDHn4s0",
+    authDomain: "c-pare.firebaseapp.com",
+    databaseURL: "https://c-pare.firebaseio.com",
+    storageBucket: "c-pare.appspot.com",
+    messagingSenderId: "614106603921"
+};
+firebase.initializeApp(config);
+
 //Collect global variables here:
+var database = firebase.database();
 var tickerSymbol
 var exchange
-var chartViewerArray = [];
-var chartLabels = [];
+var twoYearViewArray = [];
+var twoYearLabels = [];
+var oneYearViewArray = [];
+var oneYearLabels = [];
+var chartLabels
 var userInput;
 var stocksRed = 49; //starting values for rgb of stocks color
 var stocksGreen = 141;
@@ -16,9 +30,34 @@ var stocksBlue = 141;
 var stocksRedBorder = 75; //starting values for rgb stocks border color
 var stocksGreenBorder = 192;
 var stocksBlueBorder = 192;
+var currentData = []
+var stockLabel
 
-var stockSearch = []; //keeps track of all the stock searches. may not be necessary
-var dataRange = "week";
+//prototype Object constructor. Let us create objects globally, and avoid duplicates.
+function stockDataObject(label, backgroundColor, borderColor, data){
+    this.label = label
+    this.fill = false,
+    this.lineTension = 0.1,
+    this.backgroundColor = backgroundColor,
+    this.borderColor = borderColor,
+    this.borderCapStyle ='butt',
+    this.borderDash = [],
+    this.borderDashOffset = 0.0,
+    this.borderJoinStyle = 'miter',
+    this.pointBorderColor = borderColor,
+    this.pointBackgroundColor = "#fff",
+    this.pointBorderWidth = 1,
+    this.pointHoverRadius = 5,
+    this.pointHoverBackgroundColor = "rgba(75,192,192,1)",
+    this.pointHoverBorderColor = "rgba(220,220,220,1)",
+    this.pointHoverBorderWidth = 2,
+    this.pointRadius = 1,
+    this.pointHitRadius = 10,
+    this.data = data,
+    this.spanGaps = false;
+}
+
+console.log(new stockDataObject('test'))
 
 
 var stockLookUp = [{
@@ -31,153 +70,153 @@ var stockLookUp = [{
 
 
 var commodityLookUp = [{
-     targetWord: "WLD_SILVER",
-     queryWord: ["silver", "si", "sliver", "slver"]
- }, {
-     targetWord: "PALUM_USD",
-     queryWord: ["aluminum", "alluminum", "aluminium", "alumminum"]
- }, {
-     targetWord: "WLD_GOLD",
-     queryWord: ["gold", "goled", "golld", "goldd"]
- }, {
-     targetWord: "PBEEF_USD",
-     queryWord: ["beef", "beaf"]
- }, {
-     targetWord: "BUTTER",
-     queryWord: ["butter", "buter", "butt", "buttr", "btter"]
- }, {
-     targetWord: "CHEESE_BLK",
-     queryWord: ["cheese", "chease", "chees"]
- }, {
-     targetWord: "EGGS",
-     queryWord: ["eggs", "egs", "egss", "egg"]
- }, {
-     targetWord: "PPOULT_USD",
-     queryWord: ["chicken", "chikken", "chiken", "chicen", "chickn"]
- }, {
-     targetWord: "PCOALAU_USD",
-     queryWord: ["coal", "cole", "coll", "cool"]
- }, {
-     targetWord: "PCOCO_USD",
-     queryWord: ["cocoa", "coco", "coko", "cocoe", "cokeco"]
- }, {
-     targetWord: "PCOFFOTM_USD",
-     queryWord: ["coffee", "cafe", "cofee", "cofffe", "cofe", "coofee"]
- }, {
-     targetWord: "PMAIZMT_USD",
-     queryWord: ["corn", "korn", "corrn"]
- }, {
-     targetWord: "PCOTTIND_USD",
-     queryWord: ["cotton", "coton", "cotten", "coten", "cottan", "cotan"]
- }, {
-     targetWord: "WLD_IRON_ORE",
-     queryWord: ["iron", "irron"]
- }, {
-     targetWord: "GAS_CR",
-     queryWord: ["gas", "gasoline", "gassoline", "gass", "gassoleen", "gassolene", "gasolene", "gasolean", "gassolean"]
- }, {
-     targetWord: "MILK",
-     queryWord: ["milk", "millk", "miilk"]
- }, {
-     targetWord: "OATS",
-     queryWord: ["oats", "oets", "oots", "otts"]
- }, {
-     targetWord: "PCOPP_USD",
-     queryWord: ["copper", "coper", "cooper"]
- }, {
-     targetWord: "PFISH_USD",
-     queryWord: ["fish", "fiish"]
- }, {
-     targetWord: "PGNUTS_USD",
-     queryWord: ["peanuts", "peenuts", "penuts"]
- }, {
-     targetWord: "PLAMB_USD",
-     queryWord: ["lamb"]
- }, {
-     targetWord: "PLEAD_USD",
-     queryWord: ["lead", "led"]
- }, {
-     targetWord: "PLOGORE_USD",
-     queryWord: ["wood", "lumber", "timber"]
- }, {
-     targetWord: "PNGASUS_USD",
-     queryWord: ["natural gas", "natral gas"]
- }, {
-     targetWord: "PNICK_USD",
-     queryWord: ["nickel", "nicckel", "nickkel"]
- }, {
-     targetWord: "POILWTI_USD",
-     queryWord: ["crude oil", "crud oil", "cured oil", "petroleum", "petrolium", "oil"]
- }, {
-     targetWord: "POLVOIL_USD",
-     queryWord: ["olive oil"]
- }, {
-     targetWord: "PORANG_USD",
-     queryWord: ["orange", "oranges", "organs", "oragnes", "oragne", "organ"]
- }, {
-     targetWord: "PPORK_USD",
-     queryWord: ["swine", "pork", "pigs", "pig", "hogs", "hog"]
- }, {
-     targetWord: "PRICENPQ_USD",
-     queryWord: ["rice"]
- }, {
-     targetWord: "PRUBB_USD",
-     queryWord: ["rubber", "rubbr", "ruber"]
- }, {
-     targetWord: "PSOYB_USD",
-     queryWord: ["soybeans", "soy beans", "soybean", "soybeans"]
- }, {
-     targetWord: "PSUGAUSA_USD",
-     queryWord: ["sugar", "sugr", "suger"]
- }, {
-     targetWord: "PTIN_USD",
-     queryWord: ["tin"]
- }, {
-     targetWord: "PURAN_USD",
-     queryWord: ["uranium", "uraneum"]
- }, {
-     targetWord: "PWHEAMT_USD",
-     queryWord: ["wheat", "wheet"]
- }, {
-     targetWord: "PWOOLC_USD",
-     queryWord: ["wool"]
- }, {
-     targetWord: "SORGHUM",
-     queryWord: ["sorghum", "soreghum", "sor gum", "sore gum", "sorgum", "soregum"]
- }, {
-     targetWord: "WLD_BANANA_US",
-     queryWord: ["banana", "bananas", "bannana", "bananna", "bannanas", "banannas"]
- }, {
-     targetWord: "WLD_BARLEY",
-     queryWord: ["barley", "barlee", "baley"]
- }, {
-     targetWord: "WLD_COCONUT_OIL",
-     queryWord: ["coconut oil", "coconut", "coconuts"]
- }, {
-     targetWord: "WLD_IRON_ORE",
-     queryWord: ["iron", "iron ore"]
- }, {
-     targetWord: "WLD_TOBAC_US",
-     queryWord: ["tobacco", "tobbacco", "tobbaco"]
- }]
- 
+    targetWord: "WLD_SILVER",
+    queryWord: ["silver", "si", "sliver", "slver"]
+}, {
+    targetWord: "PALUM_USD",
+    queryWord: ["aluminum", "alluminum", "aluminium", "alumminum"]
+}, {
+    targetWord: "WLD_GOLD",
+    queryWord: ["gold", "goled", "golld", "goldd"]
+}, {
+    targetWord: "PBEEF_USD",
+    queryWord: ["beef", "beaf"]
+}, {
+    targetWord: "BUTTER",
+    queryWord: ["butter", "buter", "butt", "buttr", "btter"]
+}, {
+    targetWord: "CHEESE_BLK",
+    queryWord: ["cheese", "chease", "chees"]
+}, {
+    targetWord: "EGGS",
+    queryWord: ["eggs", "egs", "egss", "egg"]
+}, {
+    targetWord: "PPOULT_USD",
+    queryWord: ["chicken", "chikken", "chiken", "chicen", "chickn"]
+}, {
+    targetWord: "PCOALAU_USD",
+    queryWord: ["coal", "cole", "coll", "cool"]
+}, {
+    targetWord: "PCOCO_USD",
+    queryWord: ["cocoa", "coco", "coko", "cocoe", "cokeco"]
+}, {
+    targetWord: "PCOFFOTM_USD",
+    queryWord: ["coffee", "cafe", "cofee", "cofffe", "cofe", "coofee"]
+}, {
+    targetWord: "PMAIZMT_USD",
+    queryWord: ["corn", "korn", "corrn"]
+}, {
+    targetWord: "PCOTTIND_USD",
+    queryWord: ["cotton", "coton", "cotten", "coten", "cottan", "cotan"]
+}, {
+    targetWord: "WLD_IRON_ORE",
+    queryWord: ["iron", "irron"]
+}, {
+    targetWord: "GAS_CR",
+    queryWord: ["gas", "gasoline", "gassoline", "gass", "gassoleen", "gassolene", "gasolene", "gasolean", "gassolean"]
+}, {
+    targetWord: "MILK",
+    queryWord: ["milk", "millk", "miilk"]
+}, {
+    targetWord: "OATS",
+    queryWord: ["oats", "oets", "oots", "otts"]
+}, {
+    targetWord: "PCOPP_USD",
+    queryWord: ["copper", "coper", "cooper"]
+}, {
+    targetWord: "PFISH_USD",
+    queryWord: ["fish", "fiish"]
+}, {
+    targetWord: "PGNUTS_USD",
+    queryWord: ["peanuts", "peenuts", "penuts"]
+}, {
+    targetWord: "PLAMB_USD",
+    queryWord: ["lamb"]
+}, {
+    targetWord: "PLEAD_USD",
+    queryWord: ["lead", "led"]
+}, {
+    targetWord: "PLOGORE_USD",
+    queryWord: ["wood", "lumber", "timber"]
+}, {
+    targetWord: "PNGASUS_USD",
+    queryWord: ["natural gas", "natral gas"]
+}, {
+    targetWord: "PNICK_USD",
+    queryWord: ["nickel", "nicckel", "nickkel"]
+}, {
+    targetWord: "POILWTI_USD",
+    queryWord: ["crude oil", "crud oil", "cured oil", "petroleum", "petrolium", "oil"]
+}, {
+    targetWord: "POLVOIL_USD",
+    queryWord: ["olive oil"]
+}, {
+    targetWord: "PORANG_USD",
+    queryWord: ["orange", "oranges", "organs", "oragnes", "oragne", "organ"]
+}, {
+    targetWord: "PPORK_USD",
+    queryWord: ["swine", "pork", "pigs", "pig", "hogs", "hog"]
+}, {
+    targetWord: "PRICENPQ_USD",
+    queryWord: ["rice"]
+}, {
+    targetWord: "PRUBB_USD",
+    queryWord: ["rubber", "rubbr", "ruber"]
+}, {
+    targetWord: "PSOYB_USD",
+    queryWord: ["soybeans", "soy beans", "soybean", "soybeans"]
+}, {
+    targetWord: "PSUGAUSA_USD",
+    queryWord: ["sugar", "sugr", "suger"]
+}, {
+    targetWord: "PTIN_USD",
+    queryWord: ["tin"]
+}, {
+    targetWord: "PURAN_USD",
+    queryWord: ["uranium", "uraneum"]
+}, {
+    targetWord: "PWHEAMT_USD",
+    queryWord: ["wheat", "wheet"]
+}, {
+    targetWord: "PWOOLC_USD",
+    queryWord: ["wool"]
+}, {
+    targetWord: "SORGHUM",
+    queryWord: ["sorghum", "soreghum", "sor gum", "sore gum", "sorgum", "soregum"]
+}, {
+    targetWord: "WLD_BANANA_US",
+    queryWord: ["banana", "bananas", "bannana", "bananna", "bannanas", "banannas"]
+}, {
+    targetWord: "WLD_BARLEY",
+    queryWord: ["barley", "barlee", "baley"]
+}, {
+    targetWord: "WLD_COCONUT_OIL",
+    queryWord: ["coconut oil", "coconut", "coconuts"]
+}, {
+    targetWord: "WLD_IRON_ORE",
+    queryWord: ["iron", "iron ore"]
+}, {
+    targetWord: "WLD_TOBAC_US",
+    queryWord: ["tobacco", "tobbacco", "tobbaco"]
+}]
 
+//Eventual Firebase Functions
+// for (var i = 0; i < commodityLookUp.length; i++) {
+// 	    database.ref('commodityAuto').push(
+// 	             commodityLookUp[i]
+// 	         );
+// }
 
-//Generates place holder labels for the chart so it will display the full dataset.
-//Will be replaced with a real solution.
-//Changed to 5 to display just a week initially
-for (var i = 0; i <= 5; i++) {
-    chartLabels.push(i)
-}
-
+// 	 database.ref('commodityAuto').on("value", function(snapshot) {
+// 	     console.log(snapshot.val())
+// 	 });
 
 //Stock AJAX Call
 
-
 function stockAJAX() {
-    
     var correctedSearch = lookUp(userInput, stockLookUp);
     //Checks user search against the yahoo ticker converter and our stockLookup table.
+    currentData = []
 
     if (!correctedSearch && (exchange !== 'NASDAQ' && exchange !== 'NYSE')) {
 
@@ -186,33 +225,27 @@ function stockAJAX() {
         //If not found in stockLookUp table, use the yahoo ticker converter output.
     } else if (!correctedSearch) {
         tickerSymbol = tickerSymbol
-        stockSearch.push(tickerSymbol); //pushes to stockSearch to use later when switch views
             //If found in stockLookUp table, change the ticker symbol to be searched.
     } else {
         tickerSymbol = correctedSearch
-        stockSearch.push(tickerSymbol); //pushes to stockSearch to use later when switch views
     }
 
-
-
-
     //get cuurent date in the query's desired format
-    var today = moment().format('YYYY-MM-DD')
+    var today = moment().endOf('month').subtract(1, 'months').format('YYYY-MM-DD')
+    var dateStart = moment().endOf('month').subtract(2, 'years').format('YYYY-MM-DD')
 
-    var queryURL = "https://www.quandl.com/api/v3/datasets/WIKI/" + tickerSymbol + ".json?column_index=4&start_date=2015-01-01&end_date=" + today + "&collapse=daily&api_key=EDWEb1oyzs8FrfoFyG1u";
+    var queryURL = "https://www.quandl.com/api/v3/datasets/WIKI/" + tickerSymbol + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily&api_key=EDWEb1oyzs8FrfoFyG1u";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
-        
+
+        stockLabel = response.dataset.dataset_code
+
         //Initializes and clears the price data to be sent to the stockDataObject
         var stocksChartData = []
-        var stocksChartDataWeek = []
-        var stocksChartDataSixMonths = []
-        var stocksChartDataOneYear = []
-        var stocksChartDataTwoYear = []
-        //initial framework to change the shade of the color every time a new search for a stock happens
-        //these values are not set in stone and can be adjusted
-        var bgroundColor = "rgba(" + stocksRed + "," + stocksGreen + "," + stocksBlue + ",0.4)"
-        var bordColor = "rgba(" + stocksRedBorder + "," + stocksGreenBorder + "," + stocksBlueBorder + ",1)"
-        //the line color is changed here
+            //initial framework to change the shade of the color every time a new search for a stock happens
+            //these values are not set in stone and can be adjusted
+        backgroundColor = "rgba(" + stocksRed + "," + stocksGreen + "," + stocksBlue + ",0.4)"
+        borderColor = "rgba(" + stocksRedBorder + "," + stocksGreenBorder + "," + stocksBlueBorder + ",1)"
+            //the line color is changed here
         stocksRed = stocksRed + 28;
         stocksGreen = stocksGreen + 40;
         stocksBlue = stocksBlue + 40;
@@ -221,129 +254,86 @@ function stockAJAX() {
         stocksGreenBorder = stocksGreenBorder + 40;
         stocksBlueBorder = stocksBlueBorder + 40;
 
-        //Loops through the response and pushes price data to the stocksChartData array
+		//Loops through the response and pushes price data to the stocksChartData array
         for (var i = 0; i < response.dataset.data.length; i++) {
             stocksChartData.push(response.dataset.data[i][1])
         }
 
-        //Loops through the response and pushes price data to the stocksChartData array
-        for (var i = 0; i <= 5; i++) {
-            stocksChartDataWeek.push(response.dataset.data[i][1])
-        }
-
-        //Loops through the response and pushes price data to the stocksChartData array
-        for (var i = 0; i <= 132; i++) {
-            stocksChartDataSixMonths.push(response.dataset.data[i][1])
-            
-        }
-
-        if (dataRange === "week"){
-            var data = stocksChartDataWeek;
-        
-        }
-        else if (dataRange === "six months") {
-            var data = stocksChartDataSixMonths;
-            
-        }
-
-        console.log(data)
-
-        //This is the object format to be sent to the chart.
-        var stockDataObject = {
-            label: response.dataset.dataset_code,
-            fill: false,
-            lineTension: 0.1,
-            backgroundColor: bgroundColor,
-            borderColor: bordColor,
-            borderCapStyle: 'butt',
-            borderDash: [],
-            borderDashOffset: 0.0,
-            borderJoinStyle: 'miter',
-            pointBorderColor: bordColor,
-            pointBackgroundColor: "#fff",
-            pointBorderWidth: 1,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: "rgba(75,192,192,1)",
-            pointHoverBorderColor: "rgba(220,220,220,1)",
-            pointHoverBorderWidth: 2,
-            pointRadius: 1,
-            pointHitRadius: 10,
-            data: data,
-            spanGaps: false,
-        }
-
-        //Pushes dataObject to the viewer array, then updates the chart in the browers.
-        chartViewerArray.push(stockDataObject)
+        twoYearAverager(response)
         mainChart.update();
+
+
     })
 }
 
 //End of Stock AJAX Call
 
 //Quandle commodity AJAX Call
- function commodityAJAX() {
+function commodityAJAX() {
     var correctedSearch = lookUp(userInput, commodityLookUp);
-     //Checks user search against the yahoo ticker converter and our stockLookup table.
- 
-     // if (!correctedSearch && (exchange !== 'NASDAQ' && exchange !== 'NYSE')) {
- 
-     //     console.log('Search not found on NASDAQ or NYSE') //This will be reaplced with an error display function
- 
-     //     //If not found in stockLookUp table, use the yahoo ticker converter output.
-     // } else if (!correctedSearch) {
-     //     tickerSymbol = tickerSymbol
-     //         //If found in stockLookUp table, change the ticker symbol to be searched.
-     // } else {
-     //     tickerSymbol = correctedSearch
-     // }
- 
-     //get cuurent date in the query's desired format
-     var today = moment().format('YYYY-MM-DD')
- 
-     var queryURL = "https://www.quandl.com/api/v3/datasets/COM/WLD_SILVER.json?&start_date=2015-01-01&end_date=" + today + "&collapse=daily";
-     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
- 
-         // //Initializes and clears the price data to be sent to the stockDataObject
-         // var commodityChartData = []
- 
-         // //Loops through the response and pushes price data to the stocksChartData array
-         // for (var i = 0; i < response.dataset.data.length; i++) {
-         //     commodityChartData.push(response.dataset.data[i][1])
-         // }
- 
-         // //This is the object format to be sent to the chart.
-         // var commodityDataObject = {
-         //     label: response.dataset.dataset_code,
-         //     fill: false,
-         //     lineTension: 0.1,
-         //     backgroundColor: "rgba(75,192,192,0.4)",
-         //     borderColor: "rgba(75,192,192,1)",
-         //     borderCapStyle: 'butt',
-         //     borderDash: [],
-         //     borderDashOffset: 0.0,
-         //     borderJoinStyle: 'miter',
-         //     pointBorderColor: "rgba(75,192,192,1)",
-         //     pointBackgroundColor: "#fff",
-         //     pointBorderWidth: 1,
-         //     pointHoverRadius: 5,
-         //     pointHoverBackgroundColor: "rgba(75,192,192,1)",
-         //     pointHoverBorderColor: "rgba(220,220,220,1)",
-         //     pointHoverBorderWidth: 2,
-         //     pointRadius: 1,
-         //     pointHitRadius: 10,
-         //     data: stocksChartData,
-         //     spanGaps: false,
-         // }
- 
-         // //Pushes dataObject to the viewer array, then updates the chart in the browers.
-         // chartViewerArray.push(commodityDataObject)
-         // mainChart.update();
-         console.log(response);
-     })
- }
- //End of Quandle commodityAJAX Call
- 
+    //Checks user search against the yahoo ticker converter and our stockLookup table.
 
+    // if (!correctedSearch && (exchange !== 'NASDAQ' && exchange !== 'NYSE')) {
+
+    //     console.log('Search not found on NASDAQ or NYSE') //This will be reaplced with an error display function
+
+    //     //If not found in stockLookUp table, use the yahoo ticker converter output.
+    // } else if (!correctedSearch) {
+    //     tickerSymbol = tickerSymbol
+    //         //If found in stockLookUp table, change the ticker symbol to be searched.
+    // } else {
+    //     tickerSymbol = correctedSearch
+    // }
+
+    //get cuurent date in the query's desired format
+    var today = moment().format('YYYY-MM-DD')
+
+    var queryURL = "https://www.quandl.com/api/v3/datasets/COM/WLD_SILVER.json?&start_date=2015-01-01&end_date=" + today + "&collapse=daily";
+    $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
+
+        // //Initializes and clears the price data to be sent to the stockDataObject
+        // var commodityChartData = []
+
+        // //Loops through the response and pushes price data to the stocksChartData array
+        // for (var i = 0; i < response.dataset.data.length; i++) {
+        //     commodityChartData.push(response.dataset.data[i][1])
+        // }
+
+        // //This is the object format to be sent to the chart.
+        // var commodityDataObject = {
+        //     label: response.dataset.dataset_code,
+        //     fill: false,
+        //     lineTension: 0.1,
+        //     backgroundColor: "rgba(75,192,192,0.4)",
+        //     borderColor: "rgba(75,192,192,1)",
+        //     borderCapStyle: 'butt',
+        //     borderDash: [],
+        //     borderDashOffset: 0.0,
+        //     borderJoinStyle: 'miter',
+        //     pointBorderColor: "rgba(75,192,192,1)",
+        //     pointBackgroundColor: "#fff",
+        //     pointBorderWidth: 1,
+        //     pointHoverRadius: 5,
+        //     pointHoverBackgroundColor: "rgba(75,192,192,1)",
+        //     pointHoverBorderColor: "rgba(220,220,220,1)",
+        //     pointHoverBorderWidth: 2,
+        //     pointRadius: 1,
+        //     pointHitRadius: 10,
+        //     data: stocksChartData,
+        //     spanGaps: false,
+        // }
+
+        // //Pushes dataObject to the viewer array, then updates the chart in the browers.
+        // chartViewerArray.push(commodityDataObject)
+        // mainChart.update();
+        console.log(response);
+    })
+}
+//End of Quandle commodityAJAX Call
+
+// var a = moment();
+// var b = moment([2007, 0, 28]);
+// console.log(a.diff(b, 'weeks')) 
 
 
 
@@ -372,26 +362,23 @@ function tickerConverter(userSearch) {
 //Points to chart in the DOM
 var ctx = $("#mainChart");
 
-//Initializes Chart
-
+//Global Chart settings
 var mainChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: chartLabels,
-            datasets: chartViewerArray
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
+    type: 'line',
+    data: {
+        labels: twoYearLabels,
+        datasets: twoYearViewArray
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
         }
-    });
-
-
+    }
+});
 
 //END OF CHART GLOBAL SETTINGS
 
@@ -415,36 +402,42 @@ $('#query-input').on('click', function() {
     }
 })
 
-$('.selectButton').on('click',function(){
-	$('.selectButton').removeClass('selectActive')
-	$(this).addClass('selectActive')
-	$('.selectButton').attr('value', 'inactive')
-	$(this).attr('value', 'active')
-
+$('.selectButton').on('click', function() {
+    $('.selectButton').removeClass('selectActive')
+    $(this).addClass('selectActive')
+    $('.selectButton').attr('value', 'inactive')
+    $(this).attr('value', 'active')
 })
 
 
 //This will eventually be used to determine which AJAX calls are made, based on what buttons were selected.
 function AJAXselector() {
-    userInput = $('#query-input').val().trim();
+    userInput = $('#query-input').val().trim().toLowerCase();
+    console.log(userInput);
 
     //Clears the search Box
     $('#query-input').val("")
 
     //Checks which button is active and runs the appropriate function.
-    if($('#company').attr('value') ==='active'){
-    	tickerConverter(userInput)
+    if ($('#company').attr('value') === 'active') {
+        tickerConverter(userInput)
     }
-	if($('#commodity').attr('value') ==='active'){
-    	 commodityAJAX();
+    if ($('#commodity').attr('value') === 'active') {
+        commodityAJAX();
     }
-    if($('#currency').attr('value') ==='active'){
-    	 console.log('Running currencyAJAX')
+    if ($('#currency').attr('value') === 'active') {
+        console.log('Running currencyAJAX')
     }
-    if($('.selectButton').attr('value') ==='inactive'){
-    	buttonErrorDisplay('Select a catagory.')
+    if ($('.selectButton').attr('value') === 'inactive') {
+        buttonErrorDisplay('Select a catagory.')
     }
 }
+
+$('#twoYearViewButton').on('click', function() {
+    mainChart.config.data.labels = twoYearLabels
+    mainChart.config.datasets = twoYearViewArray
+    mainChart.update();
+})
 
 //END OF UI AND DOM SECTION
 
@@ -464,7 +457,7 @@ function lookUp(query, lookUptable) {
 //Feed this function a text string error message.
 //Will display on the button.
 function buttonErrorDisplay(errorMessage) {
-	$('#errorDisplay').text(errorMessage)
+    $('#errorDisplay').text(errorMessage)
     $('#compare').css('transform', 'rotateX(90deg)')
     $('#errorDisplay').css('transform', 'rotateX(0deg)')
     setTimeout(function() {
@@ -477,76 +470,33 @@ function buttonErrorDisplay(errorMessage) {
     }, 1500);
 }
 
-//Will display chart data for a month
-function displaySixMonth() {
-
-var rangeOfTime = 132;
-
-chartLabels = [];
-for (var i = 0; i <= rangeOfTime; i++) {
-    chartLabels.push(i)
-}
-
-dataRange = "six months"
-userInput = "";
-//clears original chart to make way for the new
-mainChart.destroy();
-//builds new chart
-buildChart();
-stockAJAX();
-
-};
-
-//displays one week of data in chart
-function displayWeek() {
-
-var rangeOfTime = 5;
-
-chartLabels = [];
-for (var i = 0; i <= rangeOfTime; i++) {
-    chartLabels.push(i)
-}
-
-dataRange = "week";
-userInput = "";
-//clears original chart to make way for the new
-mainChart.destroy();
-//builds new chart
-buildChart();
-stockAJAX();
-
-};
-
-//Builds chart. Required everytime when view is so changed otherwise display duplicate values
-function buildChart() {
-    
-     mainChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: chartLabels,
-            datasets: chartViewerArray
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
+function twoYearAverager(response) {
+    var matchDate = response.dataset.data[0][0].substr(0, 7)
+    var date
+    var total = 0;
+    var count = 0;
+    for (var i = 0; i < response.dataset.data.length; i++) {
+        date = response.dataset.data[i][0].substr(0, 7)
+        if (matchDate === date) {
+            total += response.dataset.data[i][1]
+            count++
+            if (i === 24) {
+                currentData.unshift((total / count).toFixed(2))
             }
+        } else {
+            currentData.unshift((total / count).toFixed(2))
+            total = 0;
+            count = 0;
+            if (twoYearLabels.length < currentData.length) {
+                twoYearLabels.unshift(matchDate)
+                twoYearLabels.unshift(date)
+            }
+            matchDate = date
         }
-    });
-
-};
-
+    }
+    stockDataObject.data = currentData
+    twoYearViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, currentData))
+    console.log(twoYearViewArray)
+}
 
 //END OF REUSABLE FUNCTIONS
-
-//On click functions to change view. How we navigate the views can be done anway y'all want.
-//just using these buttons for a quick way to test my functions
-$(document).on("click", "#week", displayWeek);
-$(document).on("click", "#sixMonths", displaySixMonth);
-
-//Initial call to build the chart
-buildChart(chartLabels);
-
