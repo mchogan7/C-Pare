@@ -59,12 +59,6 @@ function stockDataObject(label, backgroundColor, borderColor, data){
     this.spanGaps = false;
 }
 
-var cryptocurrencyList = [];
-var currencyPriceHistory = [];
-
-console.log(new stockDataObject('test'))
-
-
 var stockLookUp = [{
     targetWord: "GOOG",
     queryWord: ["google", "gooogle", "googel", "alphabet"]
@@ -221,7 +215,6 @@ var commodityLookUp = [{
 function stockAJAX() {
     var correctedSearch = lookUp(userInput, stockLookUp);
     //Checks user search against the yahoo ticker converter and our stockLookup table.
-    currentData = []
 
     if (!correctedSearch && (exchange !== 'NASDAQ' && exchange !== 'NYSE')) {
 
@@ -241,7 +234,7 @@ function stockAJAX() {
 
     var queryURL = "https://www.quandl.com/api/v3/datasets/WIKI/" + tickerSymbol + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily&api_key=EDWEb1oyzs8FrfoFyG1u";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
-
+    	console.log(response)
         stockLabel = response.dataset.dataset_code
 
         //Initializes and clears the price data to be sent to the stockDataObject
@@ -254,6 +247,7 @@ function stockAJAX() {
 
         chartColor(stocksColor, stocksBorder);
         twoYearAverager(response)
+		oneYearAverager(response)
         mainChart.update();
 
 
@@ -265,7 +259,6 @@ function stockAJAX() {
 //Quandle commodity AJAX Call
 function commodityAJAX() {
     var correctedSearch = lookUp(userInput, commodityLookUp);
-
     //Checks user search against the yahoo ticker converter and our stockLookup table.
 
     // if (!correctedSearch && (exchange !== 'NASDAQ' && exchange !== 'NYSE')) {
@@ -321,10 +314,10 @@ function commodityAJAX() {
         // //Pushes dataObject to the viewer array, then updates the chart in the browers.
         // chartViewerArray.push(commodityDataObject)
         // mainChart.update();
-        console.log(response);
     })
 }
 //End of Quandle commodityAJAX Call
+
 
 
      //Checks user search against the yahoo ticker converter and our stockLookup table.
@@ -415,22 +408,7 @@ function coinListCreator() {
 }
 
 
-//function requires 3-letter string of coin's symbol. 
-//Default date is set to 1/1/2015, will need to modify function if user can input different date
-//
-function histPrices(coin) {
-    var coinSymbol = coin;
-    var priceURL = "https://www.cryptocompare.com/api/data/histoday/?e=CCCAGG&fsym=" + coinSymbol + "&limit=1000&tsym=USD&toTs=1420092000"
-    $.ajax({ url: priceURL, method: "GET" }).done(function(response) {
-        for (p=0;p<response.Data.length; p++) { 
-            var price = response.Data[p].close;
-            currencyPriceHistory.push(price);
-        }
-        console.log(currencyPriceHistory);
-    })
-}
-//
-histPrices("BTC")//logs closing value of bitcoin for every day since 1/1/2015
+
 
 //Ticker Converter Function - This is specific to the stockAJAX call.
 function tickerConverter(userSearch) {
@@ -475,6 +453,24 @@ var mainChart = new Chart(ctx, {
     }
 });
 
+function newChart(labels, data){mainChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: data
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+}
+
 //END OF CHART GLOBAL SETTINGS
 
 //UI AND DOM SECTION:
@@ -508,9 +504,8 @@ $('.selectButton').on('click', function() {
 //This will eventually be used to determine which AJAX calls are made, based on what buttons were selected.
 function AJAXselector() {
     userInput = $('#query-input').val().trim().toLowerCase();
-    console.log(userInput);
 
-    //Clears the search Box
+	 //Clears the search Box
     $('#query-input').val("")
 
     //Checks which button is active and runs the appropriate function.
@@ -529,9 +524,13 @@ function AJAXselector() {
 }
 
 $('#twoYearViewButton').on('click', function() {
-    mainChart.config.data.labels = twoYearLabels
-    mainChart.config.datasets = twoYearViewArray
-    mainChart.update();
+	mainChart.destroy();
+	newChart(twoYearLabels, twoYearViewArray)
+})
+
+$('#yearViewButton').on('click', function() {
+	mainChart.destroy();
+	newChart(oneYearLabels, oneYearViewArray)
 })
 
 //END OF UI AND DOM SECTION
@@ -565,7 +564,9 @@ function buttonErrorDisplay(errorMessage) {
     }, 1500);
 }
 
+//Creates an average of data for each month. Generates labels and displays on chart.
 function twoYearAverager(response) {
+	currentData = []
     var matchDate = response.dataset.data[0][0].substr(0, 7)
     var date
     var total = 0;
@@ -575,7 +576,7 @@ function twoYearAverager(response) {
         if (matchDate === date) {
             total += response.dataset.data[i][1]
             count++
-            if (i === 24) {
+            if (i === response.dataset.data.length - 2) {
                 currentData.unshift((total / count).toFixed(2))
             }
         } else {
@@ -589,11 +590,21 @@ function twoYearAverager(response) {
             matchDate = date
         }
     }
-
-    
-    stockDataObject.data = currentData
     twoYearViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, currentData))
-    console.log(twoYearViewArray)
+}
+
+
+function oneYearAverager(response) {
+	var yearData = []
+for (var i = 11; i < currentData.length; i++) {
+	yearData.push(currentData[i])
+	if (oneYearLabels.length < 12)
+	oneYearLabels.push(twoYearLabels[i])
+}
+console.log(yearData)
+console.log(currentData)
+    
+    oneYearViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, yearData))
 }
 
 function chartColor(color, border) {
@@ -614,5 +625,6 @@ function chartColor(color, border) {
         border[2] = parseInt(border[2])  + 40;
 
 };
+
 
 //END OF REUSABLE FUNCTIONS
