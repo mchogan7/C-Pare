@@ -24,12 +24,14 @@ var oneYearViewArray = [];
 var oneYearLabels = [];
 var chartLabels
 var userInput;
-var stocksRed = 49; //starting values for rgb of stocks color
-var stocksGreen = 141;
-var stocksBlue = 141;
-var stocksRedBorder = 75; //starting values for rgb stocks border color
-var stocksGreenBorder = 192;
-var stocksBlueBorder = 192;
+
+var stocksColor = [49, 141, 141]  //defines the initial values of the stocks colors [red, green, blue]
+var stocksBorder = [75, 192, 192] //defines the initial values of the stocks borders colors [red, green, blue]
+var commodityColor = [36,200,183] //defines the initial values of the commodity colors [red, green, blue]
+var commodityBorder = [62, 251, 134] //defines the initial values of the commodity borders colors [red, green, blue]
+var currencyColor = [234,46,77] //defines the initial values of the currency colors [red, green, blue]
+var currencyBorder = [255, 97, 128] //defines the initial values of the currency borders colors [red, green, blue]
+
 var currentData = []
 var stockLabel
 
@@ -244,24 +246,13 @@ function stockAJAX() {
 
         //Initializes and clears the price data to be sent to the stockDataObject
         var stocksChartData = []
-            //initial framework to change the shade of the color every time a new search for a stock happens
-            //these values are not set in stone and can be adjusted
-        backgroundColor = "rgba(" + stocksRed + "," + stocksGreen + "," + stocksBlue + ",0.4)"
-        borderColor = "rgba(" + stocksRedBorder + "," + stocksGreenBorder + "," + stocksBlueBorder + ",1)"
-            //the line color is changed here
-        stocksRed = stocksRed + 28;
-        stocksGreen = stocksGreen + 40;
-        stocksBlue = stocksBlue + 40;
-        //the border color is changed here
-        stocksRedBorder = stocksRedBorder + 28;
-        stocksGreenBorder = stocksGreenBorder + 40;
-        stocksBlueBorder = stocksBlueBorder + 40;
-
+           
 		//Loops through the response and pushes price data to the stocksChartData array
         for (var i = 0; i < response.dataset.data.length; i++) {
             stocksChartData.push(response.dataset.data[i][1])
         }
 
+        chartColor(stocksColor, stocksBorder);
         twoYearAverager(response)
         mainChart.update();
 
@@ -393,7 +384,7 @@ function commodityAJAX() {
          // mainChart.update();
          console.log(response);
      })
- }
+ //}
  //End of Quandle commodityAJAX Call
  
  //creating cryptocurrency coin object for name/symbol key/value pairs
@@ -598,9 +589,30 @@ function twoYearAverager(response) {
             matchDate = date
         }
     }
+
+    
     stockDataObject.data = currentData
     twoYearViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, currentData))
     console.log(twoYearViewArray)
 }
+
+function chartColor(color, border) {
+    console.log(color)
+    console.log(border)
+
+        //initial framework to change the shade of the color every time a new search for a stock happens
+            //these values are not set in stone and can be adjusted
+        backgroundColor = "rgba(" + color[0] + "," + color[1] + "," + color[2] + ",0.4)"
+        borderColor = "rgba(" + border[0] + "," + border[1] + "," + border[2] + ",1)"
+            //the line color is changed here
+        color[0] = parseInt(color[0]) + 28;
+        color[1] = parseInt(color[1]) + 40;
+        color[2] = parseInt(color[2]) + 40;
+        //the border color is changed here
+        border[0] = parseInt(border[0]) + 28;
+        border[1] = parseInt(border[1])  + 40;
+        border[2] = parseInt(border[2])  + 40;
+
+};
 
 //END OF REUSABLE FUNCTIONS
