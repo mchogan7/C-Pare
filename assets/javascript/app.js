@@ -24,12 +24,14 @@ var oneYearViewArray = [];
 var oneYearLabels = [];
 var chartLabels
 var userInput;
-var stocksRed = 49; //starting values for rgb of stocks color
-var stocksGreen = 141;
-var stocksBlue = 141;
-var stocksRedBorder = 75; //starting values for rgb stocks border color
-var stocksGreenBorder = 192;
-var stocksBlueBorder = 192;
+
+var stocksColor = [49, 141, 141]  //defines the initial values of the stocks colors [red, green, blue]
+var stocksBorder = [75, 192, 192] //defines the initial values of the stocks borders colors [red, green, blue]
+var commodityColor = [36,200,183] //defines the initial values of the commodity colors [red, green, blue]
+var commodityBorder = [62, 251, 134] //defines the initial values of the commodity borders colors [red, green, blue]
+var currencyColor = [234,46,77] //defines the initial values of the currency colors [red, green, blue]
+var currencyBorder = [255, 97, 128] //defines the initial values of the currency borders colors [red, green, blue]
+
 var currentData = []
 var stockLabel
 
@@ -237,24 +239,13 @@ function stockAJAX() {
 
         //Initializes and clears the price data to be sent to the stockDataObject
         var stocksChartData = []
-            //initial framework to change the shade of the color every time a new search for a stock happens
-            //these values are not set in stone and can be adjusted
-        backgroundColor = "rgba(" + stocksRed + "," + stocksGreen + "," + stocksBlue + ",0.4)"
-        borderColor = "rgba(" + stocksRedBorder + "," + stocksGreenBorder + "," + stocksBlueBorder + ",1)"
-            //the line color is changed here
-        stocksRed = stocksRed + 28;
-        stocksGreen = stocksGreen + 40;
-        stocksBlue = stocksBlue + 40;
-        //the border color is changed here
-        stocksRedBorder = stocksRedBorder + 28;
-        stocksGreenBorder = stocksGreenBorder + 40;
-        stocksBlueBorder = stocksBlueBorder + 40;
-
+           
 		//Loops through the response and pushes price data to the stocksChartData array
         for (var i = 0; i < response.dataset.data.length; i++) {
             stocksChartData.push(response.dataset.data[i][1])
         }
 
+        chartColor(stocksColor, stocksBorder);
         twoYearAverager(response)
 		oneYearAverager(response)
         mainChart.update();
@@ -327,9 +318,95 @@ function commodityAJAX() {
 }
 //End of Quandle commodityAJAX Call
 
-// var a = moment();
-// var b = moment([2007, 0, 28]);
-// console.log(a.diff(b, 'weeks')) 
+
+
+     //Checks user search against the yahoo ticker converter and our stockLookup table.
+ 
+     // if (!correctedSearch && (exchange !== 'NASDAQ' && exchange !== 'NYSE')) {
+ 
+     //     console.log('Search not found on NASDAQ or NYSE') //This will be reaplced with an error display function
+ 
+     //     //If not found in stockLookUp table, use the yahoo ticker converter output.
+     // } else if (!correctedSearch) {
+     //     tickerSymbol = tickerSymbol
+     //         //If found in stockLookUp table, change the ticker symbol to be searched.
+     // } else {
+     //     tickerSymbol = correctedSearch
+     // }
+ 
+     //get cuurent date in the query's desired format
+     var today = moment().format('YYYY-MM-DD')
+ 
+     var queryURL = "https://www.quandl.com/api/v3/datasets/COM/WLD_SILVER.json?&start_date=2015-01-01&end_date=" + today + "&collapse=daily";
+     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
+ 
+         // //Initializes and clears the price data to be sent to the stockDataObject
+         // var commodityChartData = []
+ 
+         // //Loops through the response and pushes price data to the stocksChartData array
+         // for (var i = 0; i < response.dataset.data.length; i++) {
+         //     commodityChartData.push(response.dataset.data[i][1])
+         // }
+ 
+         // //This is the object format to be sent to the chart.
+         // var commodityDataObject = {
+         //     label: response.dataset.dataset_code,
+         //     fill: false,
+         //     lineTension: 0.1,
+         //     backgroundColor: "rgba(75,192,192,0.4)",
+         //     borderColor: "rgba(75,192,192,1)",
+         //     borderCapStyle: 'butt',
+         //     borderDash: [],
+         //     borderDashOffset: 0.0,
+         //     borderJoinStyle: 'miter',
+         //     pointBorderColor: "rgba(75,192,192,1)",
+         //     pointBackgroundColor: "#fff",
+         //     pointBorderWidth: 1,
+         //     pointHoverRadius: 5,
+         //     pointHoverBackgroundColor: "rgba(75,192,192,1)",
+         //     pointHoverBorderColor: "rgba(220,220,220,1)",
+         //     pointHoverBorderWidth: 2,
+         //     pointRadius: 1,
+         //     pointHitRadius: 10,
+         //     data: stocksChartData,
+         //     spanGaps: false,
+         // }
+ 
+         // //Pushes dataObject to the viewer array, then updates the chart in the browers.
+         // chartViewerArray.push(commodityDataObject)
+         // mainChart.update();
+         console.log(response);
+     })
+ //}
+ //End of Quandle commodityAJAX Call
+ 
+ //creating cryptocurrency coin object for name/symbol key/value pairs
+ function coinObject(name, symbol) {
+  this.name = name,
+  this.symbol = symbol
+}
+
+//side note: this function will only allow coin objects to be accessible after the 
+//ajax call has been made. Running the function and calling the cryptocurrency
+//list array will only call an empty array until I find a way to prevent the call until 
+//after the ajax call has been made and the array has been filled
+function coinListCreator() {
+    var coinListURL = "https://api.coinmarketcap.com/v1/ticker/";
+  
+    $.ajax({ url: coinListURL, method: "GET" }).done(function(response) {
+    
+        //iterating through to set coin name and symbol to info at index i 
+        for (i=0; i<response.length; i++) {
+            var name = response[i].name;
+            var symbol = response[i].symbol;
+            var coinOBJ = new coinObject(name, symbol);
+            //pushing new coin object to cryptocurrency list array
+            cryptocurrencyList.push(coinOBJ);
+        }
+        console.log(cryptocurrencyList);
+    });
+}
+
 
 
 
@@ -513,9 +590,9 @@ function twoYearAverager(response) {
             matchDate = date
         }
     }
-
     twoYearViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, currentData))
 }
+
 
 function oneYearAverager(response) {
 	var yearData = []
@@ -529,4 +606,25 @@ console.log(currentData)
     
     oneYearViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, yearData))
 }
+
+function chartColor(color, border) {
+    console.log(color)
+    console.log(border)
+
+        //initial framework to change the shade of the color every time a new search for a stock happens
+            //these values are not set in stone and can be adjusted
+        backgroundColor = "rgba(" + color[0] + "," + color[1] + "," + color[2] + ",0.4)"
+        borderColor = "rgba(" + border[0] + "," + border[1] + "," + border[2] + ",1)"
+            //the line color is changed here
+        color[0] = parseInt(color[0]) + 28;
+        color[1] = parseInt(color[1]) + 40;
+        color[2] = parseInt(color[2]) + 40;
+        //the border color is changed here
+        border[0] = parseInt(border[0]) + 28;
+        border[1] = parseInt(border[1])  + 40;
+        border[2] = parseInt(border[2])  + 40;
+
+};
+
+
 //END OF REUSABLE FUNCTIONS
