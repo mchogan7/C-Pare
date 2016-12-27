@@ -60,7 +60,10 @@ function stockDataObject(label, backgroundColor, borderColor, data) {
         this.pointRadius = 1,
         this.pointHitRadius = 10,
         this.data = data,
-        this.spanGaps = false;
+        this.spanGaps = false,
+        this.percentChange = 88,
+        this.low = 20,
+        this.high = 50;
 }
 
 var stockLookUp = [{
@@ -261,129 +264,72 @@ function stockAJAX() {
 
 //End of Stock AJAX Call
 
-//Quandle commodity AJAX Call
+//commodityAJAX function
 function commodityAJAX() {
     var correctedSearch = lookUp(userInput, commodityLookUp);
-    //Checks user search against the yahoo ticker converter and our stockLookup table.
-
-    // if (!correctedSearch && (exchange !== 'NASDAQ' && exchange !== 'NYSE')) {
-
-    //     console.log('Search not found on NASDAQ or NYSE') //This will be reaplced with an error display function
-
-    //     //If not found in stockLookUp table, use the yahoo ticker converter output.
-    // } else if (!correctedSearch) {
-    //     tickerSymbol = tickerSymbol
-    //         //If found in stockLookUp table, change the ticker symbol to be searched.
-    // } else {
-    //     tickerSymbol = correctedSearch
-    // }
-
-    //get cuurent date in the query's desired format
-    var today = moment().format('YYYY-MM-DD')
-
-    var queryURL = "https://www.quandl.com/api/v3/datasets/COM/WLD_SILVER.json?&start_date=2015-01-01&end_date=" + today + "&collapse=daily";
-    $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
-
-        // //Initializes and clears the price data to be sent to the stockDataObject
-        // var commodityChartData = []
-
-        // //Loops through the response and pushes price data to the stocksChartData array
-        // for (var i = 0; i < response.dataset.data.length; i++) {
-        //     commodityChartData.push(response.dataset.data[i][1])
-        // }
-
-        // //This is the object format to be sent to the chart.
-        // var commodityDataObject = {
-        //     label: response.dataset.dataset_code,
-        //     fill: false,
-        //     lineTension: 0.1,
-        //     backgroundColor: "rgba(75,192,192,0.4)",
-        //     borderColor: "rgba(75,192,192,1)",
-        //     borderCapStyle: 'butt',
-        //     borderDash: [],
-        //     borderDashOffset: 0.0,
-        //     borderJoinStyle: 'miter',
-        //     pointBorderColor: "rgba(75,192,192,1)",
-        //     pointBackgroundColor: "#fff",
-        //     pointBorderWidth: 1,
-        //     pointHoverRadius: 5,
-        //     pointHoverBackgroundColor: "rgba(75,192,192,1)",
-        //     pointHoverBorderColor: "rgba(220,220,220,1)",
-        //     pointHoverBorderWidth: 2,
-        //     pointRadius: 1,
-        //     pointHitRadius: 10,
-        //     data: stocksChartData,
-        //     spanGaps: false,
-        // }
-
-        // //Pushes dataObject to the viewer array, then updates the chart in the browers.
-        // chartViewerArray.push(commodityDataObject)
-        // mainChart.update();
-    })
-}
-//End of Quandle commodityAJAX Call
-
-
-
-//Checks user search against the yahoo ticker converter and our stockLookup table.
-
-// if (!correctedSearch && (exchange !== 'NASDAQ' && exchange !== 'NYSE')) {
-
-//     console.log('Search not found on NASDAQ or NYSE') //This will be reaplced with an error display function
-
-//     //If not found in stockLookUp table, use the yahoo ticker converter output.
-// } else if (!correctedSearch) {
-//     tickerSymbol = tickerSymbol
-//         //If found in stockLookUp table, change the ticker symbol to be searched.
-// } else {
-//     tickerSymbol = correctedSearch
-// }
 
 //get cuurent date in the query's desired format
-var today = moment().format('YYYY-MM-DD')
+    var today = moment().endOf('month').subtract(1, 'months').format('YYYY-MM-DD')
+    var dateStart = moment().endOf('month').subtract(2, 'years').format('YYYY-MM-DD')
 
-var queryURL = "https://www.quandl.com/api/v3/datasets/COM/WLD_SILVER.json?&start_date=2015-01-01&end_date=" + today + "&collapse=daily";
-$.ajax({ url: queryURL, method: "GET" }).done(function(response) {
+    var queryURL = "https://www.quandl.com/api/v3/datasets/COM/" + correctedSearch + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily";
+    $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
+    				console.log(response)	
+        stockLabel = response.dataset.dataset_code
 
-        // //Initializes and clears the price data to be sent to the stockDataObject
-        // var commodityChartData = []
+        //Initializes and clears the price data to be sent to the stockDataObject
+        var commodityChartData = []
 
-        // //Loops through the response and pushes price data to the stocksChartData array
-        // for (var i = 0; i < response.dataset.data.length; i++) {
-        //     commodityChartData.push(response.dataset.data[i][1])
-        // }
+        //Loops through the response and pushes price data to the stocksChartData array
+        for (var i = 0; i < response.dataset.data.length; i++) {
+            commodityChartData.push(response.dataset.data[i][1])
+        }
 
-        // //This is the object format to be sent to the chart.
-        // var commodityDataObject = {
-        //     label: response.dataset.dataset_code,
-        //     fill: false,
-        //     lineTension: 0.1,
-        //     backgroundColor: "rgba(75,192,192,0.4)",
-        //     borderColor: "rgba(75,192,192,1)",
-        //     borderCapStyle: 'butt',
-        //     borderDash: [],
-        //     borderDashOffset: 0.0,
-        //     borderJoinStyle: 'miter',
-        //     pointBorderColor: "rgba(75,192,192,1)",
-        //     pointBackgroundColor: "#fff",
-        //     pointBorderWidth: 1,
-        //     pointHoverRadius: 5,
-        //     pointHoverBackgroundColor: "rgba(75,192,192,1)",
-        //     pointHoverBorderColor: "rgba(220,220,220,1)",
-        //     pointHoverBorderWidth: 2,
-        //     pointRadius: 1,
-        //     pointHitRadius: 10,
-        //     data: stocksChartData,
-        //     spanGaps: false,
-        // }
+        chartColor(commodityColor, commodityBorder);
+        twoYearAverager(response)
+        oneYearAverager(response)
+        threeMonthAverager(response)
+        oneWeekViewer(response)
+        mainChart.update();
 
-        // //Pushes dataObject to the viewer array, then updates the chart in the browers.
-        // chartViewerArray.push(commodityDataObject)
-        // mainChart.update();
-        console.log(response);
+
     })
-    //}
-    //End of Quandle commodityAJAX Call
+}
+
+function currencyAJAX() {
+    var correctedSearch = lookUp(userInput, commodityLookUp);
+
+//get cuurent date in the query's desired format
+    var today = moment().endOf('month').subtract(1, 'months').format('YYYY-MM-DD')
+    var dateStart = moment().endOf('month').subtract(2, 'years').format('YYYY-MM-DD')
+
+    var queryURL = "https://www.quandl.com/api/v3/datasets/FRED/" + userInput + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily";
+    $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
+    				console.log(response)	
+        stockLabel = response.dataset.dataset_code
+
+        //Initializes and clears the price data to be sent to the stockDataObject
+        var currencyChartData = []
+
+        //Loops through the response and pushes price data to the stocksChartData array
+        for (var i = 0; i < response.dataset.data.length; i++) {
+            currencyChartData.push(response.dataset.data[i][1])
+        }
+
+        chartColor(currencyColor, currencyBorder);
+        twoYearAverager(response)
+        oneYearAverager(response)
+        threeMonthAverager(response)
+        oneWeekViewer(response)
+        mainChart.update();
+
+
+    })
+}
+
+
+
+
 
 //creating cryptocurrency coin object for name/symbol key/value pairs
 function coinObject(name, symbol) {
@@ -397,7 +343,7 @@ function coinObject(name, symbol) {
 //after the ajax call has been made and the array has been filled
 function coinListCreator() {
     var coinListURL = "https://api.coinmarketcap.com/v1/ticker/";
-
+    var cryptocurrencyList = []
     $.ajax({ url: coinListURL, method: "GET" }).done(function(response) {
 
         //iterating through to set coin name and symbol to info at index i 
@@ -507,7 +453,7 @@ $('.selectButton').on('click', function() {
 })
 
 
-//This will eventually be used to determine which AJAX calls are made, based on what buttons were selected.
+//This is used to determine which AJAX calls are made, based on what buttons were selected.
 function AJAXselector() {
     userInput = $('#query-input').val().trim().toLowerCase();
 
@@ -522,7 +468,7 @@ function AJAXselector() {
         commodityAJAX();
     }
     if ($('#currency').attr('value') === 'active') {
-        console.log('Running currencyAJAX')
+        currencyAJAX();
     }
     if ($('.selectButton').attr('value') === 'inactive') {
         buttonErrorDisplay('Select a catagory.')
@@ -592,7 +538,7 @@ function twoYearAverager(response) {
         if (matchDate === date) {
             total += response.dataset.data[i][1]
             count++
-            if (i === response.dataset.data.length - 2) {
+            if (i === response.dataset.data.length - 1) {
                 currentData.unshift((total / count).toFixed(2))
             }
         } else {
