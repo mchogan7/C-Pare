@@ -6,14 +6,22 @@
 //https://coinmarketcap.com/api/
 
 //Initialize Firebase
+<<<<<<< HEAD
+var config = {
+=======
   var config = {
+>>>>>>> 514e99fad53e69090ab44bc9e42328b6b68dc7b1
     apiKey: "AIzaSyDm9y-YwKrmIXiF8mtSteotCMdd84VEtVo",
     authDomain: "commoditylookupindex.firebaseapp.com",
     databaseURL: "https://commoditylookupindex.firebaseio.com",
     storageBucket: "commoditylookupindex.appspot.com",
     messagingSenderId: "805209145451"
   };
+<<<<<<< HEAD
+firebase.initializeApp(config);
+=======
   firebase.initializeApp(config);
+>>>>>>> 514e99fad53e69090ab44bc9e42328b6b68dc7b1
 
 //Collect global variables here:
 var database = firebase.database();
@@ -80,46 +88,46 @@ var stockLookUp = [{
 
 
 var commodityLookUp = [{
-    targetWord: "WLD_SILVER",
+    targetWord: "AG_EIB",
     queryWord: ["silver", "si", "sliver", "slver"]
 }, {
-    targetWord: "PALUM_USD",
+    targetWord: "AL_LME",
     queryWord: ["aluminum", "alluminum", "aluminium", "alumminum"]
 }, {
-    targetWord: "WLD_GOLD",
+    targetWord: "AU_EIB",
     queryWord: ["gold", "goled", "golld", "goldd"]
 }, {
-    targetWord: "PBEEF_USD",
+    targetWord: "BEEF_S",
     queryWord: ["beef", "beaf"]
 }, {
     targetWord: "BUTTER",
     queryWord: ["butter", "buter", "butt", "buttr", "btter"]
 }, {
-    targetWord: "CHEESE_BLK",
+    targetWord: "CHEESE_BRL",
     queryWord: ["cheese", "chease", "chees"]
 }, {
     targetWord: "EGGS",
     queryWord: ["eggs", "egs", "egss", "egg"]
 }, {
-    targetWord: "PPOULT_USD",
-    queryWord: ["chicken", "chikken", "chiken", "chicen", "chickn"]
+    targetWord: "CHKN_A",
+    queryWord: ["chicken", "chikken", "chiken", "chicen", "chickn", "poultry"]
 }, {
-    targetWord: "PCOALAU_USD",
+    targetWord: "COAL_CAPP",
     queryWord: ["coal", "cole", "coll", "cool"]
 }, {
-    targetWord: "PCOCO_USD",
-    queryWord: ["cocoa", "coco", "coko", "cocoe", "cokeco"]
+    targetWord: "COCOA",
+    queryWord: ["cocoa", "cocoa beans", "coco", "coko", "cocoe", "cokeco"]
 }, {
-    targetWord: "PCOFFOTM_USD",
+    targetWord: "COFFEE_CLMB",
     queryWord: ["coffee", "cafe", "cofee", "cofffe", "cofe", "coofee"]
 }, {
-    targetWord: "PMAIZMT_USD",
-    queryWord: ["corn", "korn", "corrn"]
+    targetWord: "CORN_2",
+    queryWord: ["corn", "maize", "korn", "corrn"]
 }, {
-    targetWord: "PCOTTIND_USD",
+    targetWord: "COTLOOK",
     queryWord: ["cotton", "coton", "cotten", "coten", "cottan", "cotan"]
 }, {
-    targetWord: "WLD_IRON_ORE",
+    targetWord: "FE_TJN",
     queryWord: ["iron", "irron"]
 }, {
     targetWord: "GAS_CR",
@@ -131,83 +139,29 @@ var commodityLookUp = [{
     targetWord: "OATS",
     queryWord: ["oats", "oets", "oots", "otts"]
 }, {
-    targetWord: "PCOPP_USD",
+    targetWord: "COPPER",
     queryWord: ["copper", "coper", "cooper"]
 }, {
-    targetWord: "PFISH_USD",
-    queryWord: ["fish", "fiish"]
-}, {
-    targetWord: "PGNUTS_USD",
-    queryWord: ["peanuts", "peenuts", "penuts"]
-}, {
-    targetWord: "PLAMB_USD",
-    queryWord: ["lamb"]
-}, {
-    targetWord: "PLEAD_USD",
-    queryWord: ["lead", "led"]
-}, {
-    targetWord: "PLOGORE_USD",
-    queryWord: ["wood", "lumber", "timber"]
-}, {
-    targetWord: "PNGASUS_USD",
-    queryWord: ["natural gas", "natral gas"]
-}, {
-    targetWord: "PNICK_USD",
-    queryWord: ["nickel", "nicckel", "nickkel"]
-}, {
-    targetWord: "POILWTI_USD",
+    targetWord: "FUELOIL",
     queryWord: ["crude oil", "crud oil", "cured oil", "petroleum", "petrolium", "oil"]
 }, {
-    targetWord: "POLVOIL_USD",
-    queryWord: ["olive oil"]
-}, {
-    targetWord: "PORANG_USD",
-    queryWord: ["orange", "oranges", "organs", "oragnes", "oragne", "organ"]
-}, {
-    targetWord: "PPORK_USD",
+    targetWord: "LM_PK602_VARIETY",
     queryWord: ["swine", "pork", "pigs", "pig", "hogs", "hog"]
 }, {
-    targetWord: "PRICENPQ_USD",
+    targetWord: "RICE_2",
     queryWord: ["rice"]
 }, {
-    targetWord: "PRUBB_USD",
-    queryWord: ["rubber", "rubbr", "ruber"]
+    targetWord: "SOYB_1",
+    queryWord: ["soybeans", "soy beans", "soybean"]
 }, {
-    targetWord: "PSOYB_USD",
-    queryWord: ["soybeans", "soy beans", "soybean", "soybeans"]
-}, {
-    targetWord: "PSUGAUSA_USD",
-    queryWord: ["sugar", "sugr", "suger"]
-}, {
-    targetWord: "PTIN_USD",
-    queryWord: ["tin"]
-}, {
-    targetWord: "PURAN_USD",
-    queryWord: ["uranium", "uraneum"]
-}, {
-    targetWord: "PWHEAMT_USD",
+    targetWord: "WHEAT_KC",
     queryWord: ["wheat", "wheet"]
 }, {
-    targetWord: "PWOOLC_USD",
+    targetWord: "WOOL",
     queryWord: ["wool"]
 }, {
     targetWord: "SORGHUM",
     queryWord: ["sorghum", "soreghum", "sor gum", "sore gum", "sorgum", "soregum"]
-}, {
-    targetWord: "WLD_BANANA_US",
-    queryWord: ["banana", "bananas", "bannana", "bananna", "bannanas", "banannas"]
-}, {
-    targetWord: "WLD_BARLEY",
-    queryWord: ["barley", "barlee", "baley"]
-}, {
-    targetWord: "WLD_COCONUT_OIL",
-    queryWord: ["coconut oil", "coconut", "coconuts"]
-}, {
-    targetWord: "WLD_IRON_ORE",
-    queryWord: ["iron", "iron ore"]
-}, {
-    targetWord: "WLD_TOBAC_US",
-    queryWord: ["tobacco", "tobbacco", "tobbaco"]
 }]
 
 //fireBaseAdd();
@@ -228,6 +182,8 @@ for (var i = 0; i < commodityLookUp.length; i++) {
 	 // database.ref('commodityAuto').on("value", function(snapshot) {
 	 //     console.log(snapshot.val())
 	 // });
+
+
 
 //Stock AJAX Call
 
