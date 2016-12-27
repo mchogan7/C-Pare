@@ -5,14 +5,14 @@
 //https://coinmarketcap.com/api/
 
 //Initialize Firebase
-var config = {
-    apiKey: "AIzaSyBqELfq7q1WGSap8mqzFd-8WWnSxDHn4s0",
-    authDomain: "c-pare.firebaseapp.com",
-    databaseURL: "https://c-pare.firebaseio.com",
-    storageBucket: "c-pare.appspot.com",
-    messagingSenderId: "614106603921"
-};
-firebase.initializeApp(config);
+  var config = {
+    apiKey: "AIzaSyDm9y-YwKrmIXiF8mtSteotCMdd84VEtVo",
+    authDomain: "commoditylookupindex.firebaseapp.com",
+    databaseURL: "https://commoditylookupindex.firebaseio.com",
+    storageBucket: "commoditylookupindex.appspot.com",
+    messagingSenderId: "805209145451"
+  };
+  firebase.initializeApp(config);
 
 //Collect global variables here:
 var database = firebase.database();
@@ -61,9 +61,12 @@ function stockDataObject(label, backgroundColor, borderColor, data) {
         this.pointHitRadius = 10,
         this.data = data,
         this.spanGaps = false,
-        this.percentChange = 88,
-        this.low = 20,
-        this.high = 50;
+        this.percentChange = function() {
+            var change = (this.data[this.data.length - 1] - this.data[0]) / this.data[0] * 100
+            return change.toFixed(2)
+        },
+        this.low = Math.min(...this.data),
+        this.high = Math.max(...this.data);
 }
 
 var stockLookUp = [{
@@ -206,16 +209,24 @@ var commodityLookUp = [{
     queryWord: ["tobacco", "tobbacco", "tobbaco"]
 }]
 
-//Eventual Firebase Functions
-// for (var i = 0; i < commodityLookUp.length; i++) {
-// 	    database.ref('commodityAuto').push(
-// 	             commodityLookUp[i]
-// 	         );
-// }
+fireBaseAdd();
 
-// 	 database.ref('commodityAuto').on("value", function(snapshot) {
-// 	     console.log(snapshot.val())
-// 	 });
+function fireBaseAdd(){
+for (var i = 0; i < commodityLookUp.length; i++) {
+		for (var j = 0; j < commodityLookUp[i].queryWord.length; j++) {
+				    database.ref('lookUpTable/' + commodityLookUp[i].queryWord[j]).set({
+				    	target: commodityLookUp[i].targetWord, 
+				    	category: "commodity"}
+	             
+	         );
+		}
+
+}
+}
+
+	 // database.ref('commodityAuto').on("value", function(snapshot) {
+	 //     console.log(snapshot.val())
+	 // });
 
 //Stock AJAX Call
 
@@ -257,7 +268,7 @@ function stockAJAX() {
         threeMonthAverager(response)
         oneWeekViewer(response)
         mainChart.update();
-
+        console.log(twoYearViewArray)
 
     })
 }
@@ -268,13 +279,13 @@ function stockAJAX() {
 function commodityAJAX() {
     var correctedSearch = lookUp(userInput, commodityLookUp);
 
-//get cuurent date in the query's desired format
+    //get cuurent date in the query's desired format
     var today = moment().endOf('month').subtract(1, 'months').format('YYYY-MM-DD')
     var dateStart = moment().endOf('month').subtract(2, 'years').format('YYYY-MM-DD')
 
     var queryURL = "https://www.quandl.com/api/v3/datasets/COM/" + correctedSearch + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
-    				console.log(response)	
+        console.log(response)
         stockLabel = response.dataset.dataset_code
 
         //Initializes and clears the price data to be sent to the stockDataObject
@@ -299,13 +310,13 @@ function commodityAJAX() {
 function currencyAJAX() {
     var correctedSearch = lookUp(userInput, commodityLookUp);
 
-//get cuurent date in the query's desired format
+    //get cuurent date in the query's desired format
     var today = moment().endOf('month').subtract(1, 'months').format('YYYY-MM-DD')
     var dateStart = moment().endOf('month').subtract(2, 'years').format('YYYY-MM-DD')
 
     var queryURL = "https://www.quandl.com/api/v3/datasets/FRED/" + userInput + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
-    				console.log(response)	
+        console.log(response)
         stockLabel = response.dataset.dataset_code
 
         //Initializes and clears the price data to be sent to the stockDataObject
@@ -595,15 +606,15 @@ function threeMonthAverager(response) {
 
 
 //An easy one!
-function oneWeekViewer(response){
-	currentData = []
-	for (var i = 0; i < 7; i++) {
-		currentData.unshift(response.dataset.data[i][1])
-		if (oneWeekLabels.length < 7){
-			oneWeekLabels.unshift(response.dataset.data[i][0])
-		}
-	}
-	oneWeekViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, currentData))
+function oneWeekViewer(response) {
+    currentData = []
+    for (var i = 0; i < 7; i++) {
+        currentData.unshift(response.dataset.data[i][1])
+        if (oneWeekLabels.length < 7) {
+            oneWeekLabels.unshift(response.dataset.data[i][0])
+        }
+    }
+    oneWeekViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, currentData))
 }
 
 function chartColor(color, border) {
