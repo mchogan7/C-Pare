@@ -39,9 +39,10 @@ var currencyBorder = [255, 97, 128] //defines the initial values of the currency
 
 var currentData = []
 var stockLabel
+var fullName //Full name of entry. Used in table.
 
 //prototype Object constructor. Let us create objects globally, and avoid duplicates.
-function stockDataObject(label, backgroundColor, borderColor, data) {
+function stockDataObject(label, backgroundColor, borderColor, data, fullName) {
     this.label = label
     this.fill = false,
         this.lineTension = 0.1,
@@ -68,6 +69,7 @@ function stockDataObject(label, backgroundColor, borderColor, data) {
         },
         this.low = Math.min(...this.data),
         this.high = Math.max(...this.data);
+        this.fullName = fullName
 }
 
 var commodityLookUp = [{
@@ -95,35 +97,27 @@ function fireBaseAdd() {
 //Stock AJAX Call
 
 function stockAJAX() {
-    // var correctedSearch = lookUp(userInput, stockLookUp);
-    // //Checks user search against the yahoo ticker converter and our stockLookup table.
-
-    // if (!correctedSearch && (exchange !== 'NASDAQ' && exchange !== 'NYSE')) {
-
-    //     buttonErrorDisplay('Stock not found on NYSE or NASDAQ')
-
-    //     //If not found in stockLookUp table, use the yahoo ticker converter output.
-    // } else if (!correctedSearch) {
-    //     tickerSymbol = tickerSymbol
-    //         //If found in stockLookUp table, change the ticker symbol to be searched.
-    // } else {
-    //     tickerSymbol = correctedSearch
-    // }
-
     //get cuurent date in the query's desired format
     var today = moment().endOf('month').subtract(1, 'months').format('YYYY-MM-DD')
     var dateStart = moment().endOf('month').subtract(2, 'years').format('YYYY-MM-DD')
 
     var queryURL = "https://www.quandl.com/api/v3/datasets/WIKI/" + symbol + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily&api_key=EDWEb1oyzs8FrfoFyG1u";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
+    	
+    	//Trims the name for table view
+    	var trim = response.dataset.name
+		var trimPosition = trim.indexOf('(');
+		fullName = trim.substring(0, trimPosition).trim()
+        
+		//Sets the label at the top of the chart
         stockLabel = response.dataset.dataset_code
-        console.log(response)
         //Initializes and clears the price data to be sent to the stockDataObject
         var stocksChartData = []
 
         //Loops through the response and pushes price data to the stocksChartData array
         for (var i = 0; i < response.dataset.data.length; i++) {
             stocksChartData.push(response.dataset.data[i][1])
+
         }
 
         chartColor(stocksColor, stocksBorder);
@@ -233,26 +227,6 @@ function coinListCreator() {
     });
 }
 
-//Ticker Converter Function - This is specific to the stockAJAX call.
-function tickerConverter(userSearch) {
-    $.ajax({
-        success: function(response) {
-            exchange = response.ResultSet.Result[0].exchDisp
-            tickerSymbol = response.ResultSet.Result[0].symbol
-                //the stockAJAX function has to be called here to avoid async issues.
-            stockAJAX();
-        },
-        type: "GET",
-        url: "http://d.yimg.com/autoc.finance.yahoo.com/autoc",
-        data: {
-            query: userSearch,
-            region: 'US',
-            lang: 'en-US'
-        },
-        dataType: "jsonp"
-    })
-}
-
 //CHART GLOBAL SETTINGS:
 
 //Points to chart in the DOM
@@ -325,29 +299,6 @@ $('.selectButton').on('click', function() {
     $('.selectButton').attr('value', 'inactive')
     $(this).attr('value', 'active')
 })
-
-
-//This is used to determine which AJAX calls are made, based on what buttons were selected.
-// function AJAXselector() {
-//     userInput = $('#query-input').val().trim().toLowerCase();
-
-//     //Clears the search Box
-//     $('#query-input').val("")
-
-//     //Checks which button is active and runs the appropriate function.
-//     if ($('#company').attr('value') === 'active') {
-//         tickerConverter(userInput)
-//     }
-//     if ($('#commodity').attr('value') === 'active') {
-//         commodityAJAX();
-//     }
-//     if ($('#currency').attr('value') === 'active') {
-//         currencyAJAX();
-//     }
-//     if ($('.selectButton').attr('value') === 'inactive') {
-//         buttonErrorDisplay('Select a catagory.')
-//     }
-// }
 
 $('#twoYearViewButton').on('click', function() {
     mainChart.destroy();
@@ -425,7 +376,7 @@ function twoYearAverager(response) {
             matchDate = date
         }
     }
-    twoYearViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, currentData))
+    twoYearViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, currentData, fullName))
 }
 
 //Displays only half of the twoYearAverager result.
@@ -436,7 +387,7 @@ function oneYearAverager(response) {
         if (oneYearLabels.length < 12)
             oneYearLabels.push(twoYearLabels[i])
     }
-    oneYearViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, yearData))
+    oneYearViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, yearData, fullName))
 }
 
 //Averages all the weeks during a three month period.
@@ -464,7 +415,7 @@ function threeMonthAverager(response) {
         }
         i++
     }
-    threeMonthViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, currentData))
+    threeMonthViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, currentData, fullName))
 }
 
 
@@ -477,7 +428,7 @@ function oneWeekViewer(response) {
             oneWeekLabels.unshift(response.dataset.data[i][0])
         }
     }
-    oneWeekViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, currentData))
+    oneWeekViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, currentData, fullName))
 }
 
 function chartColor(color, border) {
