@@ -330,7 +330,7 @@ function commodityAJAX() {
      //get cuurent date in the query's desired format
      var today = moment().format('YYYY-MM-DD')
  
-     var queryURL = "https://www.quandl.com/api/v3/datasets/COM/WLD_SILVER.json?&start_date=2015-01-01&end_date=" + today + "&collapse=daily";
+     var queryURL = "https://www.quandl.com/api/v3/datasets/COM/WHEAT_KC.json?&start_date=2015-01-01&end_date=" + today + "&collapse=daily";
      $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
  
          // //Initializes and clears the price data to be sent to the stockDataObject
