@@ -12,6 +12,7 @@ Gray - 166,166,166
      margin: auto;
      height: 600px;
      margin: auto;
+     margin-top: 15px;
  }
  
  #mainchart {
@@ -20,8 +21,7 @@ Gray - 166,166,166
  }
  
  #compare {
-     margin-top: 2px;
-     margin-bottom: 15px;
+     margin-top: 10px;
      text-align: center;
      line-height: 50px;
      font-family: 'Montserrat', sans-serif;

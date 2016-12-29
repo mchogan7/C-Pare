@@ -20,7 +20,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.js"></script>
     <!-- Link to Moment.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.js"></script>
-    
 </head>
 
 <body>
@@ -29,12 +28,14 @@
         <img src="assets/images/logo.PNG" alt="C-Pare_logo">
     </div>
     <div id="search">
-        <input type="text" id="query-input" value="What would you like to compare?">
-        <div class="selectContainer">
-        <div type="submit" id="company" value="inactive" class="selectButton">COMPANY</div>
-        <div type="submit" id="commodity" value="inactive" class="selectButton">COMMODITY</div>
-        <div type="submit" id="currency" value="inactive" class="selectButton">CURRENCY</div>
-    </div>
+        <input list="autoComplete" type="text" id="query-input" value="What would you like to compare?">
+        <datalist id="autoComplete">
+        </datalist>
+      <!--   <div class="selectContainer">
+            <div type="submit" id="company" value="inactive" class="selectButton">COMPANY</div>
+            <div type="submit" id="commodity" value="inactive" class="selectButton">COMMODITY</div>
+            <div type="submit" id="currency" value="inactive" class="selectButton">CURRENCY</div>
+        </div> -->
         <!-- Button triggers new query to be added -->
         <div class="buttonContainer">
             <div id="compare" class="active-state" type="submit">CLICK TO C-PARE</div>
@@ -44,16 +45,13 @@
     <!-- Chart holder div. We can move this wherever. -->
     <div class="chartContainer">
         <canvas id="mainChart" width="500" height="500"></canvas>
-        
     </div>
-    
     <div class="buttonsView">
-      <button id="weekViewButton">Week</button>
-      <button id="threeMonthsViewButton">Three Months</button>
-      <button id="yearViewButton">One Year</button>
-      <button id="twoYearViewButton">Two Years</button>
-    </div>               
-    
+        <button id="weekViewButton">Week</button>
+        <button id="threeMonthsViewButton">Three Months</button>
+        <button id="yearViewButton">One Year</button>
+        <button id="twoYearViewButton">Two Years</button>
+    </div>
     <div class="panel-body">
         <table class="table">
             <thead>

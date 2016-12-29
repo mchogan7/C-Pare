@@ -1,4 +1,3 @@
-
 //Make mess below:
 
 //https://www.cryptonator.com/api
@@ -6,18 +5,18 @@
 //https://coinmarketcap.com/api/
 
 //Initialize Firebase
-  var config = {
+var config = {
     apiKey: "AIzaSyDm9y-YwKrmIXiF8mtSteotCMdd84VEtVo",
     authDomain: "commoditylookupindex.firebaseapp.com",
     databaseURL: "https://commoditylookupindex.firebaseio.com",
     storageBucket: "commoditylookupindex.appspot.com",
     messagingSenderId: "805209145451"
-  };
-  firebase.initializeApp(config);
+};
+firebase.initializeApp(config);
 
 //Collect global variables here:
 var database = firebase.database();
-var tickerSymbol
+var symbol
 var exchange
 var twoYearViewArray = [];
 var twoYearLabels = [];
@@ -29,6 +28,7 @@ var oneWeekViewArray = [];
 var oneWeekLabels = [];
 var chartLabels
 var userInput;
+var duplicateArray = [] //used to prevent duplicates in autocomplete list.
 
 var stocksColor = [49, 141, 141] //defines the initial values of the stocks colors [red, green, blue]
 var stocksBorder = [75, 192, 192] //defines the initial values of the stocks borders colors [red, green, blue]
@@ -70,191 +70,54 @@ function stockDataObject(label, backgroundColor, borderColor, data) {
         this.high = Math.max(...this.data);
 }
 
-var stockLookUp = [{
-    targetWord: "GOOG",
-    queryWord: ["google", "gooogle", "googel", "alphabet"]
-}, {
-    targetWord: "FB",
-    queryWord: ["facebook", "face book"]
-}]
-
-
 var commodityLookUp = [{
-    targetWord: "WLD_SILVER",
+    targetWord: "AG_EIB",
     queryWord: ["silver", "si", "sliver", "slver"]
-}, {
-    targetWord: "PALUM_USD",
-    queryWord: ["aluminum", "alluminum", "aluminium", "alumminum"]
-}, {
-    targetWord: "WLD_GOLD",
-    queryWord: ["gold", "goled", "golld", "goldd"]
-}, {
-    targetWord: "PBEEF_USD",
-    queryWord: ["beef", "beaf"]
-}, {
-    targetWord: "BUTTER",
-    queryWord: ["butter", "buter", "butt", "buttr", "btter"]
-}, {
-    targetWord: "CHEESE_BLK",
-    queryWord: ["cheese", "chease", "chees"]
-}, {
-    targetWord: "EGGS",
-    queryWord: ["eggs", "egs", "egss", "egg"]
-}, {
-    targetWord: "PPOULT_USD",
-    queryWord: ["chicken", "chikken", "chiken", "chicen", "chickn"]
-}, {
-    targetWord: "PCOALAU_USD",
-    queryWord: ["coal", "cole", "coll", "cool"]
-}, {
-    targetWord: "PCOCO_USD",
-    queryWord: ["cocoa", "coco", "coko", "cocoe", "cokeco"]
-}, {
-    targetWord: "PCOFFOTM_USD",
-    queryWord: ["coffee", "cafe", "cofee", "cofffe", "cofe", "coofee"]
-}, {
-    targetWord: "PMAIZMT_USD",
-    queryWord: ["corn", "korn", "corrn"]
-}, {
-    targetWord: "PCOTTIND_USD",
-    queryWord: ["cotton", "coton", "cotten", "coten", "cottan", "cotan"]
-}, {
-    targetWord: "WLD_IRON_ORE",
-    queryWord: ["iron", "irron"]
-}, {
-    targetWord: "GAS_CR",
-    queryWord: ["gas", "gasoline", "gassoline", "gass", "gassoleen", "gassolene", "gasolene", "gasolean", "gassolean"]
-}, {
-    targetWord: "MILK",
-    queryWord: ["milk", "millk", "miilk"]
-}, {
-    targetWord: "OATS",
-    queryWord: ["oats", "oets", "oots", "otts"]
-}, {
-    targetWord: "PCOPP_USD",
-    queryWord: ["copper", "coper", "cooper"]
-}, {
-    targetWord: "PFISH_USD",
-    queryWord: ["fish", "fiish"]
-}, {
-    targetWord: "PGNUTS_USD",
-    queryWord: ["peanuts", "peenuts", "penuts"]
-}, {
-    targetWord: "PLAMB_USD",
-    queryWord: ["lamb"]
-}, {
-    targetWord: "PLEAD_USD",
-    queryWord: ["lead", "led"]
-}, {
-    targetWord: "PLOGORE_USD",
-    queryWord: ["wood", "lumber", "timber"]
-}, {
-    targetWord: "PNGASUS_USD",
-    queryWord: ["natural gas", "natral gas"]
-}, {
-    targetWord: "PNICK_USD",
-    queryWord: ["nickel", "nicckel", "nickkel"]
-}, {
-    targetWord: "POILWTI_USD",
-    queryWord: ["crude oil", "crud oil", "cured oil", "petroleum", "petrolium", "oil"]
-}, {
-    targetWord: "POLVOIL_USD",
-    queryWord: ["olive oil"]
-}, {
-    targetWord: "PORANG_USD",
-    queryWord: ["orange", "oranges", "organs", "oragnes", "oragne", "organ"]
-}, {
-    targetWord: "PPORK_USD",
-    queryWord: ["swine", "pork", "pigs", "pig", "hogs", "hog"]
-}, {
-    targetWord: "PRICENPQ_USD",
-    queryWord: ["rice"]
-}, {
-    targetWord: "PRUBB_USD",
-    queryWord: ["rubber", "rubbr", "ruber"]
-}, {
-    targetWord: "PSOYB_USD",
-    queryWord: ["soybeans", "soy beans", "soybean", "soybeans"]
-}, {
-    targetWord: "PSUGAUSA_USD",
-    queryWord: ["sugar", "sugr", "suger"]
-}, {
-    targetWord: "PTIN_USD",
-    queryWord: ["tin"]
-}, {
-    targetWord: "PURAN_USD",
-    queryWord: ["uranium", "uraneum"]
-}, {
-    targetWord: "PWHEAMT_USD",
-    queryWord: ["wheat", "wheet"]
-}, {
-    targetWord: "PWOOLC_USD",
-    queryWord: ["wool"]
-}, {
-    targetWord: "SORGHUM",
-    queryWord: ["sorghum", "soreghum", "sor gum", "sore gum", "sorgum", "soregum"]
-}, {
-    targetWord: "WLD_BANANA_US",
-    queryWord: ["banana", "bananas", "bannana", "bananna", "bannanas", "banannas"]
-}, {
-    targetWord: "WLD_BARLEY",
-    queryWord: ["barley", "barlee", "baley"]
-}, {
-    targetWord: "WLD_COCONUT_OIL",
-    queryWord: ["coconut oil", "coconut", "coconuts"]
-}, {
-    targetWord: "WLD_IRON_ORE",
-    queryWord: ["iron", "iron ore"]
-}, {
-    targetWord: "WLD_TOBAC_US",
-    queryWord: ["tobacco", "tobbacco", "tobbaco"]
 }]
 
 //fireBaseAdd();
 
-function fireBaseAdd(){
-for (var i = 0; i < commodityLookUp.length; i++) {
-		for (var j = 0; j < commodityLookUp[i].queryWord.length; j++) {
-				    database.ref('lookUpTable/' + commodityLookUp[i].queryWord[j]).set({
-				    	target: commodityLookUp[i].targetWord, 
-				    	category: "commodity"}
-	             
-	         );
-		}
-
-}
+function fireBaseAdd() {
+    for (var i = 0; i < commodityLookUp.length; i++) {
+        for (var j = 0; j < commodityLookUp[i].queryWord.length; j++) {
+            database.ref('lookUpTable/' + commodityLookUp[i].queryWord[j]).set({
+                target: commodityLookUp[i].targetWord,
+                category: "commodity"
+            });
+        }
+    }
 }
 
-	 // database.ref('commodityAuto').on("value", function(snapshot) {
-	 //     console.log(snapshot.val())
-	 // });
+// database.ref('commodityAuto').on("value", function(snapshot) {
+//     console.log(snapshot.val())
+// });
 
 //Stock AJAX Call
 
 function stockAJAX() {
-    var correctedSearch = lookUp(userInput, stockLookUp);
-    //Checks user search against the yahoo ticker converter and our stockLookup table.
+    // var correctedSearch = lookUp(userInput, stockLookUp);
+    // //Checks user search against the yahoo ticker converter and our stockLookup table.
 
-    if (!correctedSearch && (exchange !== 'NASDAQ' && exchange !== 'NYSE')) {
+    // if (!correctedSearch && (exchange !== 'NASDAQ' && exchange !== 'NYSE')) {
 
-        buttonErrorDisplay('Stock not found on NYSE or NASDAQ')
+    //     buttonErrorDisplay('Stock not found on NYSE or NASDAQ')
 
-        //If not found in stockLookUp table, use the yahoo ticker converter output.
-    } else if (!correctedSearch) {
-        tickerSymbol = tickerSymbol
-            //If found in stockLookUp table, change the ticker symbol to be searched.
-    } else {
-        tickerSymbol = correctedSearch
-    }
+    //     //If not found in stockLookUp table, use the yahoo ticker converter output.
+    // } else if (!correctedSearch) {
+    //     tickerSymbol = tickerSymbol
+    //         //If found in stockLookUp table, change the ticker symbol to be searched.
+    // } else {
+    //     tickerSymbol = correctedSearch
+    // }
 
     //get cuurent date in the query's desired format
     var today = moment().endOf('month').subtract(1, 'months').format('YYYY-MM-DD')
     var dateStart = moment().endOf('month').subtract(2, 'years').format('YYYY-MM-DD')
 
-    var queryURL = "https://www.quandl.com/api/v3/datasets/WIKI/" + tickerSymbol + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily&api_key=EDWEb1oyzs8FrfoFyG1u";
+    var queryURL = "https://www.quandl.com/api/v3/datasets/WIKI/" + symbol + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily&api_key=EDWEb1oyzs8FrfoFyG1u";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
         stockLabel = response.dataset.dataset_code
-
+        console.log(response)
         //Initializes and clears the price data to be sent to the stockDataObject
         var stocksChartData = []
 
@@ -278,13 +141,13 @@ function stockAJAX() {
 
 //commodityAJAX function
 function commodityAJAX() {
-    var correctedSearch = lookUp(userInput, commodityLookUp);
+    // var correctedSearch = lookUp(userInput, commodityLookUp);
 
     //get cuurent date in the query's desired format
     var today = moment().endOf('month').subtract(1, 'months').format('YYYY-MM-DD')
     var dateStart = moment().endOf('month').subtract(2, 'years').format('YYYY-MM-DD')
 
-    var queryURL = "https://www.quandl.com/api/v3/datasets/COM/" + correctedSearch + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily";
+    var queryURL = "https://www.quandl.com/api/v3/datasets/COM/" + symbol + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
         console.log(response)
         stockLabel = response.dataset.dataset_code
@@ -309,13 +172,13 @@ function commodityAJAX() {
 }
 
 function currencyAJAX() {
-    var correctedSearch = lookUp(userInput, commodityLookUp);
+    // var correctedSearch = lookUp(userInput, commodityLookUp);
 
     //get cuurent date in the query's desired format
     var today = moment().endOf('month').subtract(1, 'months').format('YYYY-MM-DD')
     var dateStart = moment().endOf('month').subtract(2, 'years').format('YYYY-MM-DD')
 
-    var queryURL = "https://www.quandl.com/api/v3/datasets/FRED/" + userInput + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily";
+    var queryURL = "https://www.quandl.com/api/v3/datasets/FRED/" + symbol + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
         console.log(response)
         stockLabel = response.dataset.dataset_code
@@ -370,9 +233,6 @@ function coinListCreator() {
     });
 }
 
-
-
-
 //Ticker Converter Function - This is specific to the stockAJAX call.
 function tickerConverter(userSearch) {
     $.ajax({
@@ -416,6 +276,8 @@ var mainChart = new Chart(ctx, {
     }
 });
 
+//Chart has to be destroyed and rebuilt to change views.
+//This function builds a new chart.
 function newChart(labels, data) {
     mainChart = new Chart(ctx, {
         type: 'line',
@@ -466,26 +328,26 @@ $('.selectButton').on('click', function() {
 
 
 //This is used to determine which AJAX calls are made, based on what buttons were selected.
-function AJAXselector() {
-    userInput = $('#query-input').val().trim().toLowerCase();
+// function AJAXselector() {
+//     userInput = $('#query-input').val().trim().toLowerCase();
 
-    //Clears the search Box
-    $('#query-input').val("")
+//     //Clears the search Box
+//     $('#query-input').val("")
 
-    //Checks which button is active and runs the appropriate function.
-    if ($('#company').attr('value') === 'active') {
-        tickerConverter(userInput)
-    }
-    if ($('#commodity').attr('value') === 'active') {
-        commodityAJAX();
-    }
-    if ($('#currency').attr('value') === 'active') {
-        currencyAJAX();
-    }
-    if ($('.selectButton').attr('value') === 'inactive') {
-        buttonErrorDisplay('Select a catagory.')
-    }
-}
+//     //Checks which button is active and runs the appropriate function.
+//     if ($('#company').attr('value') === 'active') {
+//         tickerConverter(userInput)
+//     }
+//     if ($('#commodity').attr('value') === 'active') {
+//         commodityAJAX();
+//     }
+//     if ($('#currency').attr('value') === 'active') {
+//         currencyAJAX();
+//     }
+//     if ($('.selectButton').attr('value') === 'inactive') {
+//         buttonErrorDisplay('Select a catagory.')
+//     }
+// }
 
 $('#twoYearViewButton').on('click', function() {
     mainChart.destroy();
@@ -634,5 +496,52 @@ function chartColor(color, border) {
 
 };
 
+
+//Autocomplete function.
+$('#query-input').on('keyup', function() {
+    var keyInput = $(this).val();
+    autoComplete(keyInput)
+})
+
+function autoComplete(input) {
+    firebase.database().ref('lookUpTable').startAt(input).orderByKey().limitToFirst(6).once('value', function(snapshot) {
+        snapshot.forEach(function(childSnapshot) {
+            if (duplicateArray.indexOf(childSnapshot.key) === -1) {
+                duplicateArray.push(childSnapshot.key)
+                $('#autoComplete').append('<option value="' + childSnapshot.key + '">')
+            }
+        })
+    })
+}
+
+function AJAXselector() {
+    userInput = $('#query-input').val().trim().toLowerCase();
+    //Clears the search Box
+    $('#query-input').val("")
+
+    firebase.database().ref('lookUpTable').startAt(userInput).orderByKey().limitToFirst(1).once('value', function(snapshot) {
+        snapshot.forEach(function(childSnapshot) {
+            var category = childSnapshot.val().category
+            symbol = childSnapshot.val().target
+            console.log(symbol)
+
+            if (category === 'commodity') {
+                commodityAJAX();
+            }
+            if (category === 'company') {
+                stockAJAX();
+            }
+            if (category === 'currency') {
+                currencyAJAX();
+            }
+            if (category === 'cryptocurrency') {
+                cryptocurrencyAJAX();
+            }
+            if (!category) {
+                console.log('Nothing Found')
+            }
+        })
+    })
+}
 
 //END OF REUSABLE FUNCTIONS
