@@ -70,7 +70,7 @@ Gray - 166,166,166
  
  #errorDisplay {
      margin: auto;
-     margin-top: 2px;
+     margin-top: 10px;
      margin-bottom: 15px;
      text-align: center;
      line-height: 50px;
@@ -131,3 +131,7 @@ Gray - 166,166,166
      background-color: black;
      transform: perspective(1000px) rotateX(-90deg) rotateY(0deg) rotateZ(0deg);
  }
+
+ input::-webkit-calendar-picker-indicator {
+  display: none;
+}

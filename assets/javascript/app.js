@@ -41,7 +41,8 @@ var currentData = []
 var stockLabel
 var fullName //Full name of entry. Used in table.
 
-//prototype Object constructor. Let us create objects globally, and avoid duplicates.
+//prototype Object constructor. Lets us create objects globally, and avoid duplicates.
+//Object also contains functions for the table data.
 function stockDataObject(label, backgroundColor, borderColor, data, fullName) {
     this.label = label
     this.fill = false,
@@ -69,7 +70,7 @@ function stockDataObject(label, backgroundColor, borderColor, data, fullName) {
         },
         this.low = Math.min(...this.data),
         this.high = Math.max(...this.data);
-        this.fullName = fullName
+    	this.fullName = fullName
 }
 
 var commodityLookUp = [{
@@ -77,6 +78,8 @@ var commodityLookUp = [{
     queryWord: ["silver", "si", "sliver", "slver"]
 }]
 
+//Fill in the commodityLookUp objects with what you want to add ot the database.
+//The run the FireBaseAdd function.
 //fireBaseAdd();
 
 function fireBaseAdd() {
@@ -90,10 +93,6 @@ function fireBaseAdd() {
     }
 }
 
-// database.ref('commodityAuto').on("value", function(snapshot) {
-//     console.log(snapshot.val())
-// });
-
 //Stock AJAX Call
 
 function stockAJAX() {
@@ -103,15 +102,14 @@ function stockAJAX() {
 
     var queryURL = "https://www.quandl.com/api/v3/datasets/WIKI/" + symbol + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily&api_key=EDWEb1oyzs8FrfoFyG1u";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
-    	
-    	//Trims the name for table view
-    	var trim = response.dataset.name
-		var trimPosition = trim.indexOf('(');
-		fullName = trim.substring(0, trimPosition).trim()
-        
-		//Sets the label at the top of the chart
+        //Trims the name for table view
+        var trim = response.dataset.name
+        var trimPosition = trim.indexOf('(');
+        fullName = trim.substring(0, trimPosition).trim()
+
+        //Sets the label at the top of the chart
         stockLabel = response.dataset.dataset_code
-        //Initializes and clears the price data to be sent to the stockDataObject
+            //Initializes and clears the price data to be sent to the stockDataObject
         var stocksChartData = []
 
         //Loops through the response and pushes price data to the stocksChartData array
@@ -143,7 +141,6 @@ function commodityAJAX() {
 
     var queryURL = "https://www.quandl.com/api/v3/datasets/COM/" + symbol + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
-        console.log(response)
         stockLabel = response.dataset.dataset_code
 
         //Initializes and clears the price data to be sent to the stockDataObject
@@ -160,8 +157,6 @@ function commodityAJAX() {
         threeMonthAverager(response)
         oneWeekViewer(response)
         mainChart.update();
-
-
     })
 }
 
@@ -191,14 +186,8 @@ function currencyAJAX() {
         threeMonthAverager(response)
         oneWeekViewer(response)
         mainChart.update();
-
-
     })
 }
-
-
-
-
 
 //creating cryptocurrency coin object for name/symbol key/value pairs
 function coinObject(name, symbol) {
@@ -293,13 +282,7 @@ $('#query-input').on('click', function() {
     }
 })
 
-$('.selectButton').on('click', function() {
-    $('.selectButton').removeClass('selectActive')
-    $(this).addClass('selectActive')
-    $('.selectButton').attr('value', 'inactive')
-    $(this).attr('value', 'active')
-})
-
+//Timeline view buttons.
 $('#twoYearViewButton').on('click', function() {
     mainChart.destroy();
     newChart(twoYearLabels, twoYearViewArray)
@@ -316,9 +299,15 @@ $('#threeMonthsViewButton').on('click', function() {
 })
 
 $('#weekViewButton').on('click', function() {
-    mainChart.destroy();
-    newChart(oneWeekLabels, oneWeekViewArray)
-})
+        mainChart.destroy();
+        newChart(oneWeekLabels, oneWeekViewArray)
+    })
+    //End of timeline view buttons.
+
+//Displays an error for any failed AJAX call.
+$(document).ajaxError(function() {
+    buttonErrorDisplay('Sorry. No results found.')
+});
 
 //END OF UI AND DOM SECTION
 
@@ -419,7 +408,7 @@ function threeMonthAverager(response) {
 }
 
 
-//An easy one!
+//Displays last 7 entires.
 function oneWeekViewer(response) {
     currentData = []
     for (var i = 0; i < 7; i++) {
@@ -447,13 +436,15 @@ function chartColor(color, border) {
 
 };
 
-
 //Autocomplete function.
+
+//Sends a query to firebase on each keypress.
 $('#query-input').on('keyup', function() {
     var keyInput = $(this).val();
     autoComplete(keyInput)
 })
 
+//Grabs entries from firebase and checks for duplicates before sending them to the html datalist.
 function autoComplete(input) {
     firebase.database().ref('lookUpTable').startAt(input).orderByKey().limitToFirst(6).once('value', function(snapshot) {
         snapshot.forEach(function(childSnapshot) {
@@ -465,35 +456,41 @@ function autoComplete(input) {
     })
 }
 
+//The main function for choosing which AJAX call to run.
 function AJAXselector() {
+
+    //Sanatizes user input.
     userInput = $('#query-input').val().trim().toLowerCase();
-    //Clears the search Box
-    $('#query-input').val("")
 
-    firebase.database().ref('lookUpTable').startAt(userInput).orderByKey().limitToFirst(1).once('value', function(snapshot) {
-        snapshot.forEach(function(childSnapshot) {
-            var category = childSnapshot.val().category
-            symbol = childSnapshot.val().target
-            console.log(symbol)
+    //Displays error if the user fails to enter anything into the search field.
+    if (userInput === "" || userInput === "what would you like to compare?") {
+        buttonErrorDisplay('Please enter a search term.')
+    } else {
+        //Clears the search Box
+        $('#query-input').val("")
 
-            if (category === 'commodity') {
-                commodityAJAX();
-            }
-            if (category === 'company') {
-                stockAJAX();
-            }
-            if (category === 'currency') {
-                currencyAJAX();
-            }
-            if (category === 'cryptocurrency') {
-                cryptocurrencyAJAX();
-            }
-            if (!category) {
-                console.log('Nothing Found')
-            }
+        //Selects the appropriate AJAX call based on the category returned from firebase autocomplete result.
+        firebase.database().ref('lookUpTable').startAt(userInput).orderByKey().limitToFirst(1).once('value', function(snapshot) {
+            snapshot.forEach(function(childSnapshot) {
+                var category = childSnapshot.val().category
+                symbol = childSnapshot.val().target
+
+                if (category === 'commodity') {
+                    commodityAJAX();
+                }
+                if (category === 'company') {
+                    stockAJAX();
+                }
+                if (category === 'currency') {
+                    currencyAJAX();
+                }
+                if (category === 'cryptocurrency') {
+                    cryptocurrencyAJAX();
+                }
+            })
+
         })
-    })
+    }
 }
 
 //END OF REUSABLE FUNCTIONS
-
