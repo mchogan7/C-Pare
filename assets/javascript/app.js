@@ -30,12 +30,12 @@ var chartLabels
 var userInput;
 var duplicateArray = [] //used to prevent duplicates in autocomplete list.
 
-var stocksColor = [49, 141, 141] //defines the initial values of the stocks colors [red, green, blue]
-var stocksBorder = [75, 192, 192] //defines the initial values of the stocks borders colors [red, green, blue]
+var stocksColor = [0,155,210] //defines the initial values of the stocks colors [red, green, blue]
+var stocksBorder = [0,105,160] //defines the initial values of the stocks borders colors [red, green, blue]
 var commodityColor = [36, 200, 183] //defines the initial values of the commodity colors [red, green, blue]
-var commodityBorder = [62, 251, 134] //defines the initial values of the commodity borders colors [red, green, blue]
+var commodityBorder = [255,207,0] //defines the initial values of the commodity borders colors [red, green, blue]
 var currencyColor = [234, 46, 77] //defines the initial values of the currency colors [red, green, blue]
-var currencyBorder = [255, 97, 128] //defines the initial values of the currency borders colors [red, green, blue]
+var currencyBorder = [36,200,183] //defines the initial values of the currency borders colors [red, green, blue]
 
 var currentData = []
 var stockLabel
@@ -79,6 +79,7 @@ var commodityLookUp = [{
 }]
 
 //Fill in the commodityLookUp objects with what you want to add ot the database.
+//Be sure to change category to the correct one.
 //The run the FireBaseAdd function.
 //fireBaseAdd();
 
@@ -102,6 +103,8 @@ function stockAJAX() {
 
     var queryURL = "https://www.quandl.com/api/v3/datasets/WIKI/" + symbol + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily&api_key=EDWEb1oyzs8FrfoFyG1u";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
+    	console.log(response)
+
         //Trims the name for table view
         var trim = response.dataset.name
         var trimPosition = trim.indexOf('(');
@@ -235,7 +238,8 @@ var mainChart = new Chart(ctx, {
                     beginAtZero: true
                 }
             }]
-        }
+        },
+        responsive: true
     }
 });
 
@@ -255,7 +259,8 @@ function newChart(labels, data) {
                         beginAtZero: true
                     }
                 }]
-            }
+            },
+            responsive: true
         }
     });
 }
