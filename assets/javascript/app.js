@@ -290,23 +290,43 @@ $('#query-input').on('click', function() {
 //Timeline view buttons.
 $('#twoYearViewButton').on('click', function() {
     mainChart.destroy();
-    newChart(twoYearLabels, twoYearViewArray)
+    newChart(twoYearLabels, twoYearViewArray);
+    $(".comparisonInfo").empty();
+    for (var i = 0; i < twoYearViewArray.length; i++) {
+    	$(".comparisonInfo").append("<tr>" + "<td>" + twoYearViewArray[i].label + "</td>" + "<td>" + twoYearViewArray[i].high + "</td>" + "<td>" + twoYearViewArray[i].low + "</td>" + "<td>" + twoYearViewArray[i].percentChange() + "</td>" + "</tr>");
+    };
+    return false;
 })
 
 $('#yearViewButton').on('click', function() {
     mainChart.destroy();
-    newChart(oneYearLabels, oneYearViewArray)
+    newChart(oneYearLabels, oneYearViewArray);
+    $(".comparisonInfo").empty();
+    for (var i = 0; i < twoYearViewArray.length; i++) {
+    	$(".comparisonInfo").append("<tr>" + "<td>" + oneYearViewArray[i].label + "</td>" + "<td>" + oneYearViewArray[i].high + "</td>" + "<td>" + oneYearViewArray[i].low + "</td>" + "<td>" + oneYearViewArray[i].percentChange() + "</td>" + "</tr>");
+    };
+    return false;
 })
 
 $('#threeMonthsViewButton').on('click', function() {
     mainChart.destroy();
-    newChart(threeMonthLabels, threeMonthViewArray)
+    newChart(threeMonthLabels, threeMonthViewArray);
+    $(".comparisonInfo").empty();
+    for (var i = 0; i < twoYearViewArray.length; i++) {
+   		$(".comparisonInfo").append("<tr>" + "<td>" + threeMonthViewArray[i].label + "</td>" + "<td>" + threeMonthViewArray[i].high + "</td>" + "<td>" + threeMonthViewArray[i].low + "</td>" + "<td>" + threeMonthViewArray[i].percentChange() + "</td>" + "</tr>");
+   	};
+   	return false;
 })
 
 $('#weekViewButton').on('click', function() {
-        mainChart.destroy();
-        newChart(oneWeekLabels, oneWeekViewArray)
-    })
+    mainChart.destroy();
+    newChart(oneWeekLabels, oneWeekViewArray);
+    $(".comparisonInfo").empty();
+    for (var i = 0; i < twoYearViewArray.length; i++) {
+    	$(".comparisonInfo").append("<tr>" + "<td>" + oneWeekViewArray[i].label + "</td>" + "<td>" + oneWeekViewArray[i].high + "</td>" + "<td>" + oneWeekViewArray[i].low + "</td>" + "<td>" + oneWeekViewArray[i].percentChange() + "</td>" + "</tr>");
+    };
+    return false;
+})
     //End of timeline view buttons.
 
 //Displays an error for any failed AJAX call.
