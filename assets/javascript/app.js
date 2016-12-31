@@ -498,4 +498,76 @@ function AJAXselector() {
     }
 }
 
+var cryptocurrencyList = [];
+var CClistOfAverages2yr = [];
+var CClistOfAverages1yr =[];
+
+function coinObject(name, symbol) {
+  this.name = name,
+  this.symbol = symbol
+}
+
+var coinListURL = "https://api.coinmarketcap.com/v1/ticker/";
+var currencyPriceHistory = [];
+$.ajax({ url: coinListURL, method: "GET" }).done(function(response) {
+    
+  for (i=0; i<response.length; i++) {
+    var name = response[i].name;
+    var symbol = response[i].symbol;
+    var coinOBJ = new coinObject(name, symbol);
+
+    cryptocurrencyList.push(coinOBJ);
+  }
+  //console.log(cryptocurrencyList)
+
+});
+
+function histObject(date, price) {
+  this.date = date;
+  this.price = price;
+}
+function histPrices(coin) {
+  var coinSymbol = coin;
+  var test
+  var startDate = moment('2015-01-01', 'YYYY-MM-DD');
+  var endDate = moment().format('YYYY-MM-DD');
+  var dateDiff = Math.abs(startDate.diff(endDate, 'days')) -1
+  var priceURL = "https://www.cryptocompare.com/api/data/histoday/?e=CCCAGG&fsym=" + coinSymbol + "&limit=" + dateDiff + "&tsym=USD"
+  $.ajax({ url: priceURL, method: "GET" }).done(function(response) {
+    for (p=0;p<response.Data.length; p++) { 
+      var price = response.Data[p].close;
+      var cryptoDate = response.Data[p].time;
+      var convertedDate = moment.unix(cryptoDate).format('YYYY-MM-DD');
+      var histObj = new histObject(convertedDate, price);
+      currencyPriceHistory.push(histObj);
+    }
+    console.log(CCtwoYearAverager(response));
+
+  })
+}
+histPrices("BTC");
+
+function CCtwoYearAverager(response) {
+  var total = 0;
+  var count = 0; 
+  var month
+  var currentMonth = currencyPriceHistory[0].date.substr(0,7)
+  for (t=0; t<currencyPriceHistory.length; t++) {
+    month = currencyPriceHistory[t].date.substr(0,7)
+    if (currencyPriceHistory[t].date.substr(0,7) === currentMonth) {
+      total += currencyPriceHistory[t].price;
+      count++;
+      if (t === currencyPriceHistory.length - 1) {
+        CClistOfAverages2yr.unshift((total/count).toFixed(2))
+      }
+      
+    } else {
+      CClistOfAverages2yr.unshift((total/count).toFixed(2));
+      total = 0;
+      count = 0;
+      currentMonth = currencyPriceHistory[t].date.substr(0,7)
+    }
+  }
+  return CClistOfAverages2yr;
+}
 //END OF REUSABLE FUNCTIONS
