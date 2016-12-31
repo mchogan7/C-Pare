@@ -570,4 +570,24 @@ function CCtwoYearAverager(response) {
   }
   return CClistOfAverages2yr;
 }
+
+function CConeYearAverager(response) {
+  var total = 0;
+  var count = 0;
+  var date = moment().format('YYYY-MM-DD');
+  var matchDate = moment().subtract(365, 'days').format('YYYY-MM-DD')
+  //the function below hasn't actually been tested, but it's what I came up 
+  //with to find the index associated with a specific date. It might be better 
+  //to make this a function all on it's own to do the 3-month averager with as well. 
+  Array.prototype.getIndexBy = function(key, value) { 
+      for (var q=0; q<this.length; q++) {
+      if (this[q][name] == value) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  //function should run as "var indexToReturn = currencyPriceHistory[currencyPriceHistory.getIndexBy("date", matchdate)]
+  //from here, grab bi-monthly averages to slip into averages array
+}
 //END OF REUSABLE FUNCTIONS
