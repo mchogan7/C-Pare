@@ -128,6 +128,7 @@ function stockAJAX() {
         threeMonthAverager(response)
         oneWeekViewer(response)
         mainChart.update();
+        newTable(twoYearViewArray);
     })
 }
 
@@ -159,6 +160,7 @@ function commodityAJAX() {
         threeMonthAverager(response)
         oneWeekViewer(response)
         mainChart.update();
+        newTable(twoYearViewArray);
     })
 }
 
@@ -187,6 +189,7 @@ function currencyAJAX() {
         threeMonthAverager(response)
         oneWeekViewer(response)
         mainChart.update();
+        newTable(twoYearViewArray);
     })
 }
 
@@ -262,13 +265,27 @@ function newChart(labels, data) {
     });
 }
 
+//Renders table based on the view array that is called as an argument
+function newTable(specificArray) {
+    $(".comparisonInfo").empty();
+    for (var i = 0; i < specificArray.length; i++) {
+        var removeComparisonButton = document.createElement("BUTTON");
+        removeComparisonButton.id = i;
+        removeComparisonButton.addEventListener("click", function(e) {
+            alert("Button Id: " + this.id);
+        });
+        $(".comparisonInfo").append(removeComparisonButton, "<tr>" + "<td>" + specificArray[i].label + "</td>" + "<td>" + specificArray[i].high + "</td>" + "<td>" + specificArray[i].low + "</td>" + "<td>" + specificArray[i].percentChange() + "</td>" + "</tr>");
+    }
+    return false;
+}
+
 //END OF CHART GLOBAL SETTINGS
 
 //UI AND DOM SECTION:
 
 //On click and key press functions for the submit button.
 $('#compare').on('click', function() {
-        AJAXselector()
+        AJAXselector();
     })
     //Enter key runs the AJAXselector
 $(document).on('keypress', function(e) {
@@ -288,41 +305,25 @@ $('#query-input').on('click', function() {
 $('#twoYearViewButton').on('click', function() {
     mainChart.destroy();
     newChart(twoYearLabels, twoYearViewArray);
-    $(".comparisonInfo").empty();
-    for (var i = 0; i < twoYearViewArray.length; i++) {
-    	$(".comparisonInfo").append("<tr>" + "<td>" + twoYearViewArray[i].label + "</td>" + "<td>" + twoYearViewArray[i].high + "</td>" + "<td>" + twoYearViewArray[i].low + "</td>" + "<td>" + twoYearViewArray[i].percentChange() + "</td>" + "</tr>");
-    };
-    return false;
+    newTable(twoYearViewArray);
 })
 
 $('#yearViewButton').on('click', function() {
     mainChart.destroy();
     newChart(oneYearLabels, oneYearViewArray);
-    $(".comparisonInfo").empty();
-    for (var i = 0; i < twoYearViewArray.length; i++) {
-    	$(".comparisonInfo").append("<tr>" + "<td>" + oneYearViewArray[i].label + "</td>" + "<td>" + oneYearViewArray[i].high + "</td>" + "<td>" + oneYearViewArray[i].low + "</td>" + "<td>" + oneYearViewArray[i].percentChange() + "</td>" + "</tr>");
-    };
-    return false;
+    newTable(oneYearViewArray);
 })
 
 $('#threeMonthsViewButton').on('click', function() {
     mainChart.destroy();
     newChart(threeMonthLabels, threeMonthViewArray);
-    $(".comparisonInfo").empty();
-    for (var i = 0; i < twoYearViewArray.length; i++) {
-   		$(".comparisonInfo").append("<tr>" + "<td>" + threeMonthViewArray[i].label + "</td>" + "<td>" + threeMonthViewArray[i].high + "</td>" + "<td>" + threeMonthViewArray[i].low + "</td>" + "<td>" + threeMonthViewArray[i].percentChange() + "</td>" + "</tr>");
-   	};
-   	return false;
+    newTable(threeMonthViewArray);
 })
 
 $('#weekViewButton').on('click', function() {
     mainChart.destroy();
     newChart(oneWeekLabels, oneWeekViewArray);
-    $(".comparisonInfo").empty();
-    for (var i = 0; i < twoYearViewArray.length; i++) {
-    	$(".comparisonInfo").append("<tr>" + "<td>" + oneWeekViewArray[i].label + "</td>" + "<td>" + oneWeekViewArray[i].high + "</td>" + "<td>" + oneWeekViewArray[i].low + "</td>" + "<td>" + oneWeekViewArray[i].percentChange() + "</td>" + "</tr>");
-    };
-    return false;
+    newTable(oneWeekViewArray);
 })
     //End of timeline view buttons.
 
