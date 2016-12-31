@@ -104,7 +104,7 @@ function stockAJAX() {
 
     var queryURL = "https://www.quandl.com/api/v3/datasets/WIKI/" + symbol + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily&api_key=EDWEb1oyzs8FrfoFyG1u";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
-    	console.log(response)
+
 
         //Trims the name for table view
         var trim = response.dataset.name
@@ -128,7 +128,6 @@ function stockAJAX() {
         threeMonthAverager(response)
         oneWeekViewer(response)
         mainChart.update();
-        console.log(twoYearViewArray)
     })
 }
 
@@ -172,7 +171,6 @@ function currencyAJAX() {
 
     var queryURL = "https://www.quandl.com/api/v3/datasets/FRED/" + symbol + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
-        console.log(response)
         stockLabel = response.dataset.dataset_code
 
         //Initializes and clears the price data to be sent to the stockDataObject
@@ -215,7 +213,6 @@ function coinListCreator() {
             //pushing new coin object to cryptocurrency list array
             cryptocurrencyList.push(coinOBJ);
         }
-        console.log(cryptocurrencyList);
     });
 }
 
@@ -435,8 +432,6 @@ function dateLabelCreater(){
 		for (var i = 1; i <= 13; i++) {
 	threeMonthLabels.unshift(moment().endOf('month').subtract(i, 'weeks').format('MM/DD/YY'))
 	}
-	console.log(oneWeekLabels)
-
 	}
 dateLabelCreater()
 
@@ -549,6 +544,7 @@ function histPrices(coin) {
   var dateDiff = Math.abs(startDate.diff(endDate, 'days')) -1
   var priceURL = "https://www.cryptocompare.com/api/data/histoday/?e=CCCAGG&fsym=" + coinSymbol + "&limit=" + dateDiff + "&tsym=USD"
   $.ajax({ url: priceURL, method: "GET" }).done(function(response) {
+  	console.log(response)
     for (p=0;p<response.Data.length; p++) { 
       var price = response.Data[p].close;
       var cryptoDate = response.Data[p].time;
@@ -556,7 +552,6 @@ function histPrices(coin) {
       var histObj = new histObject(convertedDate, price);
       currencyPriceHistory.push(histObj);
     }
-    console.log(CCtwoYearAverager(response));
 
   })
 }
