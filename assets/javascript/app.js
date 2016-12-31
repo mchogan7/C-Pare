@@ -74,9 +74,10 @@ function stockDataObject(label, backgroundColor, borderColor, data, fullName) {
 }
 
 var commodityLookUp = [{
-    targetWord: "AG_EIB",
-    queryWord: ["silver", "si", "sliver", "slver"]
-}]
+    targetWord: "DEXUSAL",
+    queryWord: ["australian dollar"]
+}
+]
 
 //Fill in the commodityLookUp objects with what you want to add ot the database.
 //Be sure to change category to the correct one.
@@ -88,7 +89,7 @@ function fireBaseAdd() {
         for (var j = 0; j < commodityLookUp[i].queryWord.length; j++) {
             database.ref('lookUpTable/' + commodityLookUp[i].queryWord[j]).set({
                 target: commodityLookUp[i].targetWord,
-                category: "commodity"
+                category: "currency"
             });
         }
     }
@@ -128,7 +129,6 @@ function stockAJAX() {
         oneWeekViewer(response)
         mainChart.update();
         console.log(twoYearViewArray)
-
     })
 }
 
@@ -364,9 +364,6 @@ function twoYearAverager(response) {
             currentData.unshift((total / count).toFixed(2))
             total = 0;
             count = 0;
-            if (twoYearLabels.length < currentData.length) {
-                twoYearLabels.unshift(matchDate)
-            }
             matchDate = date
         }
     }
@@ -378,8 +375,6 @@ function oneYearAverager(response) {
     var yearData = []
     for (var i = 11; i < currentData.length; i++) {
         yearData.push(currentData[i])
-        if (oneYearLabels.length < 12)
-            oneYearLabels.push(twoYearLabels[i])
     }
     oneYearViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, yearData, fullName))
 }
@@ -402,9 +397,6 @@ function threeMonthAverager(response) {
             currentData.unshift((total / count).toFixed(2))
             total = 0;
             count = 0;
-            if (threeMonthLabels.length <= 12) {
-                threeMonthLabels.unshift(response.dataset.data[i][0])
-            }
             matchDate = activeDate
         }
         i++
@@ -415,15 +407,38 @@ function threeMonthAverager(response) {
 
 //Displays last 7 entires.
 function oneWeekViewer(response) {
+	var labelDate
     currentData = []
     for (var i = 0; i < 7; i++) {
         currentData.unshift(response.dataset.data[i][1])
-        if (oneWeekLabels.length < 7) {
-            oneWeekLabels.unshift(response.dataset.data[i][0])
+        //Generates labels for the week view.
+          if (oneWeekLabels.length < 7) {
+          	labelDate = response.dataset.data[i][0]
+         oneWeekLabels.unshift(moment(labelDate).format('MM/DD/YY'))
         }
-    }
+    } 
+  
     oneWeekViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, currentData, fullName))
 }
+
+function dateLabelCreater(){
+	//generates 2 year labelss
+	for (var i = 1; i < 24; i++) {
+	twoYearLabels.unshift(moment().endOf('month').subtract(i, 'months').format('MMM YY'))
+	}
+
+	//generates 1 year labels
+	for (var i = 1; i <= 12; i++) {
+	oneYearLabels.unshift(moment().endOf('month').subtract(i, 'months').format('MMM YY'))
+	}
+
+		for (var i = 1; i <= 13; i++) {
+	threeMonthLabels.unshift(moment().endOf('month').subtract(i, 'weeks').format('MM/DD/YY'))
+	}
+	console.log(oneWeekLabels)
+
+	}
+dateLabelCreater()
 
 function chartColor(color, border) {
     //initial framework to change the shade of the color every time a new search for a stock happens
