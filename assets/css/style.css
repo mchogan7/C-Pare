@@ -21,6 +21,7 @@ Gray - 166,166,166
  
  .chartContainer {
      width: 600px;
+     height: 360px;
      margin: auto;
      margin-top: 15px;
  }
@@ -40,7 +41,7 @@ Gray - 166,166,166
  
  .buttonsView {
      margin: auto;
-     margin-top: 5px;
+     margin-top: 10px;
      width: 600px;
      text-align: center;
  }
@@ -65,7 +66,7 @@ Gray - 166,166,166
      height: 2px;
      background-color: rgba(36, 200, 183, 1);
      margin-left: 75%;
-     transition: margin-left 0.3s ease;
+     transition: margin-left 0.5s ease;
  }
  
  #errorDisplay {
@@ -85,8 +86,8 @@ Gray - 166,166,166
  #query-input {
      box-sizing: border-box;
      padding-left: 10px;
-     font-family: 'Montserrat', sans-serif;
-     font-weight: 400;
+     font-family: 'Roboto', sans-serif;
+     font-weight: 300;
      color: rgba(166, 166, 166, 1);
      width: 500px;
      height: 55px;
@@ -112,11 +113,16 @@ Gray - 166,166,166
  
  .table {
      margin: auto;
+     width: 600px;
  }
  
  th {
      padding-top: 8px;
      padding-right: 35px;
+ }
+
+ tr {
+ 	width: 600px;
  }
  
  .active-state,

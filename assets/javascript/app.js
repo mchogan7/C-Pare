@@ -30,12 +30,12 @@ var chartLabels
 var userInput;
 var duplicateArray = [] //used to prevent duplicates in autocomplete list.
 
-var stocksColor = [0,155,210] //defines the initial values of the stocks colors [red, green, blue]
-var stocksBorder = [0,105,160] //defines the initial values of the stocks borders colors [red, green, blue]
-var commodityColor = [36, 200, 183] //defines the initial values of the commodity colors [red, green, blue]
-var commodityBorder = [255,207,0] //defines the initial values of the commodity borders colors [red, green, blue]
-var currencyColor = [234, 46, 77] //defines the initial values of the currency colors [red, green, blue]
-var currencyBorder = [36,200,183] //defines the initial values of the currency borders colors [red, green, blue]
+var stocksColor = [0, 155, 210] //defines the initial values of the stocks colors [red, green, blue]
+var stocksBorder = [0, 105, 160] //defines the initial values of the stocks borders colors [red, green, blue]
+var commodityColor = [255, 255, 100] //defines the initial values of the commodity colors [red, green, blue]
+var commodityBorder = [255, 207, 0] //defines the initial values of the commodity borders colors [red, green, blue]
+var currencyColor = [86, 250, 233] //defines the initial values of the currency colors [red, green, blue]
+var currencyBorder = [36, 200, 183] //defines the initial values of the currency borders colors [red, green, blue]
 
 var currentData = []
 var stockLabel
@@ -70,14 +70,13 @@ function stockDataObject(label, backgroundColor, borderColor, data, fullName) {
         },
         this.low = Math.min(...this.data),
         this.high = Math.max(...this.data);
-    	this.fullName = fullName
+    this.fullName = fullName
 }
 
 var commodityLookUp = [{
     targetWord: "DEXUSAL",
     queryWord: ["australian dollar"]
-}
-]
+}]
 
 //Fill in the commodityLookUp objects with what you want to add ot the database.
 //Be sure to change category to the correct one.
@@ -269,14 +268,19 @@ function newChart(labels, data) {
 function newTable(specificArray) {
     $(".comparisonInfo").empty();
     for (var i = 0; i < specificArray.length; i++) {
-        var removeComparisonButton = document.createElement("BUTTON");
-        removeComparisonButton.id = specificArray[i].label;
-        removeComparisonButton.addEventListener("click", function(e) {
-            alert("Button Id: " + this.id);
-        });
-        $(".comparisonInfo").append(removeComparisonButton, "<tr>" + "<td>" + specificArray[i].label + "</td>" + "<td>" + specificArray[i].high + "</td>" + "<td>" + specificArray[i].low + "</td>" + "<td>" + specificArray[i].percentChange() + "</td>" + "</tr>");
+        // var removeComparisonButton = $('<button>').addClass(specificArray[i].label);
+        // removeComparisonButton.id = specificArray[i].label;
+        // removeComparisonButton.addEventListener("click", function(e) {
+        //     alert("Button Id: " + this.id);
+        // });
+        $(".comparisonInfo").append("<tr>" + 
+        	"<td>" + specificArray[i].label + "</td>" + 
+        	"<td>" + specificArray[i].high + "</td>" + 
+        	"<td>" + specificArray[i].low + "</td>" + 
+        	"<td>" + specificArray[i].percentChange() + "</td>" + 
+        	"<td>" + "<button class='" + specificArray[i].label + "'>X</button>" + "</td>" +
+        	"</tr>");
     }
-    return false;
 }
 
 //END OF CHART GLOBAL SETTINGS
@@ -330,13 +334,13 @@ $('#threeMonthsViewButton').on('click', function() {
 })
 
 $('#weekViewButton').on('click', function() {
-    mainChart.destroy();
-    newChart(oneWeekLabels, oneWeekViewArray);
-    newTable(oneWeekViewArray);
-    $('.tabSlider').css('margin-left', '0%')
-    $('.selectButton').removeClass('buttonSelected')
-    $(this).addClass('buttonSelected')
-})
+        mainChart.destroy();
+        newChart(oneWeekLabels, oneWeekViewArray);
+        newTable(oneWeekViewArray);
+        $('.tabSlider').css('margin-left', '0%')
+        $('.selectButton').removeClass('buttonSelected')
+        $(this).addClass('buttonSelected')
+    })
     //End of timeline view buttons.
 
 //Displays an error for any failed AJAX call.
@@ -437,50 +441,51 @@ function threeMonthAverager(response) {
 
 //Displays last 7 entires.
 function oneWeekViewer(response) {
-	var labelDate
+    var labelDate
     currentData = []
     for (var i = 0; i < 7; i++) {
         currentData.unshift(response.dataset.data[i][1])
-        //Generates labels for the week view.
-          if (oneWeekLabels.length < 7) {
-          	labelDate = response.dataset.data[i][0]
-         oneWeekLabels.unshift(moment(labelDate).format('MM/DD/YY'))
+            //Generates labels for the week view.
+        if (oneWeekLabels.length < 7) {
+            labelDate = response.dataset.data[i][0]
+            oneWeekLabels.unshift(moment(labelDate).format('MM/DD/YY'))
         }
-    } 
-  
+    }
+
     oneWeekViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, currentData, fullName))
 }
 
-function dateLabelCreater(){
-	//generates 2 year labelss
-	for (var i = 1; i < 24; i++) {
-	twoYearLabels.unshift(moment().endOf('month').subtract(i, 'months').format('MMM YY'))
-	}
+function dateLabelCreater() {
+    //generates 2 year labelss
+    for (var i = 1; i < 24; i++) {
+        twoYearLabels.unshift(moment().endOf('month').subtract(i, 'months').format('MMM YY'))
+    }
 
-	//generates 1 year labels
-	for (var i = 1; i <= 12; i++) {
-	oneYearLabels.unshift(moment().endOf('month').subtract(i, 'months').format('MMM YY'))
-	}
+    //generates 1 year labels
+    for (var i = 1; i <= 12; i++) {
+        oneYearLabels.unshift(moment().endOf('month').subtract(i, 'months').format('MMM YY'))
+    }
 
-		for (var i = 1; i <= 13; i++) {
-	threeMonthLabels.unshift(moment().endOf('month').subtract(i, 'weeks').format('MM/DD/YY'))
-	}
-	}
+    for (var i = 1; i <= 13; i++) {
+        threeMonthLabels.unshift(moment().endOf('month').subtract(i, 'weeks').format('MM/DD/YY'))
+    }
+}
 dateLabelCreater()
 
 function chartColor(color, border) {
     //initial framework to change the shade of the color every time a new search for a stock happens
     //these values are not set in stone and can be adjusted
+    var multiplier = 1.25;
     backgroundColor = "rgba(" + color[0] + "," + color[1] + "," + color[2] + ",0.4)"
     borderColor = "rgba(" + border[0] + "," + border[1] + "," + border[2] + ",1)"
         //the line color is changed here
-    color[0] = parseInt(color[0]) + 28;
-    color[1] = parseInt(color[1]) + 40;
-    color[2] = parseInt(color[2]) + 40;
+    // color[0] = parseInt(color[0]) + 28;
+    // color[1] = parseInt(color[1]) + 40;
+    // color[2] = parseInt(color[2]) + 40;
     //the border color is changed here
-    border[0] = parseInt(border[0]) + 28;
-    border[1] = parseInt(border[1]) + 40;
-    border[2] = parseInt(border[2]) + 40;
+    border[0] = Math.floor(parseInt(border[0]) * multiplier);
+    border[1] = Math.floor(parseInt(border[1]) * multiplier);
+    border[2] = Math.floor(parseInt(border[2]) * multiplier);
 
 };
 
@@ -543,94 +548,95 @@ function AJAXselector() {
 
 var cryptocurrencyList = [];
 var CClistOfAverages2yr = [];
-var CClistOfAverages1yr =[];
+var CClistOfAverages1yr = [];
 
 function coinObject(name, symbol) {
-  this.name = name,
-  this.symbol = symbol
+    this.name = name,
+        this.symbol = symbol
 }
 
 var coinListURL = "https://api.coinmarketcap.com/v1/ticker/";
 var currencyPriceHistory = [];
 $.ajax({ url: coinListURL, method: "GET" }).done(function(response) {
-    
-  for (i=0; i<response.length; i++) {
-    var name = response[i].name;
-    var symbol = response[i].symbol;
-    var coinOBJ = new coinObject(name, symbol);
 
-    cryptocurrencyList.push(coinOBJ);
-  }
-  //console.log(cryptocurrencyList)
+    for (i = 0; i < response.length; i++) {
+        var name = response[i].name;
+        var symbol = response[i].symbol;
+        var coinOBJ = new coinObject(name, symbol);
+
+        cryptocurrencyList.push(coinOBJ);
+    }
+    //console.log(cryptocurrencyList)
 
 });
 
 function histObject(date, price) {
-  this.date = date;
-  this.price = price;
+    this.date = date;
+    this.price = price;
 }
-function histPrices(coin) {
-  var coinSymbol = coin;
-  var test
-  var startDate = moment('2015-01-01', 'YYYY-MM-DD');
-  var endDate = moment().format('YYYY-MM-DD');
-  var dateDiff = Math.abs(startDate.diff(endDate, 'days')) -1
-  var priceURL = "https://www.cryptocompare.com/api/data/histoday/?e=CCCAGG&fsym=" + coinSymbol + "&limit=" + dateDiff + "&tsym=USD"
-  $.ajax({ url: priceURL, method: "GET" }).done(function(response) {
-  	console.log(response)
-    for (p=0;p<response.Data.length; p++) { 
-      var price = response.Data[p].close;
-      var cryptoDate = response.Data[p].time;
-      var convertedDate = moment.unix(cryptoDate).format('YYYY-MM-DD');
-      var histObj = new histObject(convertedDate, price);
-      currencyPriceHistory.push(histObj);
-    }
 
-  })
+function histPrices(coin) {
+    var coinSymbol = coin;
+    var test
+    var startDate = moment('2015-01-01', 'YYYY-MM-DD');
+    var endDate = moment().format('YYYY-MM-DD');
+    var dateDiff = Math.abs(startDate.diff(endDate, 'days')) - 1
+    var priceURL = "https://www.cryptocompare.com/api/data/histoday/?e=CCCAGG&fsym=" + coinSymbol + "&limit=" + dateDiff + "&tsym=USD"
+    $.ajax({ url: priceURL, method: "GET" }).done(function(response) {
+        console.log(response)
+        for (p = 0; p < response.Data.length; p++) {
+            var price = response.Data[p].close;
+            var cryptoDate = response.Data[p].time;
+            var convertedDate = moment.unix(cryptoDate).format('YYYY-MM-DD');
+            var histObj = new histObject(convertedDate, price);
+            currencyPriceHistory.push(histObj);
+        }
+
+    })
 }
 histPrices("BTC");
 
 function CCtwoYearAverager(response) {
-  var total = 0;
-  var count = 0; 
-  var month
-  var currentMonth = currencyPriceHistory[0].date.substr(0,7)
-  for (t=0; t<currencyPriceHistory.length; t++) {
-    month = currencyPriceHistory[t].date.substr(0,7)
-    if (currencyPriceHistory[t].date.substr(0,7) === currentMonth) {
-      total += currencyPriceHistory[t].price;
-      count++;
-      if (t === currencyPriceHistory.length - 1) {
-        CClistOfAverages2yr.unshift((total/count).toFixed(2))
-      }
-      
-    } else {
-      CClistOfAverages2yr.unshift((total/count).toFixed(2));
-      total = 0;
-      count = 0;
-      currentMonth = currencyPriceHistory[t].date.substr(0,7)
+    var total = 0;
+    var count = 0;
+    var month
+    var currentMonth = currencyPriceHistory[0].date.substr(0, 7)
+    for (t = 0; t < currencyPriceHistory.length; t++) {
+        month = currencyPriceHistory[t].date.substr(0, 7)
+        if (currencyPriceHistory[t].date.substr(0, 7) === currentMonth) {
+            total += currencyPriceHistory[t].price;
+            count++;
+            if (t === currencyPriceHistory.length - 1) {
+                CClistOfAverages2yr.unshift((total / count).toFixed(2))
+            }
+
+        } else {
+            CClistOfAverages2yr.unshift((total / count).toFixed(2));
+            total = 0;
+            count = 0;
+            currentMonth = currencyPriceHistory[t].date.substr(0, 7)
+        }
     }
-  }
-  return CClistOfAverages2yr;
+    return CClistOfAverages2yr;
 }
 
 function CConeYearAverager(response) {
-  var total = 0;
-  var count = 0;
-  var date = moment().format('YYYY-MM-DD');
-  var matchDate = moment().subtract(365, 'days').format('YYYY-MM-DD')
-  //the function below hasn't actually been tested, but it's what I came up 
-  //with to find the index associated with a specific date. It might be better 
-  //to make this a function all on it's own to do the 3-month averager with as well. 
-  Array.prototype.getIndexBy = function(key, value) { 
-      for (var q=0; q<this.length; q++) {
-      if (this[q][name] == value) {
-        return i;
-      }
-    }
-    return -1;
-  }
-  //function should run as "var indexToReturn = currencyPriceHistory[currencyPriceHistory.getIndexBy("date", matchdate)]
-  //from here, grab bi-monthly averages to slip into averages array
+    var total = 0;
+    var count = 0;
+    var date = moment().format('YYYY-MM-DD');
+    var matchDate = moment().subtract(365, 'days').format('YYYY-MM-DD')
+        //the function below hasn't actually been tested, but it's what I came up 
+        //with to find the index associated with a specific date. It might be better 
+        //to make this a function all on it's own to do the 3-month averager with as well. 
+    Array.prototype.getIndexBy = function(key, value) {
+            for (var q = 0; q < this.length; q++) {
+                if (this[q][name] == value) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        //function should run as "var indexToReturn = currencyPriceHistory[currencyPriceHistory.getIndexBy("date", matchdate)]
+        //from here, grab bi-monthly averages to slip into averages array
 }
 //END OF REUSABLE FUNCTIONS
