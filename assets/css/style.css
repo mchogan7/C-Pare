@@ -6,19 +6,19 @@ Blue 0,105,160
 Gray - 166,166,166
 */
  
-header {
-	width: 100%;
-	background-color: rgba(36, 200, 183, 1);
-	text-align: center;
-	margin-bottom: 35px;
-}
-
-.logo {
-	margin: 20px;
-	height: 80px;
-	vertical-align: middle;
-}
-
+ header {
+     width: 100%;
+     background-color: rgba(36, 200, 183, 1);
+     text-align: center;
+     margin-bottom: 35px;
+ }
+ 
+ .logo {
+     margin: 20px;
+     height: 80px;
+     vertical-align: middle;
+ }
+ 
  .chartContainer {
      width: 600px;
      margin: auto;
@@ -37,7 +37,37 @@ header {
      cursor: pointer;
      z-index: 9999;
  }
+ 
+ .buttonsView {
+     margin: auto;
+     margin-top: 5px;
+     width: 600px;
+     text-align: center;
+ }
+ 
+ .selectButton {
+     display: inline-block;
+     width: 25%;
+     margin-bottom: 3px;
+     font-family: 'Montserrat', sans-serif;
+     color: rgba(36, 200, 183, .5);
+     cursor: pointer;
+     user-select: none;
+     transition: color 0.3s ease;
+ }
 
+ .buttonSelected {
+ 	color: rgba(36, 200, 183, 1);
+ }
+ 
+ .tabSlider {
+     width: 25%;
+     height: 2px;
+     background-color: rgba(36, 200, 183, 1);
+     margin-left: 75%;
+     transition: margin-left 0.3s ease;
+ }
+ 
  #errorDisplay {
      margin: auto;
      margin-top: 10px;
@@ -79,15 +109,11 @@ header {
      height: 55px;
      text-align: center;
  }
-
- .buttonsView {
-     margin-left: 40%;
+ 
+ .table {
+     margin: auto;
  }
-
-.table {
-     margin-left: 40%;
- }
-
+ 
  th {
      padding-top: 8px;
      padding-right: 35px;
@@ -114,7 +140,7 @@ header {
      background-color: black;
      transform: perspective(1000px) rotateX(-90deg) rotateY(0deg) rotateZ(0deg);
  }
-
+ 
  input::-webkit-calendar-picker-indicator {
-  display: none;
-}
+     display: none;
+ }

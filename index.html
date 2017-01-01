@@ -31,11 +31,6 @@
         <input list="autoComplete" type="text" id="query-input" value="What would you like to compare?">
         <datalist id="autoComplete">
         </datalist>
-      <!--   <div class="selectContainer">
-            <div type="submit" id="company" value="inactive" class="selectButton">COMPANY</div>
-            <div type="submit" id="commodity" value="inactive" class="selectButton">COMMODITY</div>
-            <div type="submit" id="currency" value="inactive" class="selectButton">CURRENCY</div>
-        </div> -->
         <!-- Button triggers new query to be added -->
         <div class="buttonContainer">
             <div id="compare" class="active-state" type="submit">CLICK TO C-PARE</div>
@@ -47,10 +42,11 @@
         <canvas id="mainChart" width="500" height="300"></canvas>
     </div>
     <div class="buttonsView">
-        <button id="weekViewButton">Week</button>
-        <button id="threeMonthsViewButton">Three Months</button>
-        <button id="yearViewButton">One Year</button>
-        <button id="twoYearViewButton">Two Years</button>
+        <div class="selectButton" id="weekViewButton">Week</div
+        ><div class="selectButton" id="threeMonthsViewButton">Three Months</div
+        ><div class="selectButton" id="yearViewButton">One Year</div
+        ><div class="selectButton buttonSelected" id="twoYearViewButton">Two Years</div>
+        <div class="tabSlider"></div>
     </div>
     <div class="panel-body">
         <table class="table">

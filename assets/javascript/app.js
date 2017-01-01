@@ -270,7 +270,7 @@ function newTable(specificArray) {
     $(".comparisonInfo").empty();
     for (var i = 0; i < specificArray.length; i++) {
         var removeComparisonButton = document.createElement("BUTTON");
-        removeComparisonButton.id = i;
+        removeComparisonButton.id = specificArray[i].label;
         removeComparisonButton.addEventListener("click", function(e) {
             alert("Button Id: " + this.id);
         });
@@ -306,24 +306,36 @@ $('#twoYearViewButton').on('click', function() {
     mainChart.destroy();
     newChart(twoYearLabels, twoYearViewArray);
     newTable(twoYearViewArray);
+    $('.tabSlider').css('margin-left', '75%')
+    $('.selectButton').removeClass('buttonSelected')
+    $(this).addClass('buttonSelected')
 })
 
 $('#yearViewButton').on('click', function() {
     mainChart.destroy();
     newChart(oneYearLabels, oneYearViewArray);
     newTable(oneYearViewArray);
+    $('.tabSlider').css('margin-left', '50%')
+    $('.selectButton').removeClass('buttonSelected')
+    $(this).addClass('buttonSelected')
 })
 
 $('#threeMonthsViewButton').on('click', function() {
     mainChart.destroy();
     newChart(threeMonthLabels, threeMonthViewArray);
     newTable(threeMonthViewArray);
+    $('.tabSlider').css('margin-left', '25%')
+    $('.selectButton').removeClass('buttonSelected')
+    $(this).addClass('buttonSelected')
 })
 
 $('#weekViewButton').on('click', function() {
     mainChart.destroy();
     newChart(oneWeekLabels, oneWeekViewArray);
     newTable(oneWeekViewArray);
+    $('.tabSlider').css('margin-left', '0%')
+    $('.selectButton').removeClass('buttonSelected')
+    $(this).addClass('buttonSelected')
 })
     //End of timeline view buttons.
 
