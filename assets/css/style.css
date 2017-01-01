@@ -20,7 +20,7 @@ Gray - 166,166,166
  }
  
  .chartContainer {
-     width: 600px;
+     width: 900px;
      height: 360px;
      margin: auto;
      margin-top: 15px;
@@ -41,7 +41,7 @@ Gray - 166,166,166
  
  .buttonsView {
      margin: auto;
-     margin-top: 10px;
+     margin-top: 25px;
      width: 600px;
      text-align: center;
  }
@@ -56,16 +56,16 @@ Gray - 166,166,166
      user-select: none;
      transition: color 0.3s ease;
  }
-
+ 
  .buttonSelected {
- 	color: rgba(36, 200, 183, 1);
+     color: rgba(36, 200, 183, 1);
  }
  
  .tabSlider {
      width: 25%;
      height: 2px;
      background-color: rgba(36, 200, 183, 1);
-     margin-left: 75%;
+     margin-left: 0%;
      transition: margin-left 0.5s ease;
  }
  
@@ -114,15 +114,45 @@ Gray - 166,166,166
  .table {
      margin: auto;
      width: 600px;
+     text-align: left;
+ }
+ 
+ thead {
+     padding-top: 8px;
+     border-bottom: 1px solid;
+     border-color: rgba(220, 220, 220, 1);
+     height: 20px;
+     font-size: 13px;
  }
  
  th {
-     padding-top: 8px;
-     padding-right: 35px;
+     font-family: 'Montserrat', sans-serif;
+     font-weight: 400;
+     color: rgba(100, 100, 100, 1);
+ }
+ 
+ tr {
+     font-family: 'Roboto', sans-serif;
+     font-weight: 300;
+     height: 45px;
+     line-height: 45px;
+     border-bottom: 1px solid;
+     border-color: rgba(220, 220, 220, 1);
+     color: rgba(100, 100, 100, 1);
+ }
+ 
+ datalist.option {
+     background-color: red;
+ }
+ 
+ .hideContainer {
+     height: auto;
+     /*overflow-y: hidden;*/
+     transition: height 1s ease;
  }
 
- tr {
- 	width: 600px;
+ .comparisonInfo {
+ 	overflow-y: scroll;
  }
  
  .active-state,

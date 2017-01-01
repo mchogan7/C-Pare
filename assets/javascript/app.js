@@ -69,8 +69,15 @@ function stockDataObject(label, backgroundColor, borderColor, data, fullName) {
             return change.toFixed(2)
         },
         this.low = Math.min(...this.data),
-        this.high = Math.max(...this.data);
-    this.fullName = fullName
+        this.high = Math.max(...this.data),
+    this.fullName = fullName,
+    this.percColor = function() {
+    	if (this.percentChange() < 0){
+    		return 'rgba(234,46,77, 1)'
+    	} else {
+    		return 'rgba(36,200,183, 1)'
+    	}
+    };
 }
 
 var commodityLookUp = [{
@@ -277,7 +284,7 @@ function newTable(specificArray) {
         	"<td>" + specificArray[i].label + "</td>" + 
         	"<td>" + specificArray[i].high + "</td>" + 
         	"<td>" + specificArray[i].low + "</td>" + 
-        	"<td>" + specificArray[i].percentChange() + "</td>" + 
+        	"<td style='color:" + specificArray[i].percColor() + "'>" + specificArray[i].percentChange() + "</td>" + 
         	"<td>" + "<button class='" + specificArray[i].label + "'>X</button>" + "</td>" +
         	"</tr>");
     }
@@ -290,11 +297,13 @@ function newTable(specificArray) {
 //On click and key press functions for the submit button.
 $('#compare').on('click', function() {
         AJAXselector();
+        revealChart();
     })
     //Enter key runs the AJAXselector
 $(document).on('keypress', function(e) {
     if (e.which === 13) {
         AJAXselector();
+        revealChart();
     }
 })
 
@@ -302,6 +311,7 @@ $(document).on('keypress', function(e) {
 $('#query-input').on('click', function() {
     if ($(this).val() === "What would you like to compare?") {
         $(this).val("")
+        $(this).css('color', 'black')
     }
 })
 
@@ -310,7 +320,7 @@ $('#twoYearViewButton').on('click', function() {
     mainChart.destroy();
     newChart(twoYearLabels, twoYearViewArray);
     newTable(twoYearViewArray);
-    $('.tabSlider').css('margin-left', '75%')
+    $('.tabSlider').css('margin-left', '0%')
     $('.selectButton').removeClass('buttonSelected')
     $(this).addClass('buttonSelected')
 })
@@ -319,7 +329,7 @@ $('#yearViewButton').on('click', function() {
     mainChart.destroy();
     newChart(oneYearLabels, oneYearViewArray);
     newTable(oneYearViewArray);
-    $('.tabSlider').css('margin-left', '50%')
+    $('.tabSlider').css('margin-left', '25%')
     $('.selectButton').removeClass('buttonSelected')
     $(this).addClass('buttonSelected')
 })
@@ -328,7 +338,7 @@ $('#threeMonthsViewButton').on('click', function() {
     mainChart.destroy();
     newChart(threeMonthLabels, threeMonthViewArray);
     newTable(threeMonthViewArray);
-    $('.tabSlider').css('margin-left', '25%')
+    $('.tabSlider').css('margin-left', '50%')
     $('.selectButton').removeClass('buttonSelected')
     $(this).addClass('buttonSelected')
 })
@@ -337,7 +347,7 @@ $('#weekViewButton').on('click', function() {
         mainChart.destroy();
         newChart(oneWeekLabels, oneWeekViewArray);
         newTable(oneWeekViewArray);
-        $('.tabSlider').css('margin-left', '0%')
+        $('.tabSlider').css('margin-left', '75%')
         $('.selectButton').removeClass('buttonSelected')
         $(this).addClass('buttonSelected')
     })
@@ -455,7 +465,7 @@ function oneWeekViewer(response) {
     oneWeekViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, currentData, fullName))
 }
 
-function dateLabelCreater() {
+function dateLabelCreator() {
     //generates 2 year labelss
     for (var i = 1; i < 24; i++) {
         twoYearLabels.unshift(moment().endOf('month').subtract(i, 'months').format('MMM YY'))
@@ -470,7 +480,7 @@ function dateLabelCreater() {
         threeMonthLabels.unshift(moment().endOf('month').subtract(i, 'weeks').format('MM/DD/YY'))
     }
 }
-dateLabelCreater()
+dateLabelCreator()
 
 function chartColor(color, border) {
     //initial framework to change the shade of the color every time a new search for a stock happens
@@ -638,5 +648,9 @@ function CConeYearAverager(response) {
         }
         //function should run as "var indexToReturn = currencyPriceHistory[currencyPriceHistory.getIndexBy("date", matchdate)]
         //from here, grab bi-monthly averages to slip into averages array
+}
+
+function revealChart(){
+	$('.hideContainer').css('height', '600px')
 }
 //END OF REUSABLE FUNCTIONS

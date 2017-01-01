@@ -38,29 +38,31 @@
         </div>
     </div>
     <!-- Chart holder div. We can move this wherever. -->
-    <div class="chartContainer">
-        <canvas id="mainChart" width="500" height="300"></canvas>
-    </div>
-    <div class="buttonsView">
-        <div class="selectButton" id="weekViewButton">Week</div
-        ><div class="selectButton" id="threeMonthsViewButton">Three Months</div
-        ><div class="selectButton" id="yearViewButton">One Year</div
-        ><div class="selectButton buttonSelected" id="twoYearViewButton">Two Years</div>
-        <div class="tabSlider"></div>
-    </div>
-    <div class="panel-body">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Comparisons</th>
-                    <th>High</th>
-                    <th>Low</th>
-                    <th>% Change</th>
-                </tr>
-            </thead>
-            <tbody class="comparisonInfo">
-            </tbody>
-        </table>
+    <div class="hideContainer">
+        <div class="chartContainer">
+            <canvas id="mainChart" width="900" height="375"></canvas>
+        </div>
+        <div class="buttonsView">
+            <div class="selectButton buttonSelected" id="twoYearViewButton">Two Years</div
+            ><div class="selectButton" id="yearViewButton">One Year</div
+            ><div class="selectButton" id="threeMonthsViewButton">Three Months</div
+            ><div class="selectButton" id="weekViewButton">Week</div>
+            <div class="tabSlider"></div>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Comparisons</th>
+                        <th>High</th>
+                        <th>Low</th>
+                        <th>% Change</th>
+                    </tr>
+                </thead>
+                <tbody class="comparisonInfo">
+                </tbody>
+            </table>
+        </div>
     </div>
     <!-- Loading our JS file at the bottom -->
     <script type="text/javascript" src="assets/javascript/app.js"></script>
