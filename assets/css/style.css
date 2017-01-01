@@ -141,8 +141,16 @@ Gray - 166,166,166
      color: rgba(100, 100, 100, 1);
  }
  
- datalist.option {
-     background-color: red;
+ .removeButton {
+ 	font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 25px;
+    color: rgba(166, 166, 166, 1);
+    cursor: pointer;
+    transition: color .3s ease;
+ }
+ .removeButton:hover {
+ 	color: rgba(234, 46, 77, 1);
  }
  
  .hideContainer {

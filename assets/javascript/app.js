@@ -285,7 +285,7 @@ function newTable(specificArray) {
         	"<td>" + specificArray[i].high + "</td>" + 
         	"<td>" + specificArray[i].low + "</td>" + 
         	"<td style='color:" + specificArray[i].percColor() + "'>" + specificArray[i].percentChange() + "</td>" + 
-        	"<td>" + "<button class='" + specificArray[i].label + "'>X</button>" + "</td>" +
+        	"<td>" + "<div class= removeButton '" + specificArray[i].label + "'>&times</div>" + "</td>" +
         	"</tr>");
     }
 }
