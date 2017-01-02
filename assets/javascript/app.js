@@ -242,13 +242,18 @@ var mainChart = new Chart(ctx, {
             yAxes: [{
             	type: 'logarithmic',
                 ticks: {
-                	 callback: function(value, index, values) {
-                        return value
+                	  callback: function(label, index) {
+                	 	if (index % 5 === 0){
+                	 		return label
+                	 	} else {
+                	 		return ''
+                	 	}
                     },
                     beginAtZero: true
                 }
             }]
         },
+        maintainAspectRatio: false,
         responsive: true
     }
 });
@@ -267,13 +272,19 @@ function newChart(labels, data) {
                 yAxes: [{
                 	type: 'logarithmic',	
                      ticks: {
-                	 callback: function(value, index, values) {
-                        return value
+                	 callback: function(label, index) {
+                	 	if (index % 5 === 0){
+                	 		return label
+                	 	} else {
+                	 		return ''
+                	 	}
                     },
+                    maxTicksLimit: 4,
                     beginAtZero: true
                 }
                 }]
             },
+            maintainAspectRatio: false,
             responsive: true
         }
     });
