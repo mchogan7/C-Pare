@@ -316,13 +316,11 @@ function newTable(specificArray) {
 //On click and key press functions for the submit button.
 $('#compare').on('click', function() {
         AJAXselector();
-        revealChart();
     })
     //Enter key runs the AJAXselector
 $(document).on('keypress', function(e) {
     if (e.which === 13) {
         AJAXselector();
-        revealChart();
     }
 })
 
@@ -554,6 +552,7 @@ function AJAXselector() {
         //Selects the appropriate AJAX call based on the category returned from firebase autocomplete result.
         firebase.database().ref('lookUpTable').startAt(userInput).orderByKey().limitToFirst(1).once('value', function(snapshot) {
             snapshot.forEach(function(childSnapshot) {
+            	revealChart();
                 var category = childSnapshot.val().category
                 symbol = childSnapshot.val().target
 
@@ -670,6 +669,19 @@ function CConeYearAverager(response) {
 }
 
 function revealChart(){
-	// $('.hideContainer').css('height', '600px')
+	$('.hideContainer').addClass('reveal')
+	$('.logo').addClass('logoShrink')
+	$('header').addClass('headerShrink')
+	setTimeout(function(){ 
+		$('.title').css('display', 'none')
+	}, 1000);
 }
+
+titleLoad();
+
+function titleLoad(){
+	setTimeout(function(){ 
+		$('.title').css('opacity', '1')
+	}, 1000);
+	}
 //END OF REUSABLE FUNCTIONS

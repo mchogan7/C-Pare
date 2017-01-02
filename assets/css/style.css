@@ -7,20 +7,44 @@ Gray - 166,166,166
 */
  
  header {
-     width: 100%;
+ 	position: relative;
+     width: 100vw;
      background-color: rgba(36, 200, 183, 1);
-     text-align: center;
      margin-bottom: 35px;
+     height: 350px;
+     text-align: center;
+     transition: height 1s ease;
+ }
+
+ .headerShrink{
+ 	height: 60px;
  }
  
  .logo {
-     margin: 20px;
-     height: 80px;
-     vertical-align: middle;
+	height: 120px;
+    margin:auto;
+    margin-top: 100px;
+    transition: all 1s ease
+}
+
+.logoShrink {
+	height: 40px;
+	margin-top: 10px;
+}
+
+ .title {
+ 	color: white;
+ 	font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 30px;
+    margin-top: 50px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+
  }
  
  .chartContainer {
-     width: 900px;
+     width: 70%;
      height: 360px;
      margin: auto;
      margin-top: 15px;
@@ -162,10 +186,13 @@ Gray - 166,166,166
  }
  
  .hideContainer {
-     height: auto;
-   /*  overflow-y: hidden;*/
-     transition: height 1s ease;
-     padding-bottom: 50px;
+     height: 0px;
+     overflow-y: hidden;
+     transition: height 2s ease;
+ }
+
+ .reveal {
+ 	height: 600px;
  }
 
 
