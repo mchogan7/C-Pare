@@ -51,14 +51,17 @@ Gray - 166,166,166
      width: 25%;
      margin-bottom: 3px;
      font-family: 'Montserrat', sans-serif;
-     color: rgba(36, 200, 183, .5);
+     background-color: rgba(36, 200, 183, 1);
+     color: rgba(255, 255, 255, .5);
      cursor: pointer;
      user-select: none;
      transition: color 0.3s ease;
+     height: 45px;
+     line-height: 45px;
  }
  
  .buttonSelected {
-     color: rgba(36, 200, 183, 1);
+     color: rgba(255, 255, 255, 1);
  }
  
  .tabSlider {
@@ -140,14 +143,19 @@ Gray - 166,166,166
      border-color: rgba(220, 220, 220, 1);
      color: rgba(100, 100, 100, 1);
  }
- 
- .removeButton {
+
+ tbody {
+ 	margin-bottom: 50px;
+ }
+
+	.removeButton {
  	font-family: 'Montserrat', sans-serif;
     font-weight: 700;
     font-size: 25px;
     color: rgba(166, 166, 166, 1);
     cursor: pointer;
     transition: color .3s ease;
+    user-select: none;
  }
  .removeButton:hover {
  	color: rgba(234, 46, 77, 1);
@@ -155,12 +163,15 @@ Gray - 166,166,166
  
  .hideContainer {
      height: auto;
-     /*overflow-y: hidden;*/
+   /*  overflow-y: hidden;*/
      transition: height 1s ease;
+     padding-bottom: 50px;
  }
 
- .comparisonInfo {
- 	overflow-y: scroll;
+
+
+ .tableLabel {
+ 	width: 200px;
  }
  
  .active-state,

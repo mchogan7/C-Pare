@@ -240,7 +240,11 @@ var mainChart = new Chart(ctx, {
     options: {
         scales: {
             yAxes: [{
+            	type: 'logarithmic',
                 ticks: {
+                	 callback: function(value, index, values) {
+                        return value
+                    },
                     beginAtZero: true
                 }
             }]
@@ -261,9 +265,13 @@ function newChart(labels, data) {
         options: {
             scales: {
                 yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
+                	type: 'logarithmic',	
+                     ticks: {
+                	 callback: function(value, index, values) {
+                        return value
+                    },
+                    beginAtZero: true
+                }
                 }]
             },
             responsive: true
@@ -651,6 +659,6 @@ function CConeYearAverager(response) {
 }
 
 function revealChart(){
-	$('.hideContainer').css('height', '600px')
+	// $('.hideContainer').css('height', '600px')
 }
 //END OF REUSABLE FUNCTIONS
