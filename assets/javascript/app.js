@@ -299,16 +299,20 @@ function newTable(specificArray) {
         // removeComparisonButton.addEventListener("click", function(e) {
         //     alert("Button Id: " + this.id);
         // });
-        $(".comparisonInfo").append("<tr>" + 
+        $(".comparisonInfo").append("<tr class = '" + specificArray[i].label +"'>" + 
         	"<td>" + specificArray[i].label + "</td>" + 
         	"<td>" + specificArray[i].high + "</td>" + 
         	"<td>" + specificArray[i].low + "</td>" + 
         	"<td style='color:" + specificArray[i].percColor() + "'>" + specificArray[i].percentChange() + "</td>" + 
-        	"<td>" + "<div class= removeButton '" + specificArray[i].label + "'>&times</div>" + "</td>" +
+        	"<td>" + "<div class= removeButton value='" + specificArray[i].label + "'>&times</div>" + "</td>" +
         	"</tr>");
     }
 }
 
+$(document).on('click' , '.removeButton', function(){
+	var removeThis = $(this).attr('value')
+	$('.' + removeThis).remove();
+})
 //END OF CHART GLOBAL SETTINGS
 
 //UI AND DOM SECTION:
@@ -672,9 +676,12 @@ function revealChart(){
 	$('.hideContainer').addClass('reveal')
 	$('.logo').addClass('logoShrink')
 	$('header').addClass('headerShrink')
+	$('.title').css('opacity', '0')
 	setTimeout(function(){ 
 		$('.title').css('display', 'none')
-	}, 1000);
+		$('.hideContainer').addClass('autoHeight')
+	}, 2000);
+
 }
 
 titleLoad();
