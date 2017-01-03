@@ -36,6 +36,10 @@ var commodityColor = [255, 255, 100] //defines the initial values of the commodi
 var commodityBorder = [255, 207, 0] //defines the initial values of the commodity borders colors [red, green, blue]
 var currencyColor = [86, 250, 233] //defines the initial values of the currency colors [red, green, blue]
 var currencyBorder = [36, 200, 183] //defines the initial values of the currency borders colors [red, green, blue]
+var stocksBorderDash = [0, 0]; //defines initial values of stocks border dash for chart
+var commodityBorderDash = [] //defines initial values of commodity border dash for chart
+var currencyBorderDash = [] //defines initial values of currency border dash for chart
+var stocksSearchCounter = 0
 
 var currentData = []
 var stockLabel
@@ -43,14 +47,14 @@ var fullName //Full name of entry. Used in table.
 
 //prototype Object constructor. Lets us create objects globally, and avoid duplicates.
 //Object also contains functions for the table data.
-function stockDataObject(label, backgroundColor, borderColor, data, fullName) {
+function stockDataObject(label, backgroundColor, borderColor, dashEffect, data, fullName) {
     this.label = label
     this.fill = false,
         this.lineTension = 0.1,
         this.backgroundColor = backgroundColor,
         this.borderColor = borderColor,
         this.borderCapStyle = 'butt',
-        this.borderDash = [],
+        this.borderDash = dashEffect,
         this.borderDashOffset = 0.0,
         this.borderJoinStyle = 'miter',
         this.pointBorderColor = borderColor,
@@ -128,7 +132,16 @@ function stockAJAX() {
 
         }
 
-        chartColor(stocksColor, stocksBorder);
+        var type = "stocks";
+        stocksSearchCounter++;
+
+        if (stocksSearchCounter > 10){
+            stocksSearchCounter = 0;
+            resetColors(type)
+        }
+
+        
+        chartColor(stocksColor, stocksBorder, type, stocksSearchCounter);
         twoYearAverager(response)
         oneYearAverager(response)
         threeMonthAverager(response)
@@ -410,6 +423,8 @@ function buttonErrorDisplay(errorMessage) {
 
 //Creates an average of data for each month. Generates labels and displays on chart.
 function twoYearAverager(response) {
+
+    
     currentData = []
     var matchDate = response.dataset.data[0][0].substr(0, 7)
     var date
@@ -430,7 +445,9 @@ function twoYearAverager(response) {
             matchDate = date
         }
     }
-    twoYearViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, currentData, fullName))
+    console.log(twoYearViewArray)
+
+    twoYearViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, dashEffect, currentData, fullName))
 }
 
 //Displays only half of the twoYearAverager result.
@@ -501,10 +518,11 @@ function dateLabelCreator() {
 }
 dateLabelCreator()
 
-function chartColor(color, border) {
+function chartColor(color, border, type, searchCounter) {
     //initial framework to change the shade of the color every time a new search for a stock happens
     //these values are not set in stone and can be adjusted
     var multiplier = 1.25;
+    
     backgroundColor = "rgba(" + color[0] + "," + color[1] + "," + color[2] + ",0.4)"
     borderColor = "rgba(" + border[0] + "," + border[1] + "," + border[2] + ",1)"
         //the line color is changed here
@@ -516,7 +534,43 @@ function chartColor(color, border) {
     border[1] = Math.floor(parseInt(border[1]) * multiplier);
     border[2] = Math.floor(parseInt(border[2]) * multiplier);
 
+    console.log(searchCounter)
+       
+
+    //dashEffect = borderDash
+
+    if(searchCounter < 5){
+        
+        dashEffect = [0, 0]
+       
+    }
+    else if (searchCounter === 5){
+        resetColors(type)
+    }
+    else if (searchCounter > 5 && searchCounter <= 10){
+        
+        dashEffect = [5, 10]
+    }
+
+
+        
+
+    
+    
+  
+
+
 };
+
+
+function resetColors (type){
+    
+    if (type === "stocks"){
+    
+    stocksBorder = [0, 105, 160]
+}
+
+}
 
 //Autocomplete function.
 
@@ -668,6 +722,8 @@ function CConeYearAverager(response) {
         //function should run as "var indexToReturn = currencyPriceHistory[currencyPriceHistory.getIndexBy("date", matchdate)]
         //from here, grab bi-monthly averages to slip into averages array
 }
+
+
 
 function revealChart(){
 	// $('.hideContainer').css('height', '600px')
