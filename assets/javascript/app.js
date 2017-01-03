@@ -299,16 +299,20 @@ function newTable(specificArray) {
         // removeComparisonButton.addEventListener("click", function(e) {
         //     alert("Button Id: " + this.id);
         // });
-        $(".comparisonInfo").append("<tr>" + 
+        $(".comparisonInfo").append("<tr class = '" + specificArray[i].label +"'>" + 
         	"<td>" + specificArray[i].label + "</td>" + 
         	"<td>" + specificArray[i].high + "</td>" + 
         	"<td>" + specificArray[i].low + "</td>" + 
         	"<td style='color:" + specificArray[i].percColor() + "'>" + specificArray[i].percentChange() + "</td>" + 
-        	"<td>" + "<div class= removeButton '" + specificArray[i].label + "'>&times</div>" + "</td>" +
+        	"<td>" + "<div class= removeButton value='" + specificArray[i].label + "'>&times</div>" + "</td>" +
         	"</tr>");
     }
 }
 
+$(document).on('click' , '.removeButton', function(){
+	var removeThis = $(this).attr('value')
+	$('.' + removeThis).remove();
+})
 //END OF CHART GLOBAL SETTINGS
 
 //UI AND DOM SECTION:
@@ -316,13 +320,11 @@ function newTable(specificArray) {
 //On click and key press functions for the submit button.
 $('#compare').on('click', function() {
         AJAXselector();
-        revealChart();
     })
     //Enter key runs the AJAXselector
 $(document).on('keypress', function(e) {
     if (e.which === 13) {
         AJAXselector();
-        revealChart();
     }
 })
 
@@ -554,6 +556,7 @@ function AJAXselector() {
         //Selects the appropriate AJAX call based on the category returned from firebase autocomplete result.
         firebase.database().ref('lookUpTable').startAt(userInput).orderByKey().limitToFirst(1).once('value', function(snapshot) {
             snapshot.forEach(function(childSnapshot) {
+            	revealChart();
                 var category = childSnapshot.val().category
                 symbol = childSnapshot.val().target
 
@@ -670,6 +673,22 @@ function CConeYearAverager(response) {
 }
 
 function revealChart(){
-	// $('.hideContainer').css('height', '600px')
+	$('.hideContainer').addClass('reveal')
+	$('.logo').addClass('logoShrink')
+	$('header').addClass('headerShrink')
+	$('.title').css('opacity', '0')
+	setTimeout(function(){ 
+		$('.title').css('display', 'none')
+		$('.hideContainer').addClass('autoHeight')
+	}, 2000);
+
 }
+
+titleLoad();
+
+function titleLoad(){
+	setTimeout(function(){ 
+		$('.title').css('opacity', '1')
+	}, 1000);
+	}
 //END OF REUSABLE FUNCTIONS
