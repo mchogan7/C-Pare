@@ -36,10 +36,9 @@ var commodityColor = [255, 255, 100] //defines the initial values of the commodi
 var commodityBorder = [255, 207, 0] //defines the initial values of the commodity borders colors [red, green, blue]
 var currencyColor = [86, 250, 233] //defines the initial values of the currency colors [red, green, blue]
 var currencyBorder = [36, 200, 183] //defines the initial values of the currency borders colors [red, green, blue]
-var stocksBorderDash = [0, 0]; //defines initial values of stocks border dash for chart
-var commodityBorderDash = [] //defines initial values of commodity border dash for chart
-var currencyBorderDash = [] //defines initial values of currency border dash for chart
-var stocksSearchCounter = 0
+var stocksSearchCounter = 0 //sets initial value for counting stock searches, needed to know when to change border dash
+var commoditySearchCounter = 0 //sets initial value for counting commodity searches, needed to know when to change border dash
+var currencySearchCounter = 0 //sets initial value for counting currency searches, needed to know when to change border dash
 
 var currentData = []
 var stockLabel
@@ -132,11 +131,13 @@ function stockAJAX() {
 
         }
 
+        // defines the type of search, so it is known which colors are needed to reset if it is time to reset
         var type = "stocks";
         stocksSearchCounter++;
 
+        //resets the search count after ten, basically once through solid lines, then once through dash lines, then repeat
         if (stocksSearchCounter > 10){
-            stocksSearchCounter = 0;
+            stocksSearchCounter = 1;
             resetColors(type)
         }
 
@@ -172,8 +173,20 @@ function commodityAJAX() {
         for (var i = 0; i < response.dataset.data.length; i++) {
             commodityChartData.push(response.dataset.data[i][1])
         }
+        // defines the type of search, so it is known which colors are needed to reset if it is time to reset
+        var type = "commodity";
+        commoditySearchCounter++;
 
-        chartColor(commodityColor, commodityBorder);
+        //resets the search count after ten, basically once through solid lines, then once through dash lines, then repeat
+        if (commoditySearchCounter > 10){
+            commoditySearchCounter = 1;
+            resetColors(type)
+        }
+
+        
+        
+
+        chartColor(commodityColor, commodityBorder, type, commoditySearchCounter);
         twoYearAverager(response)
         oneYearAverager(response)
         threeMonthAverager(response)
@@ -201,8 +214,20 @@ function currencyAJAX() {
         for (var i = 0; i < response.dataset.data.length; i++) {
             currencyChartData.push(response.dataset.data[i][1])
         }
+        // defines the type of search, so it is known which colors are needed to reset if it is time to reset
+        var type = "currency";
+        currencySearchCounter++;
 
-        chartColor(currencyColor, currencyBorder);
+        //resets the search count after ten, basically once through solid lines, then once through dash lines, then repeat
+        if (currencySearchCounter > 10){
+            currencySearchCounter = 1;
+            resetColors(type)
+        }
+
+        
+        
+
+        chartColor(currencyColor, currencyBorder, type, currencySearchCounter);
         twoYearAverager(response)
         oneYearAverager(response)
         threeMonthAverager(response)
@@ -456,7 +481,7 @@ function oneYearAverager(response) {
     for (var i = 11; i < currentData.length; i++) {
         yearData.push(currentData[i])
     }
-    oneYearViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, yearData, fullName))
+    oneYearViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, dashEffect, yearData, fullName))
 }
 
 //Averages all the weeks during a three month period.
@@ -481,7 +506,7 @@ function threeMonthAverager(response) {
         }
         i++
     }
-    threeMonthViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, currentData, fullName))
+    threeMonthViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, dashEffect, currentData, fullName))
 }
 
 
@@ -498,7 +523,7 @@ function oneWeekViewer(response) {
         }
     }
 
-    oneWeekViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, currentData, fullName))
+    oneWeekViewArray.push(new stockDataObject(stockLabel, backgroundColor, borderColor, dashEffect, currentData, fullName))
 }
 
 function dateLabelCreator() {
@@ -518,6 +543,8 @@ function dateLabelCreator() {
 }
 dateLabelCreator()
 
+
+//function that defines the colors of the chart
 function chartColor(color, border, type, searchCounter) {
     //initial framework to change the shade of the color every time a new search for a stock happens
     //these values are not set in stone and can be adjusted
@@ -537,16 +564,28 @@ function chartColor(color, border, type, searchCounter) {
     console.log(searchCounter)
        
 
-    //dashEffect = borderDash
+    //after five searches of the same type it changes from a solid line to a dashed line
+    //after ten searches it goes back to solid
+    //the problem is search 1 and search 11 of the same type will both be same color and solid line
+    //same as search 6 and search 16 will be same color and dashed
+    //it's a minor issue that may never get seen bc that's a lot of searches and we have the delete function
+    //but it is an issue
 
+    //just a minor note: if you make the dashEffect a global variable and change it, it changes every single
+    //line in the chart to that dashEffect. I think bc the value is not passed and saved, 
+    //instead the dataobject is just referencing it. The way I have it coded now works, but is not elegant.
+
+    //if the search counter is 0-5, then it's a solid line
     if(searchCounter < 5){
         
         dashEffect = [0, 0]
        
     }
+    //resets the colors after five searches to the original colors
     else if (searchCounter === 5){
         resetColors(type)
     }
+    //if it's searches 6-10 then it goes to a dash line
     else if (searchCounter > 5 && searchCounter <= 10){
         
         dashEffect = [5, 10]
@@ -562,15 +601,22 @@ function chartColor(color, border, type, searchCounter) {
 
 };
 
-
+//function that resets the colors of the lines
 function resetColors (type){
-    
-    if (type === "stocks"){
-    
-    stocksBorder = [0, 105, 160]
-}
 
-}
+    //resets the colors based on the type of search
+    if (type === "stocks"){
+        stocksBorder = [0, 105, 160];
+    }
+    else if (type === "commodity"){
+        commodityBorder = [255, 207, 0];
+    }
+    else if (type === "currency"){
+        currencyBorder = [36, 200, 183];
+    }
+
+
+}//end of resetColors Function
 
 //Autocomplete function.
 
