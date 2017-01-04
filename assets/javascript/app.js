@@ -162,7 +162,7 @@ function commodityAJAX() {
     var today = moment().endOf('month').subtract(1, 'months').format('YYYY-MM-DD')
     var dateStart = moment().endOf('month').subtract(2, 'years').format('YYYY-MM-DD')
 
-    var queryURL = "https://www.quandl.com/api/v3/datasets/COM/" + symbol + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily";
+    var queryURL = "https://www.quandl.com/api/v3/datasets/COM/" + symbol + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily&api_key=EDWEb1oyzs8FrfoFyG1u";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
         stockLabel = response.dataset.dataset_code
 
@@ -203,7 +203,7 @@ function currencyAJAX() {
     var today = moment().endOf('month').subtract(1, 'months').format('YYYY-MM-DD')
     var dateStart = moment().endOf('month').subtract(2, 'years').format('YYYY-MM-DD')
 
-    var queryURL = "https://www.quandl.com/api/v3/datasets/FRED/" + symbol + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily";
+    var queryURL = "https://www.quandl.com/api/v3/datasets/FRED/" + symbol + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily&api_key=EDWEb1oyzs8FrfoFyG1u";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
         stockLabel = response.dataset.dataset_code
 
@@ -350,6 +350,15 @@ function newTable(specificArray) {
 $(document).on('click' , '.removeButton', function(){
 	var removeThis = $(this).attr('value')
 	$('.' + removeThis).remove();
+	for (var i = 0; i < twoYearViewArray.length; i++) {
+		if (twoYearViewArray[i].label === removeThis){
+			twoYearViewArray.splice(i, 1);
+			oneYearViewArray.splice(i, 1);
+			threeMonthViewArray.splice(i, 1);
+			oneWeekViewArray.splice(i, 1);
+			mainChart.update();
+		}
+	}
 })
 //END OF CHART GLOBAL SETTINGS
 
