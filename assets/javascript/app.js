@@ -39,7 +39,7 @@ var currencyBorder = [36, 200, 183] //defines the initial values of the currency
 var stocksSearchCounter = 0 //sets initial value for counting stock searches, needed to know when to change border dash
 var commoditySearchCounter = 0 //sets initial value for counting commodity searches, needed to know when to change border dash
 var currencySearchCounter = 0 //sets initial value for counting currency searches, needed to know when to change border dash
-
+var type
 var currentData = []
 var stockLabel
 var fullName //Full name of entry. Used in table.
@@ -57,6 +57,7 @@ function stockDataObject(label, backgroundColor, borderColor, dashEffect, data, 
         this.borderDashOffset = 0.0,
         this.borderJoinStyle = 'miter',
         this.pointBorderColor = borderColor,
+        this.category = type,
         this.pointBackgroundColor = "#fff",
         this.pointBorderWidth = 1,
         this.pointHoverRadius = 5,
@@ -73,14 +74,14 @@ function stockDataObject(label, backgroundColor, borderColor, dashEffect, data, 
         },
         this.low = Math.min(...this.data),
         this.high = Math.max(...this.data),
-    this.fullName = fullName,
-    this.percColor = function() {
-    	if (this.percentChange() < 0){
-    		return 'rgba(234,46,77, 1)'
-    	} else {
-    		return 'rgba(36,200,183, 1)'
-    	}
-    };
+        this.fullName = fullName,
+        this.percColor = function() {
+            if (this.percentChange() < 0) {
+                return 'rgba(234,46,77, 1)'
+            } else {
+                return 'rgba(36,200,183, 1)'
+            }
+        };
 }
 
 var commodityLookUp = [{
@@ -132,16 +133,16 @@ function stockAJAX() {
         }
 
         // defines the type of search, so it is known which colors are needed to reset if it is time to reset
-        var type = "stocks";
+        type = "stocks";
         stocksSearchCounter++;
 
         //resets the search count after ten, basically once through solid lines, then once through dash lines, then repeat
-        if (stocksSearchCounter > 10){
+        if (stocksSearchCounter > 10) {
             stocksSearchCounter = 1;
             resetColors(type)
         }
 
-        
+
         chartColor(stocksColor, stocksBorder, type, stocksSearchCounter);
         twoYearAverager(response)
         oneYearAverager(response)
@@ -174,17 +175,17 @@ function commodityAJAX() {
             commodityChartData.push(response.dataset.data[i][1])
         }
         // defines the type of search, so it is known which colors are needed to reset if it is time to reset
-        var type = "commodity";
+        type = "commodity";
         commoditySearchCounter++;
 
         //resets the search count after ten, basically once through solid lines, then once through dash lines, then repeat
-        if (commoditySearchCounter > 10){
+        if (commoditySearchCounter > 10) {
             commoditySearchCounter = 1;
             resetColors(type)
         }
 
-        
-        
+
+
 
         chartColor(commodityColor, commodityBorder, type, commoditySearchCounter);
         twoYearAverager(response)
@@ -215,17 +216,17 @@ function currencyAJAX() {
             currencyChartData.push(response.dataset.data[i][1])
         }
         // defines the type of search, so it is known which colors are needed to reset if it is time to reset
-        var type = "currency";
+        type = "currency";
         currencySearchCounter++;
 
         //resets the search count after ten, basically once through solid lines, then once through dash lines, then repeat
-        if (currencySearchCounter > 10){
+        if (currencySearchCounter > 10) {
             currencySearchCounter = 1;
             resetColors(type)
         }
 
-        
-        
+
+
 
         chartColor(currencyColor, currencyBorder, type, currencySearchCounter);
         twoYearAverager(response)
@@ -278,14 +279,14 @@ var mainChart = new Chart(ctx, {
     options: {
         scales: {
             yAxes: [{
-            	type: 'logarithmic',
+                type: 'logarithmic',
                 ticks: {
-                	  callback: function(label, index) {
-                	 	if (index % 5 === 0){
-                	 		return label
-                	 	} else {
-                	 		return ''
-                	 	}
+                    callback: function(label, index) {
+                        if (index % 5 === 0) {
+                            return label
+                        } else {
+                            return ''
+                        }
                     },
                     beginAtZero: true
                 }
@@ -308,18 +309,18 @@ function newChart(labels, data) {
         options: {
             scales: {
                 yAxes: [{
-                	type: 'logarithmic',	
-                     ticks: {
-                	 callback: function(label, index) {
-                	 	if (index % 5 === 0){
-                	 		return label
-                	 	} else {
-                	 		return ''
-                	 	}
-                    },
-                    maxTicksLimit: 4,
-                    beginAtZero: true
-                }
+                    type: 'logarithmic',
+                    ticks: {
+                        callback: function(label, index) {
+                            if (index % 5 === 0) {
+                                return label
+                            } else {
+                                return ''
+                            }
+                        },
+                        maxTicksLimit: 4,
+                        beginAtZero: true
+                    }
                 }]
             },
             maintainAspectRatio: false,
@@ -337,30 +338,51 @@ function newTable(specificArray) {
         // removeComparisonButton.addEventListener("click", function(e) {
         //     alert("Button Id: " + this.id);
         // });
-        $(".comparisonInfo").append("<tr class = '" + specificArray[i].label +"'>" + 
-        	"<td>" + specificArray[i].label + "</td>" + 
-        	"<td>" + specificArray[i].high + "</td>" + 
-        	"<td>" + specificArray[i].low + "</td>" + 
-        	"<td style='color:" + specificArray[i].percColor() + "'>" + specificArray[i].percentChange() + "</td>" + 
-        	"<td>" + "<div class= removeButton value='" + specificArray[i].label + "'>&times</div>" + "</td>" +
-        	"</tr>");
+        $(".comparisonInfo").append("<tr class = '" + specificArray[i].label + "'>" +
+            "<td>" + specificArray[i].label + "</td>" +
+            "<td>" + specificArray[i].high + "</td>" +
+            "<td>" + specificArray[i].low + "</td>" +
+            "<td style='color:" + specificArray[i].percColor() + "'>" + specificArray[i].percentChange() + "</td>" +
+            "<td>" + "<div class= removeButton value='" + specificArray[i].label + "'>&times</div>" + "</td>" +
+            "</tr>");
     }
 }
 
-$(document).on('click' , '.removeButton', function(){
-	var removeThis = $(this).attr('value')
-	$('.' + removeThis).remove();
-	for (var i = 0; i < twoYearViewArray.length; i++) {
-		if (twoYearViewArray[i].label === removeThis){
-			twoYearViewArray.splice(i, 1);
-			oneYearViewArray.splice(i, 1);
-			threeMonthViewArray.splice(i, 1);
-			oneWeekViewArray.splice(i, 1);
-			mainChart.update();
-		}
-	}
-})
-//END OF CHART GLOBAL SETTINGS
+//Function removes the chartDataObject from the chart and table.
+$(document).on('click', '.removeButton', function() {
+        //Gets the dataObject label as stored it the button of its row.
+        var removeThis = $(this).attr('value')
+            //Targets and removes class with the same value.
+        $('.' + removeThis).remove();
+
+        //Loops through and deletes any DataObjects with matching value.
+        for (var i = 0; i < twoYearViewArray.length; i++) {
+            if (twoYearViewArray[i].label === removeThis) {
+
+                //Decrements the searchCounter to reset the color sequence.
+                //This has to come first to reference the object before deletion.
+                if (twoYearViewArray[i].category === 'stocks') {
+                    stocksSearchCounter--
+                }
+                if (twoYearViewArray[i].category === 'currency') {
+                    currencySearchCounter--
+                }
+
+                if (twoYearViewArray[i].category === 'commodity') {
+                    commoditySearchCounter--
+                }
+                //Removes the matching object from all arrays.
+                twoYearViewArray.splice(i, 1);
+                oneYearViewArray.splice(i, 1);
+                threeMonthViewArray.splice(i, 1);
+                oneWeekViewArray.splice(i, 1);
+                mainChart.update();
+            }
+
+
+        }
+    })
+    //END OF CHART GLOBAL SETTINGS
 
 //UI AND DOM SECTION:
 
@@ -460,7 +482,7 @@ function buttonErrorDisplay(errorMessage) {
 //Creates an average of data for each month. Generates labels and displays on chart.
 function twoYearAverager(response) {
 
-    
+
     currentData = []
     var matchDate = response.dataset.data[0][0].substr(0, 7)
     var date
@@ -560,20 +582,20 @@ function chartColor(color, border, type, searchCounter) {
     //initial framework to change the shade of the color every time a new search for a stock happens
     //these values are not set in stone and can be adjusted
     var multiplier = 1.25;
-    
+
     backgroundColor = "rgba(" + color[0] + "," + color[1] + "," + color[2] + ",0.4)"
     borderColor = "rgba(" + border[0] + "," + border[1] + "," + border[2] + ",1)"
         //the line color is changed here
-    // color[0] = parseInt(color[0]) + 28;
-    // color[1] = parseInt(color[1]) + 40;
-    // color[2] = parseInt(color[2]) + 40;
-    //the border color is changed here
+        // color[0] = parseInt(color[0]) + 28;
+        // color[1] = parseInt(color[1]) + 40;
+        // color[2] = parseInt(color[2]) + 40;
+        //the border color is changed here
     border[0] = Math.floor(parseInt(border[0]) * multiplier);
     border[1] = Math.floor(parseInt(border[1]) * multiplier);
     border[2] = Math.floor(parseInt(border[2]) * multiplier);
 
     console.log(searchCounter)
-       
+
 
     //after five searches of the same type it changes from a solid line to a dashed line
     //after ten searches it goes back to solid
@@ -587,47 +609,45 @@ function chartColor(color, border, type, searchCounter) {
     //instead the dataobject is just referencing it. The way I have it coded now works, but is not elegant.
 
     //if the search counter is 0-5, then it's a solid line
-    if(searchCounter < 5){
-        
+    if (searchCounter < 5) {
+
         dashEffect = [0, 0]
-       
+
     }
     //resets the colors after five searches to the original colors
-    else if (searchCounter === 5){
+    else if (searchCounter === 5) {
         resetColors(type)
     }
     //if it's searches 6-10 then it goes to a dash line
-    else if (searchCounter > 5 && searchCounter <= 10){
-        
+    else if (searchCounter > 5 && searchCounter <= 10) {
+
         dashEffect = [5, 10]
     }
 
 
-        
 
-    
-    
-  
+
+
+
+
 
 
 };
 
 //function that resets the colors of the lines
-function resetColors (type){
+function resetColors(type) {
 
     //resets the colors based on the type of search
-    if (type === "stocks"){
+    if (type === "stocks") {
         stocksBorder = [0, 105, 160];
-    }
-    else if (type === "commodity"){
+    } else if (type === "commodity") {
         commodityBorder = [255, 207, 0];
-    }
-    else if (type === "currency"){
+    } else if (type === "currency") {
         currencyBorder = [36, 200, 183];
     }
 
 
-}//end of resetColors Function
+} //end of resetColors Function
 
 //Autocomplete function.
 
@@ -665,7 +685,7 @@ function AJAXselector() {
         //Selects the appropriate AJAX call based on the category returned from firebase autocomplete result.
         firebase.database().ref('lookUpTable').startAt(userInput).orderByKey().limitToFirst(1).once('value', function(snapshot) {
             snapshot.forEach(function(childSnapshot) {
-            	revealChart();
+                revealChart();
                 var category = childSnapshot.val().category
                 symbol = childSnapshot.val().target
 
@@ -783,23 +803,23 @@ function CConeYearAverager(response) {
 
 
 
-function revealChart(){
-	$('.hideContainer').addClass('reveal')
-	$('.logo').addClass('logoShrink')
-	$('header').addClass('headerShrink')
-	$('.title').css('opacity', '0')
-	setTimeout(function(){ 
-		$('.title').css('display', 'none')
-		$('.hideContainer').addClass('autoHeight')
-	}, 2000);
+function revealChart() {
+    $('.hideContainer').addClass('reveal')
+    $('.logo').addClass('logoShrink')
+    $('header').addClass('headerShrink')
+    $('.title').css('opacity', '0')
+    setTimeout(function() {
+        $('.title').css('display', 'none')
+        $('.hideContainer').addClass('autoHeight')
+    }, 2000);
 
 }
 
 titleLoad();
 
-function titleLoad(){
-	setTimeout(function(){ 
-		$('.title').css('opacity', '1')
-	}, 1000);
-	}
+function titleLoad() {
+    setTimeout(function() {
+        $('.title').css('opacity', '1')
+    }, 1000);
+}
 //END OF REUSABLE FUNCTIONS
