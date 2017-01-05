@@ -360,12 +360,14 @@ $(document).on('click', '.removeButton', function() {
 $('#compare').on('click', function() {
         AJAXselector();
         $('#autoComplete').html("")
+        duplicateArray = []
     })
     //Enter key runs the AJAXselector
 $(document).on('keypress', function(e) {
     if (e.which === 13) {
         AJAXselector();
         $('#autoComplete').html("")
+        duplicateArray = []
     }
 })
 
