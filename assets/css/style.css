@@ -175,6 +175,8 @@ Gray - 166,166,166
      border-bottom: 1px solid;
      border-color: rgba(220, 220, 220, 1);
      color: rgba(100, 100, 100, 1);
+     transition: height 0.3s ease;
+     overflow-y: hidden;
  }
  
  tbody {
