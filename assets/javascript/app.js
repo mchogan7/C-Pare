@@ -309,11 +309,11 @@ function newTable(specificArray) {
         //     alert("Button Id: " + this.id);
         // });
         $(".comparisonInfo").append("<tr class = '" + specificArray[i].label + "'>" +
-            "<td>" + specificArray[i].label + "</td>" +
-            "<td>" + specificArray[i].high + "</td>" +
-            "<td>" + specificArray[i].low + "</td>" +
-            "<td style='color:" + specificArray[i].percColor() + "'>" + specificArray[i].percentChange() + "</td>" +
-            "<td>" + "<div class= removeButton value='" + specificArray[i].label + "'>&times</div>" + "</td>" +
+            "<td><div class='tableShrink'>" + specificArray[i].label + "</div></td>" +
+            "<td><div class='tableShrink'>" + specificArray[i].high + "</td>" +
+            "<td><div class='tableShrink'>" + specificArray[i].low + "</td>" +
+            "<td style='color:" + specificArray[i].percColor() + "'><div class='tableShrink'>" + specificArray[i].percentChange() + "</div</td>" +
+            "<td>" + "<div class= 'tableShrink removeButton' value='" + specificArray[i].label + "'>&times</div>" + "</td>" +
             "</tr>");
     }
 }
@@ -323,7 +323,11 @@ $(document).on('click', '.removeButton', function() {
         //Gets the dataObject label as stored it the button of its row.
         var removeThis = $(this).attr('value')
             //Targets and removes class with the same value.
-        $('.' + removeThis).remove();
+         $('.' + removeThis + ' > td > div').text('');
+         $('.' + removeThis + ' > td > div').css('height', '0px')
+        	 setTimeout(function() {
+        	 	$('.' + removeThis).remove();
+        	 }, 300)
 
         //Loops through and deletes any DataObjects with matching value.
         for (var i = 0; i < twoYearViewArray.length; i++) {
