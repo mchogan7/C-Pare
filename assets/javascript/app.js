@@ -253,7 +253,7 @@ var mainChart = new Chart(ctx, {
                 ticks: {
                     callback: function(label, index) {
                         if (index % 5 === 0) {
-                            return label
+                            return label.toFixed(2)
                         } else {
                             return ''
                         }
@@ -283,7 +283,7 @@ function newChart(labels, data) {
                     ticks: {
                         callback: function(label, index) {
                             if (index % 5 === 0) {
-                                return label
+                                return label.toFixed(2)
                             } else {
                                 return ''
                             }
@@ -721,6 +721,8 @@ $.ajax({ url: coinListURL, method: "GET" }).done(function(response) {
 //     })
 // }
 
+
+
 function cryptocurrencyAJAX() {
 
     var priceURL = "https://www.cryptocompare.com/api/data/histoday/?e=CCCAGG&fsym=" + symbol + "&limit=690&tsym=USD"
@@ -736,13 +738,14 @@ function cryptocurrencyAJAX() {
         function CCtwoYear() {
             var count = 0;
             var total = 0;
-
+            var month = Math.floor(response.Data.length / 23)
             currentData = []
-
-            for (var i = 0; i < 690; i++) {
+            
+            for (var i = 0; i < response.Data.length; i++) {
                 total += response.Data[i].close
                 count++
-                if (count === 30) {
+
+                if (count === month) {
                     currentData.push((total / count).toFixed(2))
                     count = 0
                     total = 0
@@ -757,13 +760,15 @@ function cryptocurrencyAJAX() {
         function CConeYear() {
             var count = 0;
             var total = 0;
+            var month = Math.floor((response.Data.length / 12) / 2)
+            var start = Math.floor(response.Data.length / 2)
 
             currentData = []
-
-            for (var i = 330; i < 690; i++) {
+            console.log(month)
+            for (var i = start; i < response.Data.length; i++) {
                 total += response.Data[i].close
                 count++
-                if (count === 30) {
+                if (count === month) {
                     currentData.push((total / count).toFixed(2))
                     count = 0
                     total = 0
@@ -780,7 +785,7 @@ function cryptocurrencyAJAX() {
 
             currentData = []
 
-            for (var i = 599; i < 690; i++) {
+            for (var i = response.Data.length - 91; i < response.Data.length; i++) {
                 total += response.Data[i].close
                 count++
                 if (count === 7) {
@@ -796,7 +801,7 @@ function cryptocurrencyAJAX() {
         function CConeWeek() {
             currentData = []
 
-            for (var i = 683; i < 690; i++) {
+            for (var i = response.Data.length - 7; i < response.Data.length; i++) {
                     currentData.push(response.Data[i].close).toFixed(2)
                 }
             }
