@@ -31,18 +31,25 @@ var userInput;
 var duplicateArray = [] //used to prevent duplicates in autocomplete list.
 
 var stocksColor = [0, 155, 210] //defines the initial values of the stocks colors [red, green, blue]
-var stocksBorder = [0, 105, 160] //defines the initial values of the stocks borders colors [red, green, blue]
+var stocksBorder = ["rgba(0, 70, 127, 1)", //defines the initial values of the stocks borders colors [red, green, blue]
+                    "rgba(0, 113, 204, 1)",
+                    "rgba(5, 102, 149, 1)",
+                    "rgba(49, 134, 204, 1)",
+                    "rgba(0, 42, 76, 1)",
+]
+
 var commodityColor = [255, 255, 100] //defines the initial values of the commodity colors [red, green, blue]
-var commodityBorder = [255, 207, 0] //defines the initial values of the commodity borders colors [red, green, blue]
+var commodityBorder = [90, 138, 0] //defines the initial values of the commodity borders colors [red, green, blue]
 var currencyColor = [86, 250, 233] //defines the initial values of the currency colors [red, green, blue]
 var currencyBorder = [36, 200, 183] //defines the initial values of the currency borders colors [red, green, blue]
-var stocksSearchCounter = 0 //sets initial value for counting stock searches, needed to know when to change border dash
+var stocksSearchCounter = -1 //sets initial value for counting stock searches, needed to know when to change border dash
 var commoditySearchCounter = 0 //sets initial value for counting commodity searches, needed to know when to change border dash
 var currencySearchCounter = 0 //sets initial value for counting currency searches, needed to know when to change border dash
 var type
 var currentData = []
 var stockLabel
 var fullName //Full name of entry. Used in table.
+var colorTracker = []
 
 //prototype Object constructor. Lets us create objects globally, and avoid duplicates.
 //Object also contains functions for the table data.
@@ -352,6 +359,7 @@ function newTable(specificArray) {
 $(document).on('click', '.removeButton', function() {
         //Gets the dataObject label as stored it the button of its row.
         var removeThis = $(this).attr('value')
+        var goBackColor = 1
             //Targets and removes class with the same value.
         $('.' + removeThis).remove();
 
@@ -362,14 +370,36 @@ $(document).on('click', '.removeButton', function() {
                 //Decrements the searchCounter to reset the color sequence.
                 //This has to come first to reference the object before deletion.
                 if (twoYearViewArray[i].category === 'stocks') {
-                    stocksSearchCounter--
+                    
+                   var index = colorTracker.indexOf(twoYearViewArray[i].borderColor)
+                   colorTracker.splice(index, 1)
+                   console.log(colorTracker)
+                    
                 }
                 if (twoYearViewArray[i].category === 'currency') {
                     currencySearchCounter--
+
+                    if (currencySearchCounter > 0){
+                    currencySearchCounter--
+
+                    currencyBorder[0] = Math.floor(parseInt(Math.floor(parseInt(currencyBorder[0])) / 1.25));
+                    currencyBorder[1] = Math.floor(parseInt(Math.floor(parseInt(currencyBorder[1])) / 1.25));
+                    currencyBorder[2] = Math.floor(parseInt(Math.floor(parseInt(currencyBorder[2])) / 1.25));
+
+                    }
                 }
 
                 if (twoYearViewArray[i].category === 'commodity') {
                     commoditySearchCounter--
+
+                    if (commoditySearchCounter > 0){
+                    commoditySearchCounter--
+
+                    commodityBorder[0] = Math.floor(parseInt(Math.floor(parseInt(commodityBorder[0])) / 1.25));
+                    commodityBorder[1] = Math.floor(parseInt(Math.floor(parseInt(commodityBorder[1])) / 1.25));
+                    commodityBorder[2] = Math.floor(parseInt(Math.floor(parseInt(commodityBorder[2])) / 1.25));
+
+                    }
                 }
                 //Removes the matching object from all arrays.
                 twoYearViewArray.splice(i, 1);
@@ -581,20 +611,55 @@ dateLabelCreator()
 function chartColor(color, border, type, searchCounter) {
     //initial framework to change the shade of the color every time a new search for a stock happens
     //these values are not set in stone and can be adjusted
-    var multiplier = 1.25;
+    
+    
+
+    //var multiplier = 1.3;
 
     backgroundColor = "rgba(" + color[0] + "," + color[1] + "," + color[2] + ",0.4)"
-    borderColor = "rgba(" + border[0] + "," + border[1] + "," + border[2] + ",1)"
+    //borderColor = "rgba(" + border[0][0] + "," + border[0][1] + "," + border[0][2] + ",1)"
+
+    //  for (i=0; colorTracker[i].length < i; i++) {
+    //     if(borderColor === colorTracker[i]){
+            
+    //     }
+    // }
         //the line color is changed here
         // color[0] = parseInt(color[0]) + 28;
         // color[1] = parseInt(color[1]) + 40;
         // color[2] = parseInt(color[2]) + 40;
         //the border color is changed here
-    border[0] = Math.floor(parseInt(border[0]) * multiplier);
-    border[1] = Math.floor(parseInt(border[1]) * multiplier);
-    border[2] = Math.floor(parseInt(border[2]) * multiplier);
+    // border[0] = Math.floor(parseInt(border[0]) * multiplier);
+    // border[1] = Math.floor(parseInt(border[1]) * multiplier);
+    // border[2] = Math.floor(parseInt(border[2]) * multiplier);
 
+    
+
+    if (colorTracker.length > 0){
+        for(i=0; i < border.length; i++){
+            console.log(border[i])
+            console.log(colorTracker[i])
+            for(j=0; j < colorTracker.length; j++){    
+               if (border[i] !== colorTracker[i]){
+                    borderColor = border[i]
+                    colorTracker.push(border[i])
+                    return
+                }
+        }
+
+        }
+
+    }
+    else {
+       borderColor = border[0]
+       colorTracker.push(border[0])
+    }
+
+    //colorTracker.push(border)
+    console.log(colorTracker)
     console.log(searchCounter)
+
+
 
 
     //after five searches of the same type it changes from a solid line to a dashed line
@@ -626,12 +691,6 @@ function chartColor(color, border, type, searchCounter) {
 
 
 
-
-
-
-
-
-
 };
 
 //function that resets the colors of the lines
@@ -641,7 +700,7 @@ function resetColors(type) {
     if (type === "stocks") {
         stocksBorder = [0, 105, 160];
     } else if (type === "commodity") {
-        commodityBorder = [255, 207, 0];
+        commodityBorder = [90, 138, 0];
     } else if (type === "currency") {
         currencyBorder = [36, 200, 183];
     }
