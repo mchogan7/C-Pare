@@ -676,57 +676,6 @@ function AJAXselector() {
     }
 }
 
-var cryptocurrencyList = [];
-var CClistOfAverages2yr = [];
-var CClistOfAverages1yr = [];
-
-function coinObject(name, symbol) {
-    this.name = name,
-        this.symbol = symbol
-}
-
-var coinListURL = "https://api.coinmarketcap.com/v1/ticker/";
-var currencyPriceHistory = [];
-$.ajax({ url: coinListURL, method: "GET" }).done(function(response) {
-
-    for (i = 0; i < response.length; i++) {
-        var name = response[i].name;
-        var symbol = response[i].symbol;
-        var coinOBJ = new coinObject(name, symbol);
-
-        cryptocurrencyList.push(coinOBJ);
-    }
-    //console.log(cryptocurrencyList)
-
-});
-
-// function histObject(date, price) {
-//     this.date = date;
-//     this.price = price;
-// }
-
-// function histPrices(coin) {
-//     var coinSymbol = coin;
-//     var test
-//     var startDate = moment('2015-01-01', 'YYYY-MM-DD');
-//     var endDate = moment().format('YYYY-MM-DD');
-//     var dateDiff = Math.abs(startDate.diff(endDate, 'days')) - 1
-//     var priceURL = "https://www.cryptocompare.com/api/data/histoday/?e=CCCAGG&fsym=" + coinSymbol + "&limit=" + dateDiff + "&tsym=USD"
-//     $.ajax({ url: priceURL, method: "GET" }).done(function(response) {
-//         console.log(response)
-//         for (p = 0; p < response.Data.length; p++) {
-//             var price = response.Data[p].close;
-//             var cryptoDate = response.Data[p].time;
-//             var convertedDate = moment.unix(cryptoDate).format('YYYY-MM-DD');
-//             var histObj = new histObject(convertedDate, price);
-//             currencyPriceHistory.push(histObj);
-//         }
-
-//     })
-// }
-
-
-
 function cryptocurrencyAJAX() {
 
     var priceURL = "https://www.cryptocompare.com/api/data/histoday/?e=CCCAGG&fsym=" + symbol + "&limit=690&tsym=USD"
@@ -779,6 +728,7 @@ function cryptocurrencyAJAX() {
                 }
             }
         }
+
         CConeYear()
         oneYearViewArray.push(new stockDataObject(symbol, backgroundColor, borderColor, dashEffect, currentData))
 
@@ -813,62 +763,10 @@ function cryptocurrencyAJAX() {
         CConeWeek()
         oneWeekViewArray.push(new stockDataObject(symbol, backgroundColor, borderColor, dashEffect, currentData))
 
-
-
-
-
-
-
-        newTable(twoYearViewArray);
+		newTable(twoYearViewArray);
         mainChart.update();
     })
 }
-
-function CCtwoYearAverager(response) {
-    var total = 0;
-    var count = 0;
-    var month
-    var currentMonth = currencyPriceHistory[0].date.substr(0, 7)
-    for (t = 0; t < currencyPriceHistory.length; t++) {
-        month = currencyPriceHistory[t].date.substr(0, 7)
-        if (currencyPriceHistory[t].date.substr(0, 7) === currentMonth) {
-            total += currencyPriceHistory[t].price;
-            count++;
-            if (t === currencyPriceHistory.length - 1) {
-                CClistOfAverages2yr.unshift((total / count).toFixed(2))
-            }
-
-        } else {
-            CClistOfAverages2yr.unshift((total / count).toFixed(2));
-            total = 0;
-            count = 0;
-            currentMonth = currencyPriceHistory[t].date.substr(0, 7)
-        }
-    }
-    return CClistOfAverages2yr;
-}
-
-function CConeYearAverager(response) {
-    var total = 0;
-    var count = 0;
-    var date = moment().format('YYYY-MM-DD');
-    var matchDate = moment().subtract(365, 'days').format('YYYY-MM-DD')
-        //the function below hasn't actually been tested, but it's what I came up 
-        //with to find the index associated with a specific date. It might be better 
-        //to make this a function all on it's own to do the 3-month averager with as well. 
-    Array.prototype.getIndexBy = function(key, value) {
-            for (var q = 0; q < this.length; q++) {
-                if (this[q][name] == value) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-        //function should run as "var indexToReturn = currencyPriceHistory[currencyPriceHistory.getIndexBy("date", matchdate)]
-        //from here, grab bi-monthly averages to slip into averages array
-}
-
-
 
 function revealChart() {
     $('.hideContainer').addClass('reveal')
