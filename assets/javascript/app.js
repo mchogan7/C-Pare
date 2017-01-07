@@ -45,7 +45,6 @@ var currencyBorder = [36, 200, 183] //defines the initial values of the currency
 var stocksSearchCounter = -1 //sets initial value for counting stock searches, needed to know when to change border dash
 var commoditySearchCounter = 0 //sets initial value for counting commodity searches, needed to know when to change border dash
 var currencySearchCounter = 0 //sets initial value for counting currency searches, needed to know when to change border dash
-var cryptoSearchCounter = 0
 var type
 var currentData = []
 var stockLabel
@@ -123,6 +122,7 @@ function stockAJAX() {
     var queryURL = "https://www.quandl.com/api/v3/datasets/WIKI/" + symbol + ".json?&start_date=" + dateStart + "&end_date=" + today + "&collapse=daily&api_key=EDWEb1oyzs8FrfoFyG1u";
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
 
+
         //Trims the name for table view
         var trim = response.dataset.name
         var trimPosition = trim.indexOf('(');
@@ -130,6 +130,14 @@ function stockAJAX() {
 
         //Sets the label at the top of the chart
         stockLabel = response.dataset.dataset_code
+            //Initializes and clears the price data to be sent to the stockDataObject
+        var stocksChartData = []
+
+        //Loops through the response and pushes price data to the stocksChartData array
+        for (var i = 0; i < response.dataset.data.length; i++) {
+            stocksChartData.push(response.dataset.data[i][1])
+
+        }
 
         // defines the type of search, so it is known which colors are needed to reset if it is time to reset
         type = "stocks";
@@ -140,6 +148,7 @@ function stockAJAX() {
             stocksSearchCounter = 1;
             resetColors(type)
         }
+
 
         chartColor(stocksColor, stocksBorder, type, stocksSearchCounter);
         twoYearAverager(response)
@@ -155,6 +164,7 @@ function stockAJAX() {
 
 //commodityAJAX function
 function commodityAJAX() {
+    // var correctedSearch = lookUp(userInput, commodityLookUp);
 
     //get cuurent date in the query's desired format
     var today = moment().endOf('month').subtract(1, 'months').format('YYYY-MM-DD')
@@ -164,6 +174,13 @@ function commodityAJAX() {
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
         stockLabel = response.dataset.dataset_code
 
+        //Initializes and clears the price data to be sent to the stockDataObject
+        var commodityChartData = []
+
+        //Loops through the response and pushes price data to the stocksChartData array
+        for (var i = 0; i < response.dataset.data.length; i++) {
+            commodityChartData.push(response.dataset.data[i][1])
+        }
         // defines the type of search, so it is known which colors are needed to reset if it is time to reset
         type = "commodity";
         commoditySearchCounter++;
@@ -173,6 +190,9 @@ function commodityAJAX() {
             commoditySearchCounter = 1;
             resetColors(type)
         }
+
+
+
 
         chartColor(commodityColor, commodityBorder, type, commoditySearchCounter);
         twoYearAverager(response)
@@ -195,6 +215,13 @@ function currencyAJAX() {
     $.ajax({ url: queryURL, method: "GET" }).done(function(response) {
         stockLabel = response.dataset.dataset_code
 
+        //Initializes and clears the price data to be sent to the stockDataObject
+        var currencyChartData = []
+
+        //Loops through the response and pushes price data to the stocksChartData array
+        for (var i = 0; i < response.dataset.data.length; i++) {
+            currencyChartData.push(response.dataset.data[i][1])
+        }
         // defines the type of search, so it is known which colors are needed to reset if it is time to reset
         type = "currency";
         currencySearchCounter++;
@@ -204,6 +231,9 @@ function currencyAJAX() {
             currencySearchCounter = 1;
             resetColors(type)
         }
+
+
+
 
         chartColor(currencyColor, currencyBorder, type, currencySearchCounter);
         twoYearAverager(response)
@@ -260,7 +290,7 @@ var mainChart = new Chart(ctx, {
                 ticks: {
                     callback: function(label, index) {
                         if (index % 5 === 0) {
-                            return label.toFixed(2)
+                            return label
                         } else {
                             return ''
                         }
@@ -290,7 +320,7 @@ function newChart(labels, data) {
                     ticks: {
                         callback: function(label, index) {
                             if (index % 5 === 0) {
-                                return label.toFixed(2)
+                                return label
                             } else {
                                 return ''
                             }
@@ -316,11 +346,11 @@ function newTable(specificArray) {
         //     alert("Button Id: " + this.id);
         // });
         $(".comparisonInfo").append("<tr class = '" + specificArray[i].label + "'>" +
-            "<td><div class='tableShrink'>" + specificArray[i].label + "</div></td>" +
-            "<td><div class='tableShrink'>" + specificArray[i].high + "</td>" +
-            "<td><div class='tableShrink'>" + specificArray[i].low + "</td>" +
-            "<td style='color:" + specificArray[i].percColor() + "'><div class='tableShrink'>" + specificArray[i].percentChange() + "</div</td>" +
-            "<td>" + "<div class= 'tableShrink removeButton' value='" + specificArray[i].label + "'>&times</div>" + "</td>" +
+            "<td>" + specificArray[i].label + "</td>" +
+            "<td>" + specificArray[i].high + "</td>" +
+            "<td>" + specificArray[i].low + "</td>" +
+            "<td style='color:" + specificArray[i].percColor() + "'>" + specificArray[i].percentChange() + "</td>" +
+            "<td>" + "<div class= removeButton value='" + specificArray[i].label + "'>&times</div>" + "</td>" +
             "</tr>");
     }
 }
@@ -331,11 +361,7 @@ $(document).on('click', '.removeButton', function() {
         var removeThis = $(this).attr('value')
         var goBackColor = 1
             //Targets and removes class with the same value.
-         $('.' + removeThis + ' > td > div').text('');
-         $('.' + removeThis + ' > td > div').css('height', '0px')
-        	 setTimeout(function() {
-        	 	$('.' + removeThis).remove();
-        	 }, 300)
+        $('.' + removeThis).remove();
 
         //Loops through and deletes any DataObjects with matching value.
         for (var i = 0; i < twoYearViewArray.length; i++) {
@@ -393,15 +419,11 @@ $(document).on('click', '.removeButton', function() {
 //On click and key press functions for the submit button.
 $('#compare').on('click', function() {
         AJAXselector();
-        $('#autoComplete').html("")
-        duplicateArray = []
     })
     //Enter key runs the AJAXselector
 $(document).on('keypress', function(e) {
     if (e.which === 13) {
         AJAXselector();
-        $('#autoComplete').html("")
-        duplicateArray = []
     }
 })
 
@@ -667,6 +689,8 @@ function chartColor(color, border, type, searchCounter) {
         dashEffect = [5, 10]
     }
 
+
+
 };
 
 //function that resets the colors of the lines
@@ -742,97 +766,101 @@ function AJAXselector() {
     }
 }
 
-function cryptocurrencyAJAX() {
+var cryptocurrencyList = [];
+var CClistOfAverages2yr = [];
+var CClistOfAverages1yr = [];
 
-    var priceURL = "https://www.cryptocompare.com/api/data/histoday/?e=CCCAGG&fsym=" + symbol + "&limit=690&tsym=USD"
+function coinObject(name, symbol) {
+    this.name = name,
+        this.symbol = symbol
+}
+
+var coinListURL = "https://api.coinmarketcap.com/v1/ticker/";
+var currencyPriceHistory = [];
+$.ajax({ url: coinListURL, method: "GET" }).done(function(response) {
+
+    for (i = 0; i < response.length; i++) {
+        var name = response[i].name;
+        var symbol = response[i].symbol;
+        var coinOBJ = new coinObject(name, symbol);
+
+        cryptocurrencyList.push(coinOBJ);
+    }
+    //console.log(cryptocurrencyList)
+
+});
+
+function histObject(date, price) {
+    this.date = date;
+    this.price = price;
+}
+
+function histPrices(coin) {
+    var coinSymbol = coin;
+    var test
+    var startDate = moment('2015-01-01', 'YYYY-MM-DD');
+    var endDate = moment().format('YYYY-MM-DD');
+    var dateDiff = Math.abs(startDate.diff(endDate, 'days')) - 1
+    var priceURL = "https://www.cryptocompare.com/api/data/histoday/?e=CCCAGG&fsym=" + coinSymbol + "&limit=" + dateDiff + "&tsym=USD"
     $.ajax({ url: priceURL, method: "GET" }).done(function(response) {
         console.log(response)
-
-        type = "cryptocurrency";
-        currencySearchCounter++;
-
-        chartColor(currencyColor, currencyBorder, type, currencySearchCounter);
-        //Janky Two Year Averager
-
-        function CCtwoYear() {
-            var count = 0;
-            var total = 0;
-            var month = Math.floor(response.Data.length / 23)
-            currentData = []
-            
-            for (var i = 0; i < response.Data.length; i++) {
-                total += response.Data[i].close
-                count++
-
-                if (count === month) {
-                    currentData.push((total / count).toFixed(2))
-                    count = 0
-                    total = 0
-                }
-            }
-        }
-        CCtwoYear()
-        twoYearViewArray.push(new stockDataObject(symbol, backgroundColor, borderColor, dashEffect, currentData))
-
-
-        //Janky one Year Averager
-        function CConeYear() {
-            var count = 0;
-            var total = 0;
-            var month = Math.floor((response.Data.length / 12) / 2)
-            var start = Math.floor(response.Data.length / 2)
-
-            currentData = []
-            console.log(month)
-            for (var i = start; i < response.Data.length; i++) {
-                total += response.Data[i].close
-                count++
-                if (count === month) {
-                    currentData.push((total / count).toFixed(2))
-                    count = 0
-                    total = 0
-                }
-            }
+        for (p = 0; p < response.Data.length; p++) {
+            var price = response.Data[p].close;
+            var cryptoDate = response.Data[p].time;
+            var convertedDate = moment.unix(cryptoDate).format('YYYY-MM-DD');
+            var histObj = new histObject(convertedDate, price);
+            currencyPriceHistory.push(histObj);
         }
 
-        CConeYear()
-        oneYearViewArray.push(new stockDataObject(symbol, backgroundColor, borderColor, dashEffect, currentData))
-
-        //Janky three Month Averager
-        function CCthreeMonth() {
-            var count = 0;
-            var total = 0;
-
-            currentData = []
-
-            for (var i = response.Data.length - 91; i < response.Data.length; i++) {
-                total += response.Data[i].close
-                count++
-                if (count === 7) {
-                    currentData.push((total / count).toFixed(2))
-                    count = 0
-                    total = 0
-                }
-            }
-        }
-        CCthreeMonth()
-        threeMonthViewArray.push(new stockDataObject(symbol, backgroundColor, borderColor, dashEffect, currentData))
-
-        function CConeWeek() {
-            currentData = []
-
-            for (var i = response.Data.length - 7; i < response.Data.length; i++) {
-                    currentData.push(response.Data[i].close).toFixed(2)
-                }
-            }
-        
-        CConeWeek()
-        oneWeekViewArray.push(new stockDataObject(symbol, backgroundColor, borderColor, dashEffect, currentData))
-
-		newTable(twoYearViewArray);
-        mainChart.update();
     })
 }
+histPrices("BTC");
+
+function CCtwoYearAverager(response) {
+    var total = 0;
+    var count = 0;
+    var month
+    var currentMonth = currencyPriceHistory[0].date.substr(0, 7)
+    for (t = 0; t < currencyPriceHistory.length; t++) {
+        month = currencyPriceHistory[t].date.substr(0, 7)
+        if (currencyPriceHistory[t].date.substr(0, 7) === currentMonth) {
+            total += currencyPriceHistory[t].price;
+            count++;
+            if (t === currencyPriceHistory.length - 1) {
+                CClistOfAverages2yr.unshift((total / count).toFixed(2))
+            }
+
+        } else {
+            CClistOfAverages2yr.unshift((total / count).toFixed(2));
+            total = 0;
+            count = 0;
+            currentMonth = currencyPriceHistory[t].date.substr(0, 7)
+        }
+    }
+    return CClistOfAverages2yr;
+}
+
+function CConeYearAverager(response) {
+    var total = 0;
+    var count = 0;
+    var date = moment().format('YYYY-MM-DD');
+    var matchDate = moment().subtract(365, 'days').format('YYYY-MM-DD')
+        //the function below hasn't actually been tested, but it's what I came up 
+        //with to find the index associated with a specific date. It might be better 
+        //to make this a function all on it's own to do the 3-month averager with as well. 
+    Array.prototype.getIndexBy = function(key, value) {
+            for (var q = 0; q < this.length; q++) {
+                if (this[q][name] == value) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        //function should run as "var indexToReturn = currencyPriceHistory[currencyPriceHistory.getIndexBy("date", matchdate)]
+        //from here, grab bi-monthly averages to slip into averages array
+}
+
+
 
 function revealChart() {
     $('.hideContainer').addClass('reveal')
