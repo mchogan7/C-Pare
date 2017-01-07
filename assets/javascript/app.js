@@ -310,7 +310,7 @@ function newTable(specificArray) {
         // removeComparisonButton.addEventListener("click", function(e) {
         //     alert("Button Id: " + this.id);
         // });
-        $(".comparisonInfo").append("<tr class = '" + specificArray[i].label + "'>" +
+        $(".comparisonInfo").append("<tr class = 'allRows " + specificArray[i].label + "'>" +
             "<td><div class='tableShrink'>" + specificArray[i].label + "</div></td>" +
             "<td><div class='tableShrink'>" + specificArray[i].high + "</td>" +
             "<td><div class='tableShrink'>" + specificArray[i].low + "</td>" +
@@ -319,6 +319,25 @@ function newTable(specificArray) {
             "</tr>");
     }
 }
+
+
+$('.reset').on('click', function() {
+        $('.tableShrink').text('')
+        $('.tableShrink').text('').css('height', '0px')
+                    stocksBorder = [0, 105, 160];
+        commodityBorder = [90, 138, 0];
+        currencyBorder = [36, 200, 183];
+        setTimeout(function() {
+            $('.allRows').remove();
+            twoYearViewArray = []
+            oneYearViewArray = []
+            threeMonthViewArray = []
+            oneWeekViewArray = []
+            mainChart.destroy();
+            newChart(twoYearLabels, twoYearViewArray);
+            newTable(twoYearViewArray);
+        }, 300);
+})
 
 //Function removes the chartDataObject from the chart and table.
 $(document).on('click', '.removeButton', function() {

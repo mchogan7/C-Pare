@@ -191,15 +191,27 @@ Gray - 166,166,166
      transition: color .3s ease;
      user-select: none;
  }
-
+ 
  .tableShrink {
- 	height: 45px;
- 	overflow-y: hidden;
- 	transition: height 0.3s ease;
+     height: 45px;
+     overflow-y: hidden;
+     transition: height 0.3s ease;
  }
  
  .removeButton:hover {
      color: rgba(234, 46, 77, 1);
+ }
+ 
+ .reset {
+     height: 19px;
+     cursor: pointer;
+     position: absolute;
+     top: 11px;
+ }
+ 
+ .resetHead {
+     width: 32px;
+     position: relative;
  }
  
  .hideContainer {
@@ -258,57 +270,42 @@ Gray - 166,166,166
          width: 90%;
      }
  }
-
+ 
  @media only screen and (max-width: 550px) {
- 	
- 	.buttonContainer {
- 		width: 87.5%;
- 	}
-
- 	#query-input {
- 		width: 90%;
- 	}
-
- 	header {
- 		height: 200px;
- 	}
-
- 	.logo {
- 		margin-top: 16px;
- 	}
-
- 		.logoShrink {
- 		margin-top: 8px;
- 	}
-
-
- 	.title {
- 		margin-top: 18px;
- 	}
-
-  
+     .buttonContainer {
+         width: 87.5%;
+     }
+     #query-input {
+         width: 90%;
+     }
+     header {
+         height: 200px;
+     }
+     .logo {
+         margin-top: 16px;
+     }
+     .logoShrink {
+         margin-top: 8px;
+     }
+     .title {
+         margin-top: 18px;
+     }
  }
-
+ 
  @media only screen and (max-width: 470px) {
- 	
- 	.selectButton {
-   font-size: 10px;
- }
-
- th {
- 	font-size: 10px;
- }
-
- td{
- 	font-size: 12px;
- }
-
- .headerShrink {
- 	margin-bottom: 15px;
- }
-
- .title {
- 	font-size: 20px;
- }
-  
+     .selectButton {
+         font-size: 10px;
+     }
+     th {
+         font-size: 10px;
+     }
+     td {
+         font-size: 12px;
+     }
+     .headerShrink {
+         margin-bottom: 15px;
+     }
+     .title {
+         font-size: 20px;
+     }
  }
