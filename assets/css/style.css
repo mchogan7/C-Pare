@@ -170,11 +170,12 @@ Gray - 166,166,166
  tr {
      font-family: 'Roboto', sans-serif;
      font-weight: 300;
-     height: 45px;
      line-height: 45px;
      border-bottom: 1px solid;
      border-color: rgba(220, 220, 220, 1);
      color: rgba(100, 100, 100, 1);
+     transition: height 0.3s ease;
+     overflow-y: hidden;
  }
  
  tbody {
@@ -189,6 +190,12 @@ Gray - 166,166,166
      cursor: pointer;
      transition: color .3s ease;
      user-select: none;
+ }
+
+ .tableShrink {
+ 	height: 45px;
+ 	overflow-y: hidden;
+ 	transition: height 0.3s ease;
  }
  
  .removeButton:hover {
