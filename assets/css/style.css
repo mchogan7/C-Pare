@@ -201,7 +201,20 @@ Gray - 166,166,166
  .removeButton:hover {
      color: rgba(234, 46, 77, 1);
  }
- 
+
+ .reset {
+ 	height: 19px;
+ 	cursor: pointer;
+ 	position: absolute;
+ 	top: 11px;
+ }
+
+ .resetHead {
+ 	width: 32px;
+ 	position: relative;
+ }
+
+
  .hideContainer {
      height: 0px;
      overflow-y: hidden;
