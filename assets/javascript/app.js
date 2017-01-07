@@ -31,7 +31,7 @@ var userInput;
 var duplicateArray = [] //used to prevent duplicates in autocomplete list.
 
 var stocksColor = [0, 155, 210] //defines the initial values of the stocks colors [red, green, blue]
-var stocksBorder = [0, 105, 160]
+
 
 var commodityColor = [255, 255, 100] //defines the initial values of the commodity colors [red, green, blue]
 var commodityBorder = [90, 138, 0] //defines the initial values of the commodity borders colors [red, green, blue]
@@ -310,7 +310,7 @@ function newTable(specificArray) {
         // removeComparisonButton.addEventListener("click", function(e) {
         //     alert("Button Id: " + this.id);
         // });
-        $(".comparisonInfo").append("<tr class = '" + specificArray[i].label + "'>" +
+        $(".comparisonInfo").append("<tr class = 'allRows " + specificArray[i].label + "'>" +
             "<td><div class='tableShrink'>" + specificArray[i].label + "</div></td>" +
             "<td><div class='tableShrink'>" + specificArray[i].high + "</td>" +
             "<td><div class='tableShrink'>" + specificArray[i].low + "</td>" +
@@ -320,17 +320,40 @@ function newTable(specificArray) {
     }
 }
 
-//Function removes the chartDataObject from the chart and table.
+
+$('.reset').on('click', function() {
+        $('.tableShrink').text('')
+        $('.tableShrink').text('').css('height', '0px')
+                    stocksBorder = [0, 105, 160];
+        commodityBorder = [90, 138, 0];
+        currencyBorder = [36, 200, 183];
+        setTimeout(function() {
+            $('.allRows').remove();
+            twoYearViewArray = []
+            oneYearViewArray = []
+            threeMonthViewArray = []
+            oneWeekViewArray = []
+            mainChart.destroy();
+            newChart(twoYearLabels, twoYearViewArray);
+            newTable(twoYearViewArray);
+        }, 300);
+
+
+
+
+
+    })
+    //Function removes the chartDataObject from the chart and table.
 $(document).on('click', '.removeButton', function() {
         //Gets the dataObject label as stored it the button of its row.
         var removeThis = $(this).attr('value')
         var goBackColor = 1
             //Targets and removes class with the same value.
-         $('.' + removeThis + ' > td > div').text('');
-         $('.' + removeThis + ' > td > div').css('height', '0px')
-        	 setTimeout(function() {
-        	 	$('.' + removeThis).remove();
-        	 }, 300)
+        $('.' + removeThis + ' > td > div').text('');
+        $('.' + removeThis + ' > td > div').css('height', '0px')
+        setTimeout(function() {
+            $('.' + removeThis).remove();
+        }, 300)
 
         //Loops through and deletes any DataObjects with matching value.
         for (var i = 0; i < twoYearViewArray.length; i++) {
@@ -339,23 +362,12 @@ $(document).on('click', '.removeButton', function() {
                 //Decrements the searchCounter to reset the color sequence.
                 //This has to come first to reference the object before deletion.
                 if (twoYearViewArray[i].category === 'stocks') {
-                    //stocksSearchCounter--;
-                    
-                    
-                   // var index = colorTracker.indexOf(twoYearViewArray[i].borderColor)
-                   // colorTracker.splice(index, 1)
-                   // console.log(colorTracker)
-                    
+
                 }
                 if (twoYearViewArray[i].category === 'currency') {
                     // currencySearchCounter--
 
-                    // if (currencySearchCounter > 0){
-                    // currencySearchCounter--
 
-                    // currencyBorder[0] = Math.floor(parseInt(Math.floor(parseInt(currencyBorder[0])) / 1.25));
-                    // currencyBorder[1] = Math.floor(parseInt(Math.floor(parseInt(currencyBorder[1])) / 1.25));
-                    // currencyBorder[2] = Math.floor(parseInt(Math.floor(parseInt(currencyBorder[2])) / 1.25));
 
                     // }
                 }
@@ -363,12 +375,7 @@ $(document).on('click', '.removeButton', function() {
                 if (twoYearViewArray[i].category === 'commodity') {
                     // commoditySearchCounter--
 
-                    // if (commoditySearchCounter > 0){
-                    // commoditySearchCounter--
 
-                    // commodityBorder[0] = Math.floor(parseInt(Math.floor(parseInt(commodityBorder[0])) / 1.25));
-                    // commodityBorder[1] = Math.floor(parseInt(Math.floor(parseInt(commodityBorder[1])) / 1.25));
-                    // commodityBorder[2] = Math.floor(parseInt(Math.floor(parseInt(commodityBorder[2])) / 1.25));
 
                     // }
                 }
@@ -586,45 +593,20 @@ dateLabelCreator()
 function chartColor(color, border, type, searchCounter) {
     //initial framework to change the shade of the color every time a new search for a stock happens
     //these values are not set in stone and can be adjusted
-    
-    
+
+
 
     var multiplier = 1.3;
 
     backgroundColor = "rgba(" + color[0] + "," + color[1] + "," + color[2] + ",0.4)"
-    borderColor = "rgba(" + border[0] + "," + border[1] + "," + border[2] + ",1)"
 
-    
-        //the line color is changed here
-        // color[0] = parseInt(color[0]) + 28;
-        // color[1] = parseInt(color[1]) + 40;
-        // color[2] = parseInt(color[2]) + 40;
-        //the border color is changed here
-    border[0] = Math.floor(parseInt(border[0]) * multiplier);
-    border[1] = Math.floor(parseInt(border[1]) * multiplier);
-    border[2] = Math.floor(parseInt(border[2]) * multiplier);
 
-    
 
-    // if (colorTracker.length > 0){
-    //     for(i=0; i < border.length; i++){
-    //         console.log(border[i])
-    //         console.log(colorTracker[i])
-    //         for(j=0; j < colorTracker.length; j++){    
-    //            if (border[i] !== colorTracker[i]){
-    //                 borderColor = border[i]
-    //                 colorTracker.push(border[i])
-    //                 return
-    //             }
-    //     }
+
 
     //     }
 
-    // }
-    // else {
-    //    borderColor = border[0]
-    //    colorTracker.push(border[0])
-    // }
+
 
     // //colorTracker.push(border)
     // console.log(colorTracker)
@@ -752,7 +734,7 @@ function cryptocurrencyAJAX() {
             var total = 0;
             var month = Math.floor(response.Data.length / 23)
             currentData = []
-            
+
             for (var i = 0; i < response.Data.length; i++) {
                 total += response.Data[i].close
                 count++
@@ -815,14 +797,14 @@ function cryptocurrencyAJAX() {
             currentData = []
 
             for (var i = response.Data.length - 7; i < response.Data.length; i++) {
-                    currentData.push(response.Data[i].close).toFixed(2)
-                }
+                currentData.push(response.Data[i].close).toFixed(2)
             }
-        
+        }
+
         CConeWeek()
         oneWeekViewArray.push(new stockDataObject(symbol, backgroundColor, borderColor, dashEffect, currentData))
 
-		newTable(twoYearViewArray);
+        newTable(twoYearViewArray);
         mainChart.update();
     })
 }
