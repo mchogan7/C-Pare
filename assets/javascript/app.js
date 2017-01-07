@@ -29,7 +29,6 @@ var oneWeekLabels = [];
 var chartLabels
 var userInput;
 var duplicateArray = [] //used to prevent duplicates in autocomplete list.
-
 var stocksColor = [0, 155, 210] //defines the initial values of the stocks colors [red, green, blue]
 var stocksBorder = [0, 105, 160]
 
@@ -327,6 +326,10 @@ $('.reset').on('click', function() {
                     stocksBorder = [0, 105, 160];
         commodityBorder = [90, 138, 0];
         currencyBorder = [36, 200, 183];
+        commoditySearchCounter = 0
+		currencySearchCounter = 0
+		cryptoSearchCounter = 0
+		dashEffect = [0, 0]
         setTimeout(function() {
             $('.allRows').remove();
             twoYearViewArray = []
@@ -676,7 +679,7 @@ function chartColor(color, border, type, searchCounter) {
     //if it's searches 6-10 then it goes to a dash line
     else if (searchCounter > 5 && searchCounter <= 10) {
 
-        dashEffect = [5, 10]
+        dashEffect = [0, 0]
     }
 
 };
