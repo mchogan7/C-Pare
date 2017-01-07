@@ -36,7 +36,7 @@ var stocksBorder = [0, 105, 160]
 var commodityColor = [255, 255, 100] //defines the initial values of the commodity colors [red, green, blue]
 var commodityBorder = [90, 138, 0] //defines the initial values of the commodity borders colors [red, green, blue]
 var currencyColor = [86, 250, 233] //defines the initial values of the currency colors [red, green, blue]
-var currencyBorder = [36, 200, 183] //defines the initial values of the currency borders colors [red, green, blue]
+var currencyBorder = [110, 2, 127] //defines the initial values of the currency borders colors [red, green, blue]
 var stocksSearchCounter = 0 //sets initial value for counting stock searches, needed to know when to change border dash
 var commoditySearchCounter = 0 //sets initial value for counting commodity searches, needed to know when to change border dash
 var currencySearchCounter = 0 //sets initial value for counting currency searches, needed to know when to change border dash
@@ -671,7 +671,7 @@ function resetColors(type) {
     } else if (type === "commodity") {
         commodityBorder = [90, 138, 0];
     } else if (type === "currency") {
-        currencyBorder = [36, 200, 183];
+        currencyBorder = [110, 2, 127];
     }
 
 
